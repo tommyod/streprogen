@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <style>
+    @media screen {
+        @page {
+          margin: 0.5cm;
+        }
+        div.row > div {
+          display: inline-block;
+          margin: 0.2cm;
+        }
+        div.row {
+          display: block;
+          margin: 0.2cm 0.2cm;
+        }
+    }
+
+    .table {
+        display: table;
+        border-spacing: 1px;
+    }
+    .row {
+        display: table-row;
+    }
+    .row > div {
+        display: table-cell;
+        padding: 1px;
+    }
+    .container {
+        width: 100%;
+    }
+
+    .table td, .table td {
+        padding : .25rem .5rem .25rem .5rem;
+    }
+    </style>
+
+
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2>My Program</h2>
+            <p>This program was made using <code>streprogen</code>.</p>
+
+            <h2>Parameters</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Parameter name</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>duration</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>reps_per_exercise</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>avg_intensity</td>
+                            <td>75</td>
+                        </tr>
+                        <tr>
+                            <td>reps_scalers</td>
+                            <td>1, 1.2, 0.8, 1, 0.8, 1.2, 1.2, 0.8</td>
+                        </tr>
+                        <tr>
+                            <td>intensity_scalers</td>
+                            <td>1.05, 0.95, 0.95, 1, 0.95, 1.05, 0.95, 1</td>
+                        </tr>
+                        <tr>
+                            <td>units</td>
+                            <td>kg</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <h2>Information</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Min_reps</th>
+                            <th>Max_reps</th>
+                            <th>Weekly_increase</th>
+                            <th>Reps</th>
+                            <th>Avg_intensity</th>
+                        </tr>
+
+                        <tr>
+                            <td colspan="8"><strong>Day A</strong></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;Bench press</td>
+                            <td>130kg</td>
+                            <td>150kg</td>
+                            <td>2</td>
+                            <td>8</td>
+                            <td>1.8%</td>
+                            <td>25</td>
+
+                            <td>75</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;Squats</td>
+                            <td>100kg</td>
+                            <td>120kg</td>
+                            <td>3</td>
+                            <td>10</td>
+                            <td>2.3%</td>
+                            <td>25</td>
+
+                            <td>75</td>
+                        </tr>
+                        <tr>
+                            <td colspan="8"><strong>Day 2</strong></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;Dips</td>
+                            <td>90kg</td>
+                            <td>150kg</td>
+                            <td>3</td>
+                            <td>8</td>
+                            <td>6.6%</td>
+                            <td>35</td>
+
+                            <td>75</td>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="container">
+            <div class="row">
+                <div class="col-lg-10">
+                    <h2>Program</h2>
+                    <table class="table table-condensed">
+
+                        <tr>
+                            <td colspan="5"><h3>Week 1</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>6 x 97.5kg </td>
+                            <td>6 x 97.5kg </td>
+                            <td>5 x 102.5kg </td>
+                            <td>4 x 107.5kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>2 x 120kg </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>6 x 75kg </td>
+                            <td>6 x 75kg </td>
+                            <td>5 x 80kg </td>
+                            <td>4 x 82.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>7 x 62.5kg </td>
+                            <td>6 x 67.5kg </td>
+                            <td>5 x 70kg </td>
+                            <td>5 x 70kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>4 x 75kg </td>
+                            <td>4 x 75kg </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 2</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>8 x 90kg </td>
+                            <td>8 x 90kg </td>
+                            <td>6 x 102.5kg </td>
+                            <td>4 x 112.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>7 x 75kg </td>
+                            <td>7 x 75kg </td>
+                            <td>6 x 80kg </td>
+                            <td>5 x 82.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>8 x 67.5kg </td>
+                            <td>8 x 67.5kg </td>
+                            <td>7 x 70kg </td>
+                            <td>6 x 75kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>5 x 80kg </td>
+                            <td>4 x 85kg </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 3</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>8 x 90kg </td>
+                            <td>8 x 90kg </td>
+                            <td>2 x 125kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>6 x 77.5kg </td>
+                            <td>6 x 77.5kg </td>
+                            <td>4 x 87.5kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>8 x 70kg </td>
+                            <td>8 x 70kg </td>
+                            <td>6 x 80kg </td>
+                            <td>3 x 92.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 4</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>7 x 95kg </td>
+                            <td>7 x 95kg </td>
+                            <td>5 x 107.5kg </td>
+                            <td>3 x 120kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>7 x 75kg </td>
+                            <td>7 x 75kg </td>
+                            <td>5 x 85kg </td>
+                            <td>3 x 95kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>7 x 80kg </td>
+                            <td>7 x 80kg </td>
+                            <td>6 x 85kg </td>
+                            <td>5 x 90kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>4 x 95kg </td>
+                            <td>3 x 100kg </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 5</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>6 x 107.5kg </td>
+                            <td>6 x 107.5kg </td>
+                            <td>4 x 120kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>8 x 75kg </td>
+                            <td>6 x 85kg </td>
+                            <td>3 x 100kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>7 x 90kg </td>
+                            <td>7 x 90kg </td>
+                            <td>6 x 95kg </td>
+                            <td>4 x 105kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 6</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>6 x 110kg </td>
+                            <td>6 x 110kg </td>
+                            <td>5 x 115kg </td>
+                            <td>5 x 115kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>4 x 122.5kg </td>
+                            <td>2 x 135kg </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>9 x 72.5kg </td>
+                            <td>7 x 82.5kg </td>
+                            <td>5 x 92.5kg </td>
+                            <td>3 x 102.5kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>3 x 102.5kg </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>6 x 100kg </td>
+                            <td>6 x 100kg </td>
+                            <td>5 x 105kg </td>
+                            <td>5 x 105kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>5 x 105kg </td>
+                            <td>5 x 105kg </td>
+                            <td>4 x 112.5kg </td>
+                            <td>3 x 117.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 7</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>8 x 95kg </td>
+                            <td>8 x 95kg </td>
+                            <td>6 x 107.5kg </td>
+                            <td>4 x 120kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>2 x 132.5kg </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>9 x 70kg </td>
+                            <td>9 x 70kg </td>
+                            <td>6 x 85kg </td>
+                            <td>3 x 100kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>8 x 92.5kg </td>
+                            <td>8 x 92.5kg </td>
+                            <td>8 x 92.5kg </td>
+                            <td>7 x 97.5kg </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>5 x 110kg </td>
+                            <td>3 x 122.5kg </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="5"><h3>Week 8</h3></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day A</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                            <td>8 x 100kg </td>
+                            <td>6 x 112.5kg </td>
+                            <td>3 x 132.5kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                            <td>5 x 95kg </td>
+                            <td>5 x 95kg </td>
+                            <td>5 x 95kg </td>
+                            <td> </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5"><h5>&nbsp;Day 2</h5></td>
+                        </tr>
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Dips</td>
+                            <td>8 x 100kg </td>
+                            <td>8 x 100kg </td>
+                            <td>6 x 112.5kg </td>
+                            <td>3 x 132.5kg </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                            <td colspan="4">4 x 10</td>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+</body>
+</html>
