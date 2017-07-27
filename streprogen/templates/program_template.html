@@ -51,9 +51,11 @@
     <div class="row">
         <div class="col-lg-8">
             <h2>{{ program.name }}</h2>
-            <p>This program was made using <code>streprogen</code>.</p>
+            <p>This program was made using <code>streprogen</code>,
+            the dynamic strength program generator written in Python.
+            The latest version can be found at <code>https://pypi.python.org/pypi/streprogen/</code>.</p>
 
-            <h2>Parameters</h2>
+            <h2>Program parameters</h2>
             <div class="row">
                 <div class="col-lg-12">
                     <table class="table table-condensed">
@@ -89,7 +91,7 @@
                 </div>
             </div>
 
-            <h2>Information</h2>
+            <h2>Exercise information</h2>
             <div class="row">
                 <div class="col-lg-12">
                     <table class="table table-condensed">
@@ -97,9 +99,8 @@
                             <th>Name</th>
                             <th>Start</th>
                             <th>End</th>
-                            <th>Min_reps</th>
-                            <th>Max_reps</th>
-                            <th>Weekly_increase</th>
+                            <th>[Min, Max]</th>
+                            <th>Weekly_inc.</th>
                             <th>Reps</th>
                             <th>Avg_intensity</th>
                         </tr>
@@ -113,8 +114,7 @@
                             <td>&nbsp;{{exercise.name}}</td>
                             <td>{{exercise.start_weight}}{{program.units}}</td>
                             <td>{{exercise.end_weight}}{{program.units}}</td>
-                            <td>{{exercise.min_reps}}</td>
-                            <td>{{exercise.max_reps}}</td>
+                            <td>[{{exercise.min_reps}}, {{exercise.max_reps}}]</td>
                             <td>{{exercise.weekly_growth(program.duration)}}%</td>
                             {% if exercise.reps == None %}
                             <td>{{program.reps_per_exercise}}</td>
@@ -129,6 +129,14 @@
                             {% endif %}
                         </tr>
                         {% endfor %}
+
+                        {% for exercise in day.static_exercises %}
+                        <tr>
+                            <td>&nbsp;{{exercise.name}}</td>
+                            <td colspan="7">{{exercise.sets_reps}}</td>
+                        </tr>
+                        {% endfor %}
+
                         {% endfor %}
 
 

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------
-Program: {{ PROGRAM_NAME }}
+Program: {{ program.name }}
 
 Parameters
   duration: {{program.duration}}

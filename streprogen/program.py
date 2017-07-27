@@ -10,6 +10,7 @@ import functools
 import operator
 import statistics
 import warnings
+from os import path
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from streprogen.utils import (round_to_nearest, all_equal, min_between,
@@ -695,10 +696,8 @@ desired_intensity, dynamic_exercise.max_reps)
             self._rendered[week][day][dynamic_ex].update(out)
             #print(out['string'])
             #print(self._rendered[week][day][dynamic_ex])
-                    
-                    
 
-    def to_html(self, verbosity = 0):
+    def to_html(self, verbosity = 0, table_width = 5):
         """
 
         :param verbosity:
@@ -713,10 +712,13 @@ desired_intensity, dynamic_exercise.max_reps)
             lstrip_blocks = True
         )
 
-        template = env.get_template('program_template.html')
-        env.globals.update(chunker=chunker, enumerate = enumerate)
 
-        return template.render(program=self, table_width=5)
+
+        here = path.abspath(path.dirname(__file__))
+        template = env.get_template('program_template.html')
+        env.globals.update(chunker = chunker, enumerate = enumerate)
+
+        return template.render(program=self, table_width = table_width)
 
 
     def to_text2(self):
@@ -726,7 +728,6 @@ desired_intensity, dynamic_exercise.max_reps)
             trim_blocks = True,
             lstrip_blocks = True
         )
-
         template = env.get_template('program_template.txt')
 
 
@@ -935,21 +936,24 @@ if __name__ == '__main__':
                       reps_per_exercise=25,
                       verbose=False,
                       round_to=2.5,
-                      min_reps_consistency='exercise')
+                      min_reps_consistency='exercise',
+                      units = '')
 
-    ex = DynamicExercise('Bench press', 130, 150, 2, 8)
-    ex2 = DynamicExercise('Squats', 100, 120, 3, 10)
-    ex3 = StaticExercise('Biceps')
-    day = Day('Day A', exercises=[ex, ex2, ex3])
+
+
+    bench = DynamicExercise('Bench press', 130, 150, 2, 8)
+    squats = DynamicExercise('Squats', 100, 120, 3, 10)
+    biceps = StaticExercise('Biceps')
+    day = Day('Day A', exercises=[bench, squats, biceps])
     program.add_days(day)
 
-    ex = DynamicExercise('Dips', 90, 150, 3, 8,
+    dips = DynamicExercise('Dips', 90, 150, 3, 8,
                          reps = 35,
                          avg_intensity = 75,
                          round_to = None)
-    ex5 = StaticExercise('Triceps')
-    day = Day(exercises=[ex])
-    day.add_exercises(ex5)
+    triceps = StaticExercise('Triceps')
+    day = Day('Day B')
+    day.add_exercises(dips, triceps)
     program.add_days(day)
 
     program.render()
