@@ -13,9 +13,6 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
 
 setup(
     name='streprogen',
@@ -23,10 +20,10 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.1',
+    version='0.1.5',
 
     description='The dynamic strength program generator.',
-    long_description=long_description,
+    long_description= 'Streprogen (short for Strength Program Generator) is a Python package that allows you to write flexible, powerful strength training programs in no time. Streprogen is simple to get started with and has sensible default values, but advanced users can change the underlying algorithms easily too. The training programs scale extremely well, any number of days, exercises and training program durations is possible.',
 
     # The project's main homepage.
     url='https://github.com/TommyOd/streprogen',
