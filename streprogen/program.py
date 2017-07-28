@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Jul 15 21:18:22 2017
-
-@author: tommy
-"""
 
 import functools
 import operator
@@ -854,6 +849,20 @@ if __name__ == '__main__':
     print(program.to_text())
 
 
+    from streprogen import Program, Day, DynamicExercise, StaticExercise
 
+    # Create a 4-week program
+    program = Program('My first program!', duration = 4)
+
+    # Create some dynamic and static exercises
+    bench = DynamicExercise('Bench press', 60, 80)
+    squats = DynamicExercise('Squats', 80, 95)
+    curls = StaticExercise('Curls', '3 x 12')
+    day = Day(exercises = [bench, squats, curls])
+
+    # Add day(s) to program and render it
+    program.add_days(day)
+    program.render()
+    print(program)
 
 

@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Jul 15 20:29:09 2017
 
-@author: tommy
-"""
 
 import random
 import functools

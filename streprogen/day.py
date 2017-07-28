@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 17 17:36:22 2017
-
-@author: tommy
-"""
 
 from streprogen.exercises import DynamicExercise, StaticExercise
 

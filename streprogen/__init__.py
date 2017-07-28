@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Jul 15 21:01:51 2017
-
-@author: tommy
-"""
 
 from streprogen.modeling import (RepellentGenerator, 
                               reps_to_intensity,
