@@ -1,13 +1,15 @@
 Streprogen - the Python strength program generator.
 =======================
 .. image:: https://badge.fury.io/py/streprogen.svg
-    :target: https://pypi.org/project/streprogen/
+:target: https://pypi.org/project/streprogen/
 :alt: PyPi
 
 
 .. image:: https://readthedocs.org/projects/streprogen/badge/?version=latest
 :target: http://streprogen.readthedocs.io/en/latest/?badge=latest
 :alt: Documentation Status
+
+Install by running ``pip install streprogen``. Remember to read the documentation_.
 
 
 Project summary
@@ -38,6 +40,7 @@ Installation
 (4) Look at the examples: :ref:`example_simple`, :ref:`example_intermediate` and :ref:`example_advanced`.
 
 
+.. _documentation: http://streprogen.readthedocs.io/en/latest/
 .. _Python: http://www.python.org/
 .. _Anaconda: https://www.continuum.io/downloads
 .. _PyPi: https://pypi.org/project/streprogen/
