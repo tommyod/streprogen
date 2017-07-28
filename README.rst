@@ -1,5 +1,5 @@
 Streprogen - the Python strength program generator.
-=======================
+=====================================================================
 .. image:: https://badge.fury.io/py/streprogen.svg
    :target: https://pypi.org/project/streprogen/
    :alt: PyPi
@@ -13,7 +13,7 @@ Install by running ``pip install streprogen``. Remember to read the documentatio
 
 
 Project summary
------------------
+----------------------------------
 
 Streprogen (short for **Stre**\ ngth **Pro**\ gram **Gen**\ erator) is a Python_
 package which allows the user to easily create dynamic, flexible
@@ -32,7 +32,7 @@ strength training programs. The main features are:
 
 
 Installation
------------------
+----------------------------------
 (1) The Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
 (2) Run ``pip install streprogen`` in the terminal (cmd.exe on Windows)
     to install streprogen from PyPi_.
@@ -47,7 +47,7 @@ Installation
 
 
 Sample code
------------------
+----------------------------------
 
 .. code-block:: python
 
