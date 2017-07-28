@@ -1,43 +1,46 @@
 ----------------------------------------------------------------
 Program: {{ program.name }}
 
-Parameters
+Program parameters
   duration: {{program.duration}}
   reps_per_exercise: {{program.reps_per_exercise}}
   avg_intensity: {{program.avg_intensity}}
-  reps_scalers: {{ program.reps_scalers | join(', ') }}
-  intensity_scalers: {{ program.intensity_scalers | join(', ') }}
+  reps_scalers: {{ program.reps_scalers | map('round2digits') | join(', ') }}
+  intensity_scalers: {{ program.intensity_scalers | map('round2digits') | join(', ') }}
   units: {{program.units}}
 ----------------------------------------------------------------
-Days and exercises
-  Day 1
-   Bench press    60kg ->  80kg   reps: [3, 8]     weekly inc.: 7.5%
-   Squats         80kg ->  95kg   reps: [3, 8]     weekly inc.: 4.4%
-   Curls         3 x 12
+Exercise information
+{% for day in program.days %}
+  {{day.name}}
+{% for dynamic_ex in day.dynamic_exercises %}
+   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(dynamic_ex.start_weight, program.units, dynamic_ex.end_weight, program.units).ljust(12 + 2*program.units|length)}} {{'reps: [{}, {}]'.format(dynamic_ex.min_reps, dynamic_ex.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex.weekly_growth(program.duration))}}
+{% endfor %}
+{% for static_ex in day.static_exercises %}
+   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps}}
+  {% endfor %}
+{% endfor %}
 ----------------------------------------------------------------
-Week 1
- Day 1
-   Bench press    7 x 42.5kg  7 x 42.5kg  6 x 45kg    5 x 47.5kg
-   Squats         7 x 57.5kg  7 x 57.5kg  6 x 60kg    5 x 62.5kg
-   Curls          3 x 12
+Program
+{% if program._rendered == False %}
+Not rendered. Call Program.render() to render it.
+{% else %}
+{% for week in range(1, program.duration + 1) %}
+ Week {{week}}
+{% for day in program.days %}
+  {{day.name}}
+  {% for dynamic_ex in day.dynamic_exercises %}
+   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {% for scheme in program._rendered[week][day][dynamic_ex]['strings'] %}{{scheme.ljust(max_ex_scheme + 2)}}{% endfor %}
+   {% if verbose == True %}
 
-Week 2
- Day 1
-   Bench press    8 x 42.5kg  7 x 45kg    6 x 50kg    5 x 52.5kg  4 x 55kg
-   Squats         8 x 55kg    7 x 57.5kg  6 x 62.5kg  5 x 65kg    4 x 70kg
-   Curls          3 x 12
+   {{'stats'.ljust(max_ex_name + 2)}} {{'reps(actual/desired): {}/{}'.format(program._rendered[week][day][dynamic_ex]['reps']|sum, program._rendered[week][day][dynamic_ex]['desired_reps']).ljust(30)}}{{'intensity(a/d): {}/{}'.format(program._rendered[week][day][dynamic_ex]['intensities']|mean|int, program._rendered[week][day][dynamic_ex]['desired_intensity'])}}
+   {% endif %}
 
-Week 3
- Day 1
-   Bench press    8 x 50kg    7 x 52.5kg  6 x 55kg    5 x 60kg    4 x 62.5kg
-   Squats         8 x 60kg    7 x 65kg    6 x 67.5kg  5 x 72.5kg  4 x 77.5kg
-   Curls          3 x 12
+  {% endfor %}
+  {% for static_ex in day.static_exercises %}
+   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps}}
+  {% endfor %}
 
-
-Week 4
- Day 1
-   Bench press    7 x 57.5kg  7 x 57.5kg  6 x 60kg
-   Squats         7 x 67.5kg  7 x 67.5kg  6 x 70kg
-   Curls          3 x 12
-
+{% endfor %}
+{% endfor %}
+{% endif %}
 ----------------------------------------------------------------

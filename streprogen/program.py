@@ -697,7 +697,7 @@ desired_intensity, dynamic_exercise.max_reps)
             #print(out['string'])
             #print(self._rendered[week][day][dynamic_ex])
 
-    def to_html(self, verbosity = 0, table_width = 5):
+    def to_html(self, verbose = False, table_width = 5):
         """
 
         :param verbosity:
@@ -712,174 +712,57 @@ desired_intensity, dynamic_exercise.max_reps)
             lstrip_blocks = True
         )
 
-
-
-        here = path.abspath(path.dirname(__file__))
-        template = env.get_template('program_template.html')
         env.globals.update(chunker = chunker, enumerate = enumerate)
+        round2digits = functools.partial(round_to_nearest, nearest=0.1)
+        env.filters['round2digits'] = round2digits
 
-        return template.render(program=self, table_width = table_width)
+        template = env.get_template('program_template.html')
+
+        return template.render(program = self,
+                               table_width = table_width,
+                               verbose = verbose)
 
 
-    def to_text2(self):
+    def to_text(self, verbose = False):
+        """
+
+        """
+
+        # Get information related to formatting
+        max_ex_name = max(len(ex.name) for ex in self._yield_exercises())
+        # If rendered, find the length of the longest '6 x 75kg'-type string
+        max_ex_scheme = 0
+        if self._rendered:
+            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+                lengths = [len(s) for s in
+                           self._rendered[week][day][dynamic_ex]['strings']]
+                max_ex_scheme = max(max_ex_scheme, max(lengths))
+
+
         env = Environment(
             loader=PackageLoader('streprogen', 'templates'),
             autoescape=select_autoescape(['html', 'xml']),
             trim_blocks = True,
             lstrip_blocks = True
         )
+
+
+        round2digits = functools.partial(round_to_nearest, nearest = 0.1)
+        env.filters['round2digits'] = round2digits
+        env.filters['mean'] = statistics.mean
+
         template = env.get_template('program_template.txt')
 
+        return template.render(program=self, max_ex_name = max_ex_name,
+                               max_ex_scheme = max_ex_scheme,
+                               verbose=verbose)
 
-        return template.render(program=self, table_width = 5)
-
-
-    
-    def to_text(self, verbosity = 0):
-        """Return a string with the program information.
-    
-        Parameters
-        ----------
-        verbosity
-            How much information to include about the program.
-                0 - Include basic information only.  
-                
-                1 - Include some statistical information.
-                
-                2 - Include all statistical information.
-    
-        Returns
-        -------
-        program_string
-            A string with program information.
-
-        """
-        
-        # --------------------------------
-        # Get information related to lengths
-        # --------------------------------
-        
-        # Find the length of the longest exercise name
-        l_ex_name = max(len(ex.name) for ex in self._yield_exercises())
-        
-        # If rendered, find the length of the longest '6 x 75kg'-type string
-        l_ex_str = 0
-        if self._rendered:
-            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
-                lengths = [len(s) for s in 
-                           self._rendered[week][day][dynamic_ex]['strings']]
-                l_ex_str = max(l_ex_str, max(lengths))
-                        
-        # --------------------------------
-        # Header information
-        # --------------------------------
-
-        # Print the start of the header, some parameters from the setup
-        out_str = '-' * 64 + '\n'
-        out_str += 'Program: {} \n'.format(self.name)
-        keys_to_print = ['duration', 'reps_per_exercise', 'avg_intensity', 
-        'reps_scalers', 'intensity_scalers', 'units']
-        out_str += '\nParameters\n'
-        for key in keys_to_print:
-            out_str += '  {}: {}\n'.format(key, self.__dict__[key])
-        
-        # --------------------------------
-        # Day and exercise information
-        # --------------------------------
-        out_str += '-' * 64 + '\n'
-        out_str += 'Days and exercises\n'
-        for i, day in enumerate(self.days):
-            out_str += '  ' + prioritized_not_None(day.name, 
-            'Day {}'.format(i + 1)) + '\n'
-            
-            # Loop for dynamic exercises
-            for dynamic_ex in day.dynamic_exercises:
-                min_reps = str(dynamic_ex.min_reps)
-                max_reps = str(dynamic_ex.max_reps)
-                start_weight = str(dynamic_ex.start_weight).rjust(3)
-                end_weight = str(dynamic_ex.end_weight).rjust(3)
-                units = self.units
-                num_reps = dynamic_ex.reps
-                increase = dynamic_ex.weekly_growth(self.duration)
-                ex_int = dynamic_ex.avg_intensity
-                
-                # Basic exercise information
-                name = ' '*3 + dynamic_ex.name.ljust(l_ex_name + 2)
-                weights = '{} -> {}'.format(start_weight + units, 
-                                            end_weight + units)
-                reps_ra = 'reps: [{}, {}]'.format(min_reps, max_reps)
-                weekly_inc = 'weekly inc.: {}%'.format(increase)
-                
-                # Advaned exercise information
-                reps = prioritized_not_None(num_reps, self.reps_per_exercise)
-                reps = 'reps/ex: {}'.format(int(reps))
-                inten = prioritized_not_None(ex_int, self.avg_intensity)
-                inten = 'intensity: {}'.format(int(inten))
-                
-                include_data = [name, weights, reps_ra, weekly_inc]
-                if verbosity > 0:
-                    include_data = include_data[:-1] + [reps, inten] + include_data[-1:]
-
-                out_str += ''.join(s.ljust(16) for s in include_data)   
-                out_str += '\n'
-                
-            # Loop for static exercises
-            for static_ex in day.static_exercises:
-                name = ' '*3 + static_ex.name.ljust(l_ex_name + 2)
-                scheme = static_ex.sets_reps
-                out_str += ''.join(s.ljust(16) for s in [name, scheme])
-                out_str += '\n'
-        
-            
-        # --------------------------------
-        # The set/rep schemes for all weeks
-        # --------------------------------
-        if not self._rendered:
-            return out_str + '-' * 64
-        out_str += '-' * 64 + '\n'
-        # Iterate over all weeks
-        for week in range(1, self.duration + 1):
-            week_str = 'Week {}'.format(week)
-            if verbosity > 0:
-                week_str += ' '*4 + '[Avg. intensity: {}, Reps: {}]'.format(
-                        int(self.avg_intensity * self.intensity_scalers[week-1]),
-                        int(self.reps_per_exercise * self.reps_scalers[week-1]))
-            out_str += week_str + '\n'
-            
-            # Iterate over all days
-            for i, day in enumerate(self.days):
-                out_str += ' ' + day.name + '\n'
-                
-                # Iterate over all main exercises
-                for dynamic_ex in day.dynamic_exercises:
-                    space = l_ex_str  + 2
-                    scheme = ''.join([s.ljust(space) for s in 
-                                      self._rendered[week][day][dynamic_ex]['strings']])
-                    
-                    out_str += '   ' + dynamic_ex.name.ljust(l_ex_name + 3) + scheme + '\n'
-                    if verbosity < 2:
-                        continue
-                    # Advanced information
-                    desired_reps = self._rendered[week][day][dynamic_ex]['desired_reps']
-                    actual_reps = sum(self._rendered[week][day][dynamic_ex]['reps'])
-                    desired_intensity = self._rendered[week][day][dynamic_ex]['desired_intensity']
-                    actual_intensity = int(statistics.mean(self._rendered[week][day][dynamic_ex]['intensities']))
-                    out_str += '   ' + 'stats'.ljust(l_ex_name+4)
-                    out_str += '[reps(actual/desired): {}/{}, intensity(actual/desired): {}/{}]\n'.format(
-                            actual_reps, desired_reps, actual_intensity, desired_intensity)
-                    
-                for static_ex in day.static_exercises:
-                    out_str += '   ' + static_ex.name.ljust(l_ex_name + 3) + static_ex.sets_reps + '\n'
-                    
-                out_str += '\n'                                       
-        
-        return out_str + '-' * 64
         
     def __str__(self):
         """
         String formatting for readable human output.
         """
-        return self.to_text2()
+        return self.to_text()
 
     
     def _autoset_min_reps_consistency(self):
@@ -930,7 +813,7 @@ if __name__ == "__main__":
 
 if __name__ == '__main__':
     program = Program('My Program', duration=8,
-                      minimum_percentile=0.2,
+                      minimum_percentile=0.0,
                       avg_intensity=75,
                       go_to_min=True,
                       reps_per_exercise=25,
@@ -938,6 +821,9 @@ if __name__ == '__main__':
                       round_to=2.5,
                       min_reps_consistency='exercise',
                       units = '')
+
+    intensity_scalers = [(100 + 1/i)/100 for i in range(1,9)]
+    program.intensity_scalers = intensity_scalers
 
 
 
@@ -951,14 +837,23 @@ if __name__ == '__main__':
                          reps = 35,
                          avg_intensity = 75,
                          round_to = None)
-    triceps = StaticExercise('Triceps')
+    triceps = StaticExercise('Triceps', '3 x 12')
     day = Day('Day B')
-    day.add_exercises(dips, triceps)
+    day.add_exercises(dips, triceps, biceps)
     program.add_days(day)
 
     program.render()
-    print(program.to_text2())
+
+    with open('program.txt', 'w', encoding='utf-8') as file:
+        file.write(program.to_text(verbose=  True))
 
     with open('program.html', 'w', encoding='utf-8') as file:
         file.write(program.to_html())
+
+
+    print(program.to_text())
+
+
+
+
 

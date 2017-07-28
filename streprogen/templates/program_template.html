@@ -77,11 +77,11 @@
                         </tr>
                         <tr>
                             <td>reps_scalers</td>
-                            <td>{{ program.reps_scalers | join(', ') }}</td>
+                            <td>{{ program.reps_scalers | map('round2digits') | join(', ') }}</td>
                         </tr>
                         <tr>
                             <td>intensity_scalers</td>
-                            <td>{{ program.intensity_scalers | join(', ') }}</td>
+                            <td>{{ program.intensity_scalers | map('round2digits') | join(', ') }}</td>
                         </tr>
                         <tr>
                             <td>units</td>
@@ -150,6 +150,9 @@
             <div class="row">
                 <div class="col-lg-10">
                     <h2>Program</h2>
+                    {% if program._rendered == False %}
+                    <p>Not rendered. Call <code>Program.render()</code> to render it.</p>
+                    {% else %}
                     <table class="table table-condensed">
                         {% for week in range(1, program.duration + 1) %}
 
@@ -191,6 +194,7 @@
 
                         {% endfor %}
                     </table>
+                    {% endif %}
                 </div>
             </div>
 

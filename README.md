@@ -1,5 +1,6 @@
 # Streprogen - A strength program generator
-
+[![PyPI version](https://badge.fury.io/py/streprogen.svg)](https://badge.fury.io/py/streprogen)
+[![Documentation Status](https://readthedocs.org/projects/streprogen/badge/?version=latest)](http://streprogen.readthedocs.io/en/latest/?badge=latest)
 ## Description
 
 Sick of static `3 x 12` schemes? Streprogen (short for **Str**ength **Pro**gram **Gen**erator) is a Python package that allows you to write flexible, powerful strength training programs in no time. Streprogen is **simple to get started with** and has **sensible default values**, but advanced users can **change the underlying algorithms** easily too. The training programs **scale extremely well**, any number of days, exercises and training program durations is possible.

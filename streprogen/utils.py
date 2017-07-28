@@ -73,7 +73,17 @@ def round_to_nearest(number, nearest = 1):
     >>> round_to_nearest(6.8, nearest = 2.5)
     7.5
     """
-    return nearest * round(number / nearest)
+    result = nearest * round(number / nearest)
+    if result % 1 == 0:
+        return int(result)
+
+    if nearest % 1 == 0:
+        return round(result)
+    if nearest % 0.1 == 0:
+        return round(result, 1)
+    if nearest % 0.01 == 0:
+        return round(result, 2)
+    return result
 
 
 def all_equal(iterable):
@@ -142,21 +152,25 @@ def generate_reps(min_reps = 3, max_reps = 8, total = 25, existing = None):
 
     Examples
     -------
-    >>> total = 20
-    >>> reps_list = generate_reps(3, 8, total)
-    >>> sum(reps_list) == total
-    True
+    >>>
     """
-    
-    # Attempt to generate desired number of repetitions 10 times
-    attempt = _generate_reps(min_reps, max_reps, total, existing)
-    for i in range(10):
-        attempt = _generate_reps(min_reps, max_reps, total, existing)
-        if sum(attempt) == total:
-            return list(map(int, attempt))
 
-    # Convert to integer so there are no int/float mixups
-    return list(map(int, attempt))
+    if existing is None:
+        existing = []
+
+    possible = []
+
+    for _ in range(3):
+
+        created = existing.copy()
+        while sum(created) < (total - min_reps) + 0:
+            generated = random.randint(min_reps, max_reps)
+            created.append(generated)
+
+        created.sort()
+        possible.append(created)
+
+    return min(possible, key=lambda l: abs(total - sum(l)))
     
 
 def _generate_reps(min_reps = 3, max_reps = 8, total = 25, existing = None):
