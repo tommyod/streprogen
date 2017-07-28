@@ -1,0 +1,573 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>streprogen package &#8212; streprogen 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="streprogen-package">
+<h1>streprogen package<a class="headerlink" href="#streprogen-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-streprogen.day">
+<span id="streprogen-day-module"></span><h2>streprogen.day module<a class="headerlink" href="#module-streprogen.day" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Jul 17 17:36:22 2017</p>
+<p>&#64;author: tommy</p>
+<dl class="class">
+<dt id="streprogen.day.Day">
+<em class="property">class </em><code class="descclassname">streprogen.day.</code><code class="descname">Day</code><span class="sig-paren">(</span><em>name=None</em>, <em>exercises=None</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.day.Day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A day object is a container for exercises associated with the specific day.</p>
+<dl class="method">
+<dt id="streprogen.day.Day.add_exercises">
+<code class="descname">add_exercises</code><span class="sig-paren">(</span><em>*exercises</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.day.Day.add_exercises" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the exercises to the day. The method will automatically infer
+whether a static or dynamic exercise is passed to it.</p>
+<dl class="docutils">
+<dt><a href="#id1"><span class="problematic" id="id2">*</span></a>exercises</dt>
+<dd>An unpacked tuple of exercises.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">monday</span> <span class="o">=</span> <span class="n">Day</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Monday&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curls</span> <span class="o">=</span> <span class="n">StaticExercise</span><span class="p">(</span><span class="s1">&#39;Curls&#39;</span><span class="p">,</span> <span class="s1">&#39;3 x 12&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pulldowns</span> <span class="o">=</span> <span class="n">StaticExercise</span><span class="p">(</span><span class="s1">&#39;Pulldowns&#39;</span><span class="p">,</span> <span class="s1">&#39;4 x 10&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">monday</span><span class="o">.</span><span class="n">add_exercises</span><span class="p">(</span><span class="n">curls</span><span class="p">,</span> <span class="n">pulldowns</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curls</span> <span class="ow">in</span> <span class="n">monday</span><span class="o">.</span><span class="n">static_exercises</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pulldowns</span> <span class="ow">in</span> <span class="n">monday</span><span class="o">.</span><span class="n">static_exercises</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-streprogen.exercises">
+<span id="streprogen-exercises-module"></span><h2>streprogen.exercises module<a class="headerlink" href="#module-streprogen.exercises" title="Permalink to this headline">¶</a></h2>
+<p>Created on Sat Jul 15 21:01:51 2017</p>
+<p>&#64;author: tommy</p>
+<dl class="class">
+<dt id="streprogen.exercises.DynamicExercise">
+<em class="property">class </em><code class="descclassname">streprogen.exercises.</code><code class="descname">DynamicExercise</code><span class="sig-paren">(</span><em>name</em>, <em>start_weight</em>, <em>end_weight</em>, <em>min_reps=3</em>, <em>max_reps=8</em>, <em>reps=None</em>, <em>avg_intensity=None</em>, <em>round_to=None</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.exercises.DynamicExercise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class for dynamic exercises.</p>
+<dl class="method">
+<dt id="streprogen.exercises.DynamicExercise.weekly_growth">
+<code class="descname">weekly_growth</code><span class="sig-paren">(</span><em>weeks</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.exercises.DynamicExercise.weekly_growth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the weekly growth in percentage, and rounds
+to one digit.</p>
+<dl class="docutils">
+<dt>weeks</dt>
+<dd>Number of weeks to calculate growth over.</dd>
+</dl>
+<dl class="docutils">
+<dt>growth_factor</dt>
+<dd>A real number such that start * growth_factor** weeks = end.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bench</span> <span class="o">=</span> <span class="n">DynamicExercise</span><span class="p">(</span><span class="s1">&#39;Bench press&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bench</span><span class="o">.</span><span class="n">weekly_growth</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="go">2.3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bench</span><span class="o">.</span><span class="n">weekly_growth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">4.7</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="streprogen.exercises.StaticExercise">
+<em class="property">class </em><code class="descclassname">streprogen.exercises.</code><code class="descname">StaticExercise</code><span class="sig-paren">(</span><em>name</em>, <em>sets_reps=‘4 x 10’</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.exercises.StaticExercise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class for static exercises.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-streprogen.modeling">
+<span id="streprogen-modeling-module"></span><h2>streprogen.modeling module<a class="headerlink" href="#module-streprogen.modeling" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Jul 18 10:47:52 2017</p>
+<p>&#64;author: tommy</p>
+<dl class="class">
+<dt id="streprogen.modeling.RepellentGenerator">
+<em class="property">class </em><code class="descclassname">streprogen.modeling.</code><code class="descname">RepellentGenerator</code><span class="sig-paren">(</span><em>domain</em>, <em>probability_func=None</em>, <em>generated=None</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.RepellentGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Generates objects from a domain,
+each time an object is drawn,
+the probability of it being drawn again
+is determined by the probability function.</p>
+<dl class="method">
+<dt id="streprogen.modeling.RepellentGenerator.generate_one">
+<code class="descname">generate_one</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.RepellentGenerator.generate_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a single element.</p>
+<dl class="docutils">
+<dt>element</dt>
+<dd>An element from the domain.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span> <span class="o">=</span> <span class="n">RepellentGenerator</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_item</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">generate_one</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_item</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="streprogen.modeling.RepellentGenerator.yield_from_domain">
+<code class="descname">yield_from_domain</code><span class="sig-paren">(</span><em>num=1</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.RepellentGenerator.yield_from_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield ‘num’ elements from the domain.</p>
+<p>A sequence of elements from the domain.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generator</span> <span class="o">=</span> <span class="n">RepellentGenerator</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">generator</span><span class="o">.</span><span class="n">yield_from_domain</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">element</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="go">True</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.modeling.progression_linear">
+<code class="descclassname">streprogen.modeling.</code><code class="descname">progression_linear</code><span class="sig-paren">(</span><em>week</em>, <em>start_weight</em>, <em>end_weight</em>, <em>start_week</em>, <em>end_week</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.progression_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>A linear progression function going through the points
+(‘start_week’, ‘start_weight’) and (‘end_week’, ‘end_weight’), evaluated
+in ‘week’.</p>
+<dl class="docutils">
+<dt>reps</dt>
+<dd>The number of repetitions to map to the intensity range.</dd>
+<dt>slope</dt>
+<dd>Slope for the linear function.</dd>
+<dt>constant</dt>
+<dd>Constant for the linear function</dd>
+<dt>quadratic</dt>
+<dd>If ‘True’, add a slight quadratic offset.</dd>
+</dl>
+<dl class="docutils">
+<dt>intensity</dt>
+<dd>An intensity value in the range from 0 to 100.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">progression_linear</span><span class="p">(</span><span class="n">week</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">start_weight</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">end_weight</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> 
+<span class="gp">... </span>                   <span class="n">start_week</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end_week</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">110.0</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">progression_linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">120.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.modeling.progression_sinusoidal">
+<code class="descclassname">streprogen.modeling.</code><code class="descname">progression_sinusoidal</code><span class="sig-paren">(</span><em>week</em>, <em>start_weight</em>, <em>end_weight</em>, <em>start_week</em>, <em>end_week</em>, <em>periods=2</em>, <em>scale=0.025</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.progression_sinusoidal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="streprogen.modeling.reps_to_intensity">
+<code class="descclassname">streprogen.modeling.</code><code class="descname">reps_to_intensity</code><span class="sig-paren">(</span><em>reps</em>, <em>slope=-4.8</em>, <em>constant=97.5</em>, <em>quadratic=True</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.modeling.reps_to_intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function mapping from repetitions in the range 1 to 12
+to intensities in the range 0 to 100.</p>
+<dl class="docutils">
+<dt>reps</dt>
+<dd>The number of repetitions to map to the intensity range.</dd>
+<dt>slope</dt>
+<dd>Slope for the linear function.</dd>
+<dt>constant</dt>
+<dd>Constant for the linear function</dd>
+<dt>quadratic</dt>
+<dd>If ‘True’, add a slight quadratic offset.</dd>
+</dl>
+<dl class="docutils">
+<dt>intensity</dt>
+<dd>An intensity value in the range from 0 to 100.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reps_to_intensity</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">slope</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">constant</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">quadratic</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="go">80</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reps_to_intensity</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">slope</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">constant</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">quadratic</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="go">67.45</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reps_to_intensity</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">slope</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="n">constant</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">quadratic</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="go">65</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-streprogen.program">
+<span id="streprogen-program-module"></span><h2>streprogen.program module<a class="headerlink" href="#module-streprogen.program" title="Permalink to this headline">¶</a></h2>
+<p>Created on Sat Jul 15 21:18:22 2017</p>
+<p>&#64;author: tommy</p>
+<dl class="class">
+<dt id="streprogen.program.Program">
+<em class="property">class </em><code class="descclassname">streprogen.program.</code><code class="descname">Program</code><span class="sig-paren">(</span><em>name=’Untitled’</em>, <em>duration=8</em>, <em>reps_per_exercise=25</em>, <em>reps_scalers=None</em>, <em>avg_intensity=75</em>, <em>intensity_scalers=None</em>, <em>progression_func=None</em>, <em>reps_to_intensity_func=None</em>, <em>units=’kg’</em>, <em>round_to=2.5</em>, <em>min_reps_consistency=None</em>, <em>minimum_percentile=0.2</em>, <em>go_to_min=False</em>, <em>times_to_render=100</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The program class is a container for days and exercises,
+along with the methods and functions used to create training programs.</p>
+<dl class="attribute">
+<dt id="streprogen.program.Program.REP_SET_SEP">
+<code class="descname">REP_SET_SEP</code><em class="property"> = ‘ x ‘</em><a class="headerlink" href="#streprogen.program.Program.REP_SET_SEP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="streprogen.program.Program.add_days">
+<code class="descname">add_days</code><span class="sig-paren">(</span><em>*days</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.add_days" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add several days to the prorgram.</p>
+<dl class="docutils">
+<dt>list_of_days</dt>
+<dd>A list of days, e.g. [day1, day2, …]</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">program</span> <span class="o">=</span> <span class="n">Program</span><span class="p">(</span><span class="s1">&#39;My training program&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">day1</span><span class="p">,</span> <span class="n">day2</span> <span class="o">=</span> <span class="n">Day</span><span class="p">(),</span> <span class="n">Day</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">program</span><span class="o">.</span><span class="n">add_days</span><span class="p">([</span><span class="n">day1</span><span class="p">,</span> <span class="n">day2</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="streprogen.program.Program.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>validate_first=True</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the training program to perform the calculations.
+The program can be rendered several times to produce new
+information given the same input parameters.</p>
+<dl class="docutils">
+<dt>validate_first</dt>
+<dd>Boolean that indicates whether or not to run a validation
+heurestic on the program before rendering. The validation
+will warn the user if inputs seem unreasonable.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="streprogen.program.Program.repstring_penalty">
+<em class="property">static </em><code class="descname">repstring_penalty</code><span class="sig-paren">(</span><em>reps</em>, <em>intensities</em>, <em>desired_reps</em>, <em>desired_intensity</em>, <em>minimum_rep</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.repstring_penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Penalty function which calculates how “bad” a set of
+reps and intensities is, compared to the desired repetitions,
+the desired intensity level and the minimum repetitions.
+Advanced users may substitute this function for their own version.</p>
+<dl class="docutils">
+<dt>reps</dt>
+<dd>A list of repetitions (sorted), e.g. [8, 6, 5, 2].</dd>
+<dt>intensities</dt>
+<dd>A list of intensities corresponding to the repetitions,
+e.g. [64.7, 72.3, 76.25, 88.7].</dd>
+<dt>desired_reps</dt>
+<dd>Desired number of repetitions in total, e.g. 25.</dd>
+<dt>desired_intensity</dt>
+<dd>The desired average intensity, e.g. 75.</dd>
+<dt>minimum_rep</dt>
+<dd>The minimum repetition which is allowed, e.g. 2.</dd>
+</dl>
+<dl class="docutils">
+<dt>penalty</dt>
+<dd>A penalty, a positive real number.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">desired_reps</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">desired_intensity</span> <span class="o">=</span> <span class="mi">75</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minimum_rep</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">high</span> <span class="o">=</span> <span class="n">Program</span><span class="p">()</span><span class="o">.</span><span class="n">repstring_penalty</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> 
+<span class="gp">... </span>                             <span class="n">desired_reps</span><span class="p">,</span> <span class="n">desired_intensity</span><span class="p">,</span> 
+<span class="gp">... </span>                             <span class="n">minimum_rep</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">low</span> <span class="o">=</span> <span class="n">Program</span><span class="p">()</span><span class="o">.</span><span class="n">repstring_penalty</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">88</span><span class="p">],</span> 
+<span class="gp">... </span>                             <span class="n">desired_reps</span><span class="p">,</span> <span class="n">desired_intensity</span><span class="p">,</span> 
+<span class="gp">... </span>                             <span class="n">minimum_rep</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="streprogen.program.Program.to_html">
+<code class="descname">to_html</code><span class="sig-paren">(</span><em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.to_html" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>verbosity</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="streprogen.program.Program.to_text">
+<code class="descname">to_text</code><span class="sig-paren">(</span><em>verbosity=0</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.to_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string with the program information.</p>
+<dl class="docutils">
+<dt>verbosity</dt>
+<dd><dl class="first last docutils">
+<dt>How much information to include about the program.</dt>
+<dd><p class="first">0 - Include basic information only.</p>
+<p>1 - Include some statistical information.</p>
+<p class="last">2 - Include all statistical information.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>program_string</dt>
+<dd>A string with program information.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="streprogen.program.Program.to_text2">
+<code class="descname">to_text2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.program.Program.to_text2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="streprogen.program.ProgramError">
+<em class="property">exception </em><code class="descclassname">streprogen.program.</code><code class="descname">ProgramError</code><a class="headerlink" href="#streprogen.program.ProgramError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-streprogen.utils">
+<span id="streprogen-utils-module"></span><h2>streprogen.utils module<a class="headerlink" href="#module-streprogen.utils" title="Permalink to this headline">¶</a></h2>
+<p>Created on Sat Jul 15 20:29:09 2017</p>
+<p>&#64;author: tommy</p>
+<dl class="function">
+<dt id="streprogen.utils.all_equal">
+<code class="descclassname">streprogen.utils.</code><code class="descname">all_equal</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.all_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether all items in an iterable are equal.</p>
+<dl class="docutils">
+<dt>iterable</dt>
+<dd>An iterable, e.g. a string og a list.</dd>
+</dl>
+<dl class="docutils">
+<dt>boolean</dt>
+<dd>True or False.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">all_equal</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">all_equal</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.chunker">
+<code class="descclassname">streprogen.utils.</code><code class="descname">chunker</code><span class="sig-paren">(</span><em>iterable</em>, <em>size=5</em>, <em>fill=”</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.chunker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.generate_reps">
+<code class="descclassname">streprogen.utils.</code><code class="descname">generate_reps</code><span class="sig-paren">(</span><em>min_reps=3</em>, <em>max_reps=8</em>, <em>total=25</em>, <em>existing=None</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.generate_reps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate ‘total’ repetitions between ‘min_reps’ and ‘max_reps’,
+if existing is given (not None), then some repetitions are already
+drawn.</p>
+<dl class="docutils">
+<dt>min_reps</dt>
+<dd>Lower limit for the repetitions dawing, e.g. 3.</dd>
+<dt>max_reps</dt>
+<dd>Upper limit for the repetitions dawing, e.g. 8.</dd>
+<dt>total</dt>
+<dd>The total number of repetitions to return.</dd>
+<dt>existing</dt>
+<dd>A list of prior reps drawn.</dd>
+</dl>
+<dl class="docutils">
+<dt>reps_list</dt>
+<dd>A list of repetitions between ‘min_reps’ and ‘max_reps’, summing to ‘total’
+or a number close to it.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">total</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reps_list</span> <span class="o">=</span> <span class="n">generate_reps</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sum</span><span class="p">(</span><span class="n">reps_list</span><span class="p">)</span> <span class="o">==</span> <span class="n">total</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.min_between">
+<code class="descclassname">streprogen.utils.</code><code class="descname">min_between</code><span class="sig-paren">(</span><em>min_reps=3</em>, <em>max_reps=8</em>, <em>percentile=0.33</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.min_between" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to decide the minimum number of reps to perform
+given <cite>min_reps</cite> and <cite>max_rep</cite>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">min_between</span><span class="p">(</span><span class="n">min_reps</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">max_reps</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">=</span> <span class="mf">0.33</span><span class="p">)</span>
+<span class="go">(3, 5)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.prioritized_not_None">
+<code class="descclassname">streprogen.utils.</code><code class="descname">prioritized_not_None</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.prioritized_not_None" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the first argument which is not None.</p>
+<dl class="docutils">
+<dt><a href="#id3"><span class="problematic" id="id4">*</span></a>args</dt>
+<dd>Arguments to the function.</dd>
+</dl>
+<dl class="docutils">
+<dt>argument</dt>
+<dd>The first argument which is not None.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prioritized_not_None</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.round_to_nearest">
+<code class="descclassname">streprogen.utils.</code><code class="descname">round_to_nearest</code><span class="sig-paren">(</span><em>number</em>, <em>nearest=1</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.round_to_nearest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round ‘number’ to the nearest multiple of ‘nearest’.</p>
+<dl class="docutils">
+<dt>number</dt>
+<dd>A real number to round.</dd>
+<dt>nearest</dt>
+<dd>Number to round to closes multiple of.</dd>
+</dl>
+<dl class="docutils">
+<dt>rounded</dt>
+<dd>A rounded number.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">round_to_nearest</span><span class="p">(</span><span class="mf">6.8</span><span class="p">,</span> <span class="n">nearest</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">)</span>
+<span class="go">7.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="streprogen.utils.spread">
+<code class="descclassname">streprogen.utils.</code><code class="descname">spread</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#streprogen.utils.spread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the maximal spread of a sorted list of numbers.</p>
+<dl class="docutils">
+<dt>iterable</dt>
+<dd>A list of numbers.</dd>
+</dl>
+<dl class="docutils">
+<dt>max_diff</dt>
+<dd>The maximal difference when the iterable is sorted.</dd>
+</dl>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">spread</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">spread</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">])</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-streprogen">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-streprogen" title="Permalink to this headline">¶</a></h2>
+<p>Created on Sat Jul 15 21:01:51 2017</p>
+<p>&#64;author: tommy</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">streprogen package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-streprogen.day">streprogen.day module</a></li>
+<li><a class="reference internal" href="#module-streprogen.exercises">streprogen.exercises module</a></li>
+<li><a class="reference internal" href="#module-streprogen.modeling">streprogen.modeling module</a></li>
+<li><a class="reference internal" href="#module-streprogen.program">streprogen.program module</a></li>
+<li><a class="reference internal" href="#module-streprogen.utils">streprogen.utils module</a></li>
+<li><a class="reference internal" href="#module-streprogen">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/streprogen.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Tommy Odland.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/streprogen.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
