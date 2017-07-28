@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a5723ba6-0665-41a8-9757-acc11f1a5d59" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/examples.rst" afterPath="$PROJECT_DIR$/docs/examples.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/examples/intermediate.py" afterPath="$PROJECT_DIR$/docs/examples/intermediate.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/examples/simple.py" afterPath="$PROJECT_DIR$/docs/examples/simple.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/__init__.py" afterPath="$PROJECT_DIR$/streprogen/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/day.py" afterPath="$PROJECT_DIR$/streprogen/day.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/exercises.py" afterPath="$PROJECT_DIR$/streprogen/exercises.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/modeling.py" afterPath="$PROJECT_DIR$/streprogen/modeling.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/program.html" afterPath="$PROJECT_DIR$/streprogen/program.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/program.py" afterPath="$PROJECT_DIR$/streprogen/program.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/templates/program_template.html" afterPath="$PROJECT_DIR$/streprogen/templates/program_template.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/templates/program_template.tex" afterPath="$PROJECT_DIR$/streprogen/templates/program_template.tex" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/streprogen/utils.py" afterPath="$PROJECT_DIR$/streprogen/utils.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/README.md" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -34,100 +25,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="program.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/streprogen/program.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="34" column="16" lean-forward="false" selection-start-line="34" selection-start-column="16" selection-end-line="49" selection-end-column="32" />
-              <folding>
-                <element signature="e#48#64#0" expanded="true" />
-                <element signature="e#679#683#0" expanded="false" />
-                <element signature="e#713#860#1" expanded="false" />
-                <element signature="e#1468#5026#1" expanded="false" />
-                <element signature="e#5277#5485#0" expanded="false" />
-                <element signature="e#5512#5687#0" expanded="false" />
-                <element signature="e#5797#6012#0" expanded="false" />
-                <element signature="e#6039#6234#0" expanded="false" />
-                <element signature="e#6959#9493#0" expanded="false" />
-                <element signature="e#6959#7687#1" expanded="false" />
-                <element signature="e#8459#8647#0" expanded="false" />
-                <element signature="e#9016#9493#0" expanded="false" />
-                <element signature="e#9073#9493#0" expanded="false" />
-                <element signature="e#9346#9493#0" expanded="false" />
-                <element signature="e#9534#9939#0" expanded="false" />
-                <element signature="e#9534#9874#1" expanded="false" />
-                <element signature="e#10085#12233#0" expanded="false" />
-                <element signature="e#10085#11548#1" expanded="false" />
-                <element signature="e#12362#12470#1" expanded="false" />
-                <element signature="e#12480#12514#0" expanded="false" />
-                <element signature="e#13588#13622#0" expanded="false" />
-                <element signature="e#13838#13863#0" expanded="false" />
-                <element signature="e#14031#14569#0" expanded="false" />
-                <element signature="e#14037#14425#0" expanded="false" />
-                <element signature="e#14579#14604#0" expanded="false" />
-                <element signature="e#14786#15340#0" expanded="false" />
-                <element signature="e#14792#15182#0" expanded="false" />
-                <element signature="e#15379#15932#0" expanded="false" />
-                <element signature="e#16046#16761#0" expanded="false" />
-                <element signature="e#16046#16306#1" expanded="false" />
-                <element signature="e#16435#16761#0" expanded="false" />
-                <element signature="e#16552#16761#0" expanded="false" />
-                <element signature="e#16800#20829#0" expanded="false" />
-                <element signature="e#16800#17642#1" expanded="false" />
-                <element signature="e#17652#17686#0" expanded="false" />
-                <element signature="e#17862#18599#0" expanded="false" />
-                <element signature="e#18345#18599#0" expanded="false" />
-                <element signature="e#18452#18599#0" expanded="false" />
-                <element signature="e#18599#18633#0" expanded="false" />
-                <element signature="e#18806#19682#0" expanded="false" />
-                <element signature="e#18936#19273#0" expanded="false" />
-                <element signature="e#19420#19682#0" expanded="false" />
-                <element signature="e#19462#19682#0" expanded="false" />
-                <element signature="e#19682#19716#0" expanded="false" />
-                <element signature="e#19913#20829#0" expanded="false" />
-                <element signature="e#20048#20435#0" expanded="false" />
-                <element signature="e#20109#20421#0" expanded="false" />
-                <element signature="e#20568#20829#0" expanded="false" />
-                <element signature="e#20610#20829#0" expanded="false" />
-                <element signature="e#20675#20829#0" expanded="false" />
-                <element signature="e#20878#21360#0" expanded="false" />
-                <element signature="e#20878#21051#1" expanded="false" />
-                <element signature="e#21146#21360#0" expanded="false" />
-                <element signature="e#21220#21360#0" expanded="false" />
-                <element signature="e#21420#22272#0" expanded="false" />
-                <element signature="e#21420#21789#1" expanded="false" />
-                <element signature="e#21826#22052#0" expanded="false" />
-                <element signature="e#21920#22052#0" expanded="false" />
-                <element signature="e#22079#22272#0" expanded="false" />
-                <element signature="e#22173#22272#0" expanded="false" />
-                <element signature="e#22322#22620#0" expanded="false" />
-                <element signature="e#22322#22504#1" expanded="false" />
-                <element signature="e#22547#22620#0" expanded="false" />
-                <element signature="e#22662#23058#0" expanded="false" />
-                <element signature="e#22662#22859#1" expanded="false" />
-                <element signature="e#22902#23058#0" expanded="false" />
-                <element signature="e#23111#23567#1" expanded="false" />
-                <element signature="e#23577#23611#0" expanded="false" />
-                <element signature="e#23889#24513#0" expanded="false" />
-                <element signature="e#23939#23987#0" expanded="false" />
-                <element signature="e#24523#24577#0" expanded="false" />
-                <element signature="e#25068#25102#0" expanded="false" />
-                <element signature="e#27463#27522#1" expanded="false" />
-                <element signature="e#30794#30862#1" expanded="false" />
-                <element signature="e#30947#31940#0" expanded="false" />
-                <element signature="e#30947#31082#1" expanded="false" />
-                <element signature="e#31205#31351#0" expanded="false" />
-                <element signature="e#31262#31351#0" expanded="false" />
-                <element signature="e#31420#31481#0" expanded="false" />
-                <element signature="e#31558#31895#0" expanded="false" />
-                <element signature="e#31655#31744#0" expanded="false" />
-                <element signature="e#31828#31895#0" expanded="false" />
-                <element signature="e#31974#32023#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="program_template.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/streprogen/templates/program_template.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -138,11 +35,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="program_template.tex" pinned="false" current-in-tab="true">
+      <file leaf-file-name="program_template.tex" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/streprogen/templates/program_template.tex">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="204">
               <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.rst" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.rst">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -163,8 +70,8 @@
       <file leaf-file-name="index.rst" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docs/index.rst">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="265">
-              <caret line="24" column="65" lean-forward="false" selection-start-line="24" selection-start-column="65" selection-end-line="24" selection-end-column="73" />
+            <state relative-caret-position="119">
+              <caret line="7" column="45" lean-forward="false" selection-start-line="7" selection-start-column="45" selection-end-line="7" selection-end-column="82" />
               <folding />
             </state>
           </provider>
@@ -236,7 +143,6 @@
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/streprogen/program.html" />
         <option value="$PROJECT_DIR$/streprogen/templates/program_template.txt" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/docs/intermediate.rst" />
         <option value="$PROJECT_DIR$/docs/advanced.rst" />
         <option value="$PROJECT_DIR$/docs/simple.rst" />
@@ -258,6 +164,7 @@
         <option value="$PROJECT_DIR$/docs/examples/intermediate.py" />
         <option value="$PROJECT_DIR$/docs/examples.rst" />
         <option value="$PROJECT_DIR$/streprogen/templates/program_template.tex" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -297,38 +204,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="streprogen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -623,11 +498,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-4" width="1366" height="772" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32854864" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32854864" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32854864" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -691,14 +565,6 @@
           <folding>
             <element signature="e#184#227#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="150" lean-forward="false" selection-start-line="2" selection-start-column="150" selection-end-line="2" selection-end-column="150" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -943,6 +809,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/streprogen/templates/program_template.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="66" column="105" lean-forward="false" selection-start-line="66" selection-start-column="16" selection-end-line="66" selection-end-column="105" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/streprogen/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="231">
@@ -955,8 +829,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/docs/index.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="24" column="65" lean-forward="false" selection-start-line="24" selection-start-column="65" selection-end-line="24" selection-end-column="73" />
+        <state relative-caret-position="119">
+          <caret line="7" column="45" lean-forward="false" selection-start-line="7" selection-start-column="45" selection-end-line="7" selection-end-column="82" />
           <folding />
         </state>
       </provider>
@@ -969,10 +843,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/streprogen/templates/program_template.html">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="66" column="105" lean-forward="false" selection-start-line="66" selection-start-column="16" selection-end-line="66" selection-end-column="105" />
+        <state relative-caret-position="51">
+          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -981,6 +855,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="54" column="12" lean-forward="false" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
