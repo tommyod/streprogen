@@ -11,9 +11,8 @@ class DynamicExercise(object):
     Class for dynamic exercises.
     """
 
-    def __init__(self, name, start_weight, end_weight, min_reps=3,
-                 max_reps=8, reps=None, avg_intensity=None,
-                 round_to=None):
+    def __init__(self, name, start_weight, end_weight, min_reps=3,max_reps=8,
+                 reps=None, avg_intensity=None, round_to=None):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
     
@@ -43,8 +42,9 @@ class DynamicExercise(object):
             
         avg_intensity
             The average intensity for this exercise. If set, this will
-            override the 'avg_intensity' parameter in the training program. The intensity
-            will still be scaled by the 'intensity_scalers' paramter.
+            override the 'avg_intensity' parameter in the training program.
+            The intensity will still be scaled by the 'intensity_scalers'
+            parameter.
             
         round_to
             Round the output to the closest multiple of this number, e.g. 2.5.
@@ -109,6 +109,9 @@ class DynamicExercise(object):
         return round(growth_factor, 1)
 
     def __repr__(self):
+        """
+        Representation.
+        """
         return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
@@ -158,6 +161,9 @@ class StaticExercise(object):
         self.sets_reps = sets_reps
 
     def __repr__(self):
+        """
+        Representation.
+        """
         return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
@@ -175,8 +181,4 @@ class StaticExercise(object):
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod(verbose=True)
-
-    bench = DynamicExercise('Bench press', 100, 120, 3, 8)
-    print(DynamicExercise('Bench press', 100, 120, 3, 8))

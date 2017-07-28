@@ -28,8 +28,8 @@ def chunker(iterable, size=5, fill=''):
 
     Examples
     -------
-    >>> l = list(range(4))
-    >>> chunks = list(chunker(l, size=5, fill=''))
+    >>> l = list(range(6))
+    >>> chunks = list(chunker(l, size=4, fill=''))
     >>> chunks == [[0, 1, 2, 3], [4, 5, '', '']]
     True
     """
@@ -188,11 +188,6 @@ def generate_reps(min_reps=3, max_reps=8, total=25, existing=None):
     reps_list
         A list of repetitions between 'min_reps' and 'max_reps', summing to 'total'
         or a number close to it.
-
-
-    Examples
-    -------
-    >>> generate_reps(min_reps=3, max_reps=8, total=25, existing=None)
     """
 
     # If no existing repetitions exist, start from empty list

@@ -26,12 +26,13 @@ class RepellentGenerator(object):
         domain
             A list of objects to generate from, e.g. [1, 2, 3].
         probability_func
-            A probability function, it should be decreasing, e.g. lambda x: 1 / 2**x. 
+            A decreasing probability function, e.g. lambda x: 1 / 2**x. 
         generated
-            A user specified dictionary of the form {element1: num1, element2: num2, ...}
-            where num1, num2, ... are the initial states descriping how many times
-            the elements element1, element2, ... have been generated. Supplying
-            this argument changes the initial probability distribution.
+            A user specified dictionary of the form 
+            {element1: num1, element2: num2, ...}
+            where num1, num2, ... are the initial states descriping how many
+            times the elements element1, element2, ... have been generated. 
+            This argument changes the initial probability distribution.
     
     
         Returns
@@ -161,20 +162,22 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
 
     Parameters
     ----------
-    reps
-        The number of repetitions to map to the intensity range.
-    slope
-        Slope for the linear function.
-    constant
-        Constant for the linear function
-    quadratic
-        If 'True', add a slight quadratic offset.
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    end_weight
+        The weight at 'end_week'.
+    start_week
+        The number of the first week, typically 1.
+    end_week
+        The number of the final week, e.g. 8.
 
 
     Returns
     -------
-    intensity
-        An intensity value in the range from 0 to 100.
+    weight
+        The weight at 'week'.
 
 
     Examples
@@ -195,14 +198,54 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
 
 def progression_sinusoidal(week, start_weight, end_weight, start_week, end_week,
                            periods=2, scale=0.025, offset=0):
-    """
+    """A sinusoidal progression function going through the points
+    ('start_week', 'start_weight') and ('end_week', 'end_weight'), evaluated
+    in 'week'. This function calls a linear progression function
+    and multiplies it by a sinusoid.
+
+    Parameters
+    ----------
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    end_weight
+        The weight at 'end_week'.
+    start_week
+        The number of the first week, typically 1.
+    end_week
+        The number of the final week, e.g. 8.
+    periods
+        Number of sinusoidal periods in the time range.
+    scale
+        The scale (amplitude) of the sinusoidal term.
+    offset
+        The offset (shift) of the sinusoid.
+
+
+    Returns
+    -------
+    weight
+        The weight at 'week'.
+
+
+    Examples
+    -------
+    >>> progression_sinusoidal(1, 100, 120, 1, 8)
+    100.0
+    >>> progression_sinusoidal(8, 100, 120, 1, 8)
+    120.0
+    >>> progression_sinusoidal(4, 100, 120, 1, 8)
+    106.44931454758678
     """
     # Get the linear model
-    linear = progression_linear(week, start_weight, end_weight, start_week, end_week)
+    linear = progression_linear(week, start_weight, end_weight, 
+                                start_week, end_week)
 
     # Calculate the time period and the argument to the sine function
     time_period = end_week - start_week
-    sine_argument = (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
+    sine_argument = ((week - offset - start_week) * (math.pi * 2) / 
+                     (time_period / periods))
 
     linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
     return linear_with_sinusoidal
@@ -213,5 +256,4 @@ reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-5.6)
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod(verbose=True)

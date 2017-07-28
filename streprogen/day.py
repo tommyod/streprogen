@@ -101,6 +101,6 @@ class Day(object):
 
 
 if __name__ == "__main__":
-    import doctest
 
+    import doctest
     doctest.testmod(verbose=True)

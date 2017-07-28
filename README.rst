@@ -37,7 +37,7 @@ Installation
 (2) Run ``pip install streprogen`` in the terminal (cmd.exe on Windows)
     to install streprogen from PyPi_.
 (3) Open a Python Editor (such as Spyder, which comes with Anaconda_).
-(4) Look at the examples: :ref:`example_simple`, :ref:`example_intermediate` and :ref:`example_advanced`.
+(4) Take a look at the documentation_ for examples.
 
 
 .. _documentation: http://streprogen.readthedocs.io/en/latest/
@@ -68,7 +68,7 @@ Sample code
     print(program)
 
 
-.. code-block:: none
+::
 
     ----------------------------------------------------------------
     Program: My first program!
@@ -113,6 +113,4 @@ Sample code
        Curls         3 x 12
 
     ----------------------------------------------------------------
-
-----
 

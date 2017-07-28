@@ -59,25 +59,27 @@ class Program(object):
             The duration of the training program in weeks, typically 4-12 weeks.
             
         reps_per_exercise
-            Number of baseline repetitions per dynamic exercise, typically 20-35 repetitions.
-            This can be overridden in a specific dynamic exercise by passing
-            the 'reps_per_exercise' argument when constructing the dynamic exercise.
+            Number of baseline repetitions per dynamic exercise, 
+            typically 20-35 repetitions. This can be overridden in a 
+            specific dynamic exercise by passing the 'reps_per_exercise' 
+            argument when constructing the dynamic exercise.
             
         reps_scalers
             A list of scaling factors for the repetitions, of the same length as
             the 'duration' variable, e.g. [1, 1.1, 0.9, 1.2, ...].
             
         avg_intensity
-            Baseline average intensity for dynamic exercises, e.g. 75. The average
-            intensity is the percentage of maximum that the average set is
-            done with, weighted by the number of reptitions. Mathematically,
+            Baseline average intensity for dynamic exercises, e.g. 75. 
+            The average intensity is the percentage of maximum that the 
+            average set is done with, weighted by the number of reptitions. 
+            Mathematically, 
             avg_intensity = (sum_{sets} intensity * reps) / (sum_{sets} reps).
             This can be overridden in a specific dynamic exercise by passing
             the 'avg_intensity' argument when constructing the dynamic exercise.
             
         intensity_scalers
-            A list of scaling factors for the average intensity, of the same length
-            as 'duration' variable, e.g. [1, 1.1, 0.9, 1.2, ...].
+            A list of scaling factors for the average intensity, of the same 
+            length as 'duration' variable, e.g. [1, 1.1, 0.9, 1.2, ...].
             
         progression_func
             A function mapping from a week to the current 1RM, i.e.
@@ -95,8 +97,8 @@ class Program(object):
             Round the weights of closes multiple of this number, e.g. 2.5 or 5.
             
         min_reps_consistency
-            Override the 'exercise',  'weekly' or 'daily' modes of minimum repetitions.
-            Overriding is only possible in one direction.
+            Override the 'exercise',  'weekly' or 'daily' modes of 
+            minimum repetitions. Overriding is only possible in one direction.
             
         minimum_percentile
             Percentile of the repeition range to draw the 'min_rep' variable
@@ -805,51 +807,4 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod(verbose=True)
-
-if __name__ == '__main__':
-    program = Program('My Program', duration=8,
-                      minimum_percentile=0.0,
-                      avg_intensity=75,
-                      go_to_min=True,
-                      reps_per_exercise=25,
-                      verbose=False,
-                      round_to=2.5,
-                      min_reps_consistency='exercise',
-                      units='kg')
-
-    intensity_scalers = [(100 + 1 / i) / 100 for i in range(1, 9)]
-    program.intensity_scalers = intensity_scalers
-
-    bench = DynamicExercise('Bench press', 130, 150, 2, 8)
-    squats = DynamicExercise('Squats', 100, 120, 3, 10)
-    biceps = StaticExercise('Biceps')
-    day = Day('Day A', exercises=[bench, squats, biceps])
-    program.add_days(day)
-
-    dips = DynamicExercise('Dips', 90, 150, 3, 8,
-                           reps=35,
-                           avg_intensity=75,
-                           round_to=None)
-    triceps = StaticExercise('Triceps', '3 x 12')
-    day = Day('Day B')
-    day.add_exercises(dips, triceps, biceps)
-    program.add_days(day)
-
-    program.render()
-
-    with open('program.txt', 'w', encoding='utf-8') as file:
-        file.write(program.to_text(verbose=True))
-
-    with open('program.html', 'w', encoding='utf-8') as file:
-        file.write(program.to_html())
-
-    with open('program.tex', 'w', encoding='utf-8') as file:
-        file.write(program.to_tex())
-
-    import subprocess
-
-    return_value = subprocess.call(['pdflatex', 'program.tex'], shell=False)
-
-    print(program)
