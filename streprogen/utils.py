@@ -3,24 +3,52 @@
 
 
 import random
-import functools
 import math
-import statistics
-import operator
 
 
 def chunker(iterable, size=5, fill=''):
-    """
+    """Chunk the iterable.
+
+    Parameters
+    ----------
+    iterable
+        A list.
+
+    size
+        The size of the chunks.
+
+    fill
+        Fill value if the chunk is not of length 'size'.
+
+    Yields
+    -------
+    chunk
+        A chunk of length 'size'.
+
+
+    Examples
+    -------
+    >>> l = list(range(4))
+    >>> chunks = list(chunker(l, size=5, fill=''))
+    >>> chunks == [[0, 1, 2, 3], [4, 5, '', '']]
+    True
     """
 
-    for i in range(0, len(iterable) // size + 1):
-        to_yield = iterable[i * size: (i + 1) * size]
+
+    for index in range(0, len(iterable) // size + 1):
+        to_yield = iterable[index * size: (index + 1) * size]
+
+        # Stop yielding if empty
         if len(to_yield) == 0:
             break
+
+        # Add fill values if there are too few elements
         if len(to_yield) < size:
             yield to_yield + [fill] * (size - len(to_yield))
         else:
+            # Yield
             yield to_yield
+
 
 def prioritized_not_None(*args):
     """Return the first argument which is not None.
@@ -48,7 +76,7 @@ def prioritized_not_None(*args):
     return None
 
 
-def round_to_nearest(number, nearest = 1):
+def round_to_nearest(number, nearest=1):
     """Round 'number' to the nearest multiple of 'nearest'.
 
     Parameters
@@ -106,11 +134,27 @@ def all_equal(iterable):
     return all([first == i for i in iterable[1:]])
 
 
-def min_between(min_reps = 3, max_reps = 8, percentile = 0.33):
-    """
-    Function to decide the minimum number of reps to perform
+def min_between(min_reps=3, max_reps=8, percentile=0.33):
+    """Function to decide the minimum number of reps to perform
     given `min_reps` and `max_rep`.
-    
+
+    Parameters
+    ----------
+    min_reps
+        The minimum number of repeitions.
+
+    max_reps
+        The maximum number of repetitions.
+
+    percentile
+        The percentile to cap at.
+
+    Return
+    -------
+    (low, high)
+        A tuple containing a new rep range.
+
+
     Examples
     -------
     >>> min_between(min_reps = 3, max_reps = 8, percentile = 0.33)
@@ -120,7 +164,7 @@ def min_between(min_reps = 3, max_reps = 8, percentile = 0.33):
     return min_reps, math.ceil(higher_limit)
 
 
-def generate_reps(min_reps = 3, max_reps = 8, total = 25, existing = None):
+def generate_reps(min_reps=3, max_reps=8, total=25, existing=None):
     """Generate 'total' repetitions between 'min_reps' and 'max_reps',
     if existing is given (not None), then some repetitions are already
     drawn.
@@ -148,51 +192,31 @@ def generate_reps(min_reps = 3, max_reps = 8, total = 25, existing = None):
 
     Examples
     -------
-    >>>
+    >>> generate_reps(min_reps=3, max_reps=8, total=25, existing=None)
     """
 
+    # If no existing repetitions exist, start from empty list
     if existing is None:
         existing = []
 
+    # List of possible rep strings to return
     possible = []
 
     for _ in range(3):
 
+        # Fill list with randomly drawn reptitions
         created = existing.copy()
-        while sum(created) < (total - min_reps) + 0:
+        while sum(created) < (total - min_reps):
             generated = random.randint(min_reps, max_reps)
             created.append(generated)
 
-        created.sort()
+        # Sort and append to the list of lists
+        created.sort(reverse=True)
         possible.append(created)
 
+    # Return the list of reps which is closest to the total desired number
     return min(possible, key=lambda l: abs(total - sum(l)))
-    
 
-def _generate_reps(min_reps = 3, max_reps = 8, total = 25, existing = None):
-    """
-    Helper function to generate repetitions.
-    """
-    
-    # Make a copy so as not to change the input variable
-    if existing is None:
-        existing = []
-    else:
-        existing = existing.copy()
-        
-    # While the sum is low, keep adding
-    while sum(existing) + max_reps <= total:
-        existing.append(random.randint(min_reps, max_reps))
-    
-    # If the missing number is between limits, add it to get the total
-    missing = total - sum(existing)
-    if min_reps <=  missing <= max_reps:
-        existing.append(missing)
-
-    # Sort the result
-    existing.sort(reverse = True)
-
-    return existing
 
 def spread(iterable):
     """Returns the maximal spread of a sorted list of numbers.
@@ -218,32 +242,16 @@ def spread(iterable):
     """
     if len(iterable) == 1:
         return 0
-    
+
     iterable = iterable.copy()
     iterable.sort()
-    
-    max_diff = max(abs(i-j) for (i, j) in zip(iterable[1:], iterable[:-1]))
+
+    max_diff = max(abs(i - j) for (i, j) in zip(iterable[1:], iterable[:-1]))
 
     return max_diff
 
 
-    
 if __name__ == "__main__":
+
     import doctest
     doctest.testmod(verbose=True)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        
-        

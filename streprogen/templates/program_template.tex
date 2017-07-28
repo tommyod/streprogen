@@ -14,10 +14,90 @@
 % -----------------------------------------------
 
 \begin{document}
-\large
+\{{text_size}}
+
+\section*{Program: {{ program.name }}}
+
+This program was made using \verb|streprogen|,
+the Python strength program generator.
+The latest version can be found at \\
+\verb|https://pypi.python.org/pypi/streprogen/|.
 
 
-CONTENTHERE
+\section*{Program parameters}
+\begin{tabular}{l|l}
+	\textbf{Parameter} & \textbf{Value} \\ \hline
+	\verb|duration|             & {{program.duration}} \\
+	\verb|reps_per_exercise|    & {{program.reps_per_exercise}} \\
+	\verb|avg_intensity|        & {{program.avg_intensity}} \\
+	\verb|reps_scalers|         & {{ program.reps_scalers | map('round2digits') | join(', ') }} \\
+	\verb|intensity_scalers|    & {{ program.intensity_scalers | map('round2digits') | join(', ') }} \\
+	\verb|units|                & {{program.units}}
+\end{tabular}
+
+
+
+
+\section*{Exercise information}
+\begin{tabular}{lrrrrr}
+    \textbf{Exercise} & \textbf{Start} & \textbf{End} & \textbf{Reps min}
+    & \textbf{Reps max} & \textbf{Weekly increase} \\ \hline
+	{% for day in program.days %}
+      \textbf{ {{day.name}} } & & & & & \\ \hline
+    {% for dynamic_ex in day.dynamic_exercises %}
+        \hspace{0.5em}{{dynamic_ex.name}} & {{dynamic_ex.start_weight}} {{program.units}} &
+         {{dynamic_ex.end_weight}} {{program.units}} & {{dynamic_ex.min_reps}} & {{dynamic_ex.max_reps}} &
+          {{dynamic_ex.weekly_growth(program.duration)}}\%\\
+    {% endfor %}
+    {% for static_ex in day.static_exercises %}
+       \hspace{0.5em}{{static_ex.name}} & {{static_ex.sets_reps}} & & & & \\
+      {% endfor %}
+{% endfor %}
+\end{tabular}
+
+
+\clearpage
+\section*{Program}
+{% if program._rendered == False %}
+Not rendered. Call Program.render() to render it.
+{% else %}
+{% for week in range(1, program.duration + 1) %}
+ \subsection*{\hspace{0.25em} Week {{week}} }
+{% for day in program.days %}
+  \subsection*{\hspace{0.5em} {{day.name}} }
+
+
+  \begin{tabular}{l|{% for i in range(table_width - 1) %}r{% endfor %}}
+  \hspace{0.75em} \textbf{Exercise} & \textbf{Sets / reps} \\ \hline
+  {% for dynamic_ex in day.dynamic_exercises %}
+      {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
+
+            {% if i == 0 %}
+            \hspace{0.75em} {{dynamic_ex.name}}
+            {% else %}
+            \hspace{0.75em}
+            {% endif %}
+            {% for scheme in chunk %}
+            & {{scheme}}
+            {% endfor %}
+            \\
+
+      {% endfor %}
+  {% endfor %}
+
+  {% for static_ex in day.static_exercises %}
+   \hspace{0.75em} {{static_ex.name}} & {{static_ex.sets_reps}} \\
+  {% endfor %}
+  \end{tabular}
+
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+
+
+
+
 
 
 \end{document}

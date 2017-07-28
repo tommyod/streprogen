@@ -3,46 +3,57 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>{{ PROGRAM_NAME }}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
 
     <style>
-    @media screen {
-        @page {
-          margin: 0.5cm;
-        }
-        div.row > div {
-          display: inline-block;
-          margin: 0.2cm;
-        }
-        div.row {
-          display: block;
-          margin: 0.2cm 0.2cm;
-        }
-    }
+        @media screen {
+            @page {
+                margin: 0.5cm;
+            }
 
-    .table {
-        display: table;
-        border-spacing: 1px;
-    }
-    .row {
-        display: table-row;
-    }
-    .row > div {
-        display: table-cell;
-        padding: 1px;
-    }
-    .container {
-        width: 100%;
-    }
+            div.row > div {
+                display: inline-block;
+                margin: 0.2cm;
+            }
 
-    .table td, .table td {
-        padding : .25rem .5rem .25rem .5rem;
-    }
+            div.row {
+                display: block;
+                margin: 0.2cm 0.2cm;
+            }
+        }
+
+        .table {
+            display: table;
+            border-spacing: 1px;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .row > div {
+            display: table-cell;
+            padding: 1px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .table td, .table td {
+            padding: .25rem .5rem .25rem .5rem;
+        }
     </style>
-
 
 
 </head>
@@ -52,8 +63,8 @@
         <div class="col-lg-8">
             <h2>{{ program.name }}</h2>
             <p>This program was made using <code>streprogen</code>,
-            the dynamic strength program generator written in Python.
-            The latest version can be found at <code>https://pypi.python.org/pypi/streprogen/</code>.</p>
+                the Python strength program generator.
+                The latest version can be found at <code>https://pypi.python.org/pypi/streprogen/</code>.</p>
 
             <h2>Program parameters</h2>
             <div class="row">
@@ -65,15 +76,15 @@
                         </tr>
                         <tr>
                             <td>duration</td>
-                            <td>{{program.duration}}</td>
+                            <td>{{ program.duration }}</td>
                         </tr>
                         <tr>
                             <td>reps_per_exercise</td>
-                            <td>{{program.reps_per_exercise}}</td>
+                            <td>{{ program.reps_per_exercise }}</td>
                         </tr>
                         <tr>
                             <td>avg_intensity</td>
-                            <td>{{program.avg_intensity}}</td>
+                            <td>{{ program.avg_intensity }}</td>
                         </tr>
                         <tr>
                             <td>reps_scalers</td>
@@ -85,7 +96,7 @@
                         </tr>
                         <tr>
                             <td>units</td>
-                            <td>{{program.units}}</td>
+                            <td>{{ program.units }}</td>
                         </tr>
                     </table>
                 </div>
@@ -106,36 +117,36 @@
                         </tr>
 
                         {% for day in program.days %}
-                        <tr>
-                            <td colspan="8"><strong>{{day.name}}</strong></td>
-                        </tr>
-                        {% for exercise in day.dynamic_exercises %}
-                        <tr>
-                            <td>&nbsp;{{exercise.name}}</td>
-                            <td>{{exercise.start_weight}}{{program.units}}</td>
-                            <td>{{exercise.end_weight}}{{program.units}}</td>
-                            <td>[{{exercise.min_reps}}, {{exercise.max_reps}}]</td>
-                            <td>{{exercise.weekly_growth(program.duration)}}%</td>
-                            {% if exercise.reps == None %}
-                            <td>{{program.reps_per_exercise}}</td>
-                            {% else %}
-                            <td>{{exercise.reps}}</td>
-                            {% endif %}
+                            <tr>
+                                <td colspan="8"><strong>{{ day.name }}</strong></td>
+                            </tr>
+                            {% for exercise in day.dynamic_exercises %}
+                                <tr>
+                                    <td>&nbsp;{{ exercise.name }}</td>
+                                    <td>{{ exercise.start_weight }}{{ program.units }}</td>
+                                    <td>{{ exercise.end_weight }}{{ program.units }}</td>
+                                    <td>[{{ exercise.min_reps }}, {{ exercise.max_reps }}]</td>
+                                    <td>{{ exercise.weekly_growth(program.duration) }}%</td>
+                                    {% if exercise.reps == None %}
+                                        <td>{{ program.reps_per_exercise }}</td>
+                                    {% else %}
+                                        <td>{{ exercise.reps }}</td>
+                                    {% endif %}
 
-                            {% if exercise.avg_intensity == None %}
-                            <td>{{program.avg_intensity}}</td>
-                            {% else %}
-                            <td>{{exercise.avg_intensity}}</td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
+                                    {% if exercise.avg_intensity == None %}
+                                        <td>{{ program.avg_intensity }}</td>
+                                    {% else %}
+                                        <td>{{ exercise.avg_intensity }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
 
-                        {% for exercise in day.static_exercises %}
-                        <tr>
-                            <td>&nbsp;{{exercise.name}}</td>
-                            <td colspan="7">{{exercise.sets_reps}}</td>
-                        </tr>
-                        {% endfor %}
+                            {% for exercise in day.static_exercises %}
+                                <tr>
+                                    <td>&nbsp;{{ exercise.name }}</td>
+                                    <td colspan="7">{{ exercise.sets_reps }}</td>
+                                </tr>
+                            {% endfor %}
 
                         {% endfor %}
 
@@ -143,62 +154,62 @@
                     </table>
                 </div>
             </div>
-            </div>
-            </div>
-            </div>
-            <div class="container">
-            <div class="row">
-                <div class="col-lg-10">
-                    <h2>Program</h2>
-                    {% if program._rendered == False %}
-                    <p>Not rendered. Call <code>Program.render()</code> to render it.</p>
-                    {% else %}
-                    <table class="table table-condensed">
-                        {% for week in range(1, program.duration + 1) %}
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10">
+            <h2>Program</h2>
+            {% if program._rendered == False %}
+                <p>Not rendered. Call <code>Program.render()</code> to render it.</p>
+            {% else %}
+                <table class="table table-condensed">
+                    {% for week in range(1, program.duration + 1) %}
 
                         <tr>
-                            <td colspan="{{table_width}}"><h3>Week {{week}}</h3></td>
+                            <td colspan="{{ table_width }}"><h3>Week {{ week }}</h3></td>
                         </tr>
 
                         {% for day in program.days %}
-                        <tr>
-                            <td colspan="{{table_width}}"><h5>&nbsp;{{day.name}}</h5></td>
-                        </tr>
+                            <tr>
+                                <td colspan="{{ table_width }}"><h5>&nbsp;{{ day.name }}</h5></td>
+                            </tr>
 
-                        {% for dynamic_ex in day.dynamic_exercises %}
+                            {% for dynamic_ex in day.dynamic_exercises %}
 
-                        {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
-                        <tr>
-                            {% if i == 0 %}
-                            <td>&nbsp;&nbsp;&nbsp;{{dynamic_ex.name}}</td>
-                            {% else %}
-                            <td></td>
-                            {% endif %}
-                            {% for scheme in chunk %}
-                            <td>{{scheme}} </td>
+                                {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
+                                    <tr>
+                                        {% if i == 0 %}
+                                            <td>&nbsp;&nbsp;&nbsp;{{ dynamic_ex.name }}</td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                        {% for scheme in chunk %}
+                                            <td>{{ scheme }} </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+
+
                             {% endfor %}
-                        </tr>
-                        {% endfor %}
 
-
-                        {% endfor %}
-
-                        {% for static_ex in day.static_exercises %}
-                        <tr>
-                            <td>&nbsp;&nbsp;&nbsp;{{static_ex.name}}</td>
-                            <td colspan="{{table_width - 1}}">{{static_ex.sets_reps}}</td>
-                        </tr>
-                        {% endfor %}
+                            {% for static_ex in day.static_exercises %}
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;{{ static_ex.name }}</td>
+                                    <td colspan="{{ table_width - 1 }}">{{ static_ex.sets_reps }}</td>
+                                </tr>
+                            {% endfor %}
 
                         {% endfor %}
 
-                        {% endfor %}
-                    </table>
-                    {% endif %}
-                </div>
-            </div>
-
+                    {% endfor %}
+                </table>
+            {% endif %}
         </div>
+    </div>
+
+</div>
 
 </body>
 </html>

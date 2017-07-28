@@ -1,0 +1,67 @@
+----------------------------------------------------------------
+Program: My first program!
+
+Program parameters
+  duration: 4
+  reps_per_exercise: 25
+  avg_intensity: 75
+  reps_scalers: 0.8, 1, 1, 0.8
+  intensity_scalers: 1, 1, 1, 0.9
+  units: kg
+----------------------------------------------------------------
+Exercise information
+  Day 1
+   Bench press      60kg -> 70kg     reps: [3, 8]   weekly inc.: 3.9%
+   Squats           80kg -> 90kg     reps: [3, 8]   weekly inc.: 3.0%
+   Curls            3 x 12
+  Day 2
+   Deadlifts        80kg -> 90kg     reps: [3, 8]   weekly inc.: 3.0%
+   Military press   50kg -> 60kg     reps: [3, 8]   weekly inc.: 4.7%
+   Dips             3 x 12
+----------------------------------------------------------------
+Program
+ Week 1
+  Day 1
+   Bench press      5 x 47.5kg  5 x 47.5kg  5 x 47.5kg  5 x 47.5kg  
+   Squats           5 x 62.5kg  5 x 62.5kg  5 x 62.5kg  5 x 62.5kg  
+   Curls            3 x 12
+
+  Day 2
+   Deadlifts        6 x 60kg    5 x 62.5kg  4 x 67.5kg  
+   Military press   6 x 37.5kg  5 x 40kg    5 x 40kg    4 x 42.5kg  
+   Dips             3 x 12
+
+ Week 2
+  Day 1
+   Bench press      7 x 42.5kg  6 x 47.5kg  5 x 50kg    5 x 50kg    
+   Squats           7 x 57.5kg  6 x 60kg    6 x 60kg    5 x 65kg    
+   Curls            3 x 12
+
+  Day 2
+   Deadlifts        8 x 55kg    6 x 60kg    4 x 67.5kg  
+   Military press   6 x 40kg    6 x 40kg    6 x 40kg    6 x 40kg    
+   Dips             3 x 12
+
+ Week 3
+  Day 1
+   Bench press      7 x 47.5kg  6 x 50kg    6 x 50kg    5 x 55kg    
+   Squats           7 x 62.5kg  6 x 65kg    6 x 65kg    5 x 70kg    
+   Curls            3 x 12
+
+  Day 2
+   Deadlifts        7 x 62.5kg  6 x 65kg    5 x 70kg    
+   Military press   6 x 42.5kg  6 x 42.5kg  6 x 42.5kg  6 x 42.5kg  
+   Dips             3 x 12
+
+ Week 4
+  Day 1
+   Bench press      7 x 50kg    7 x 50kg    6 x 52.5kg  
+   Squats           7 x 62.5kg  7 x 62.5kg  7 x 62.5kg  
+   Curls            3 x 12
+
+  Day 2
+   Deadlifts        7 x 62.5kg  7 x 62.5kg  
+   Military press   7 x 42.5kg  7 x 42.5kg  6 x 45kg    
+   Dips             3 x 12
+
+----------------------------------------------------------------

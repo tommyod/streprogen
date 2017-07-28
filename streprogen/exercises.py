@@ -5,16 +5,15 @@ from streprogen.utils import (round_to_nearest, prioritized_not_None)
 import functools
 import warnings
 
-    
 
 class DynamicExercise(object):
     """
     Class for dynamic exercises.
     """
-    
-    def __init__(self, name, start_weight, end_weight, min_reps = 3, 
-                 max_reps = 8, reps = None, avg_intensity = None, 
-                 round_to = None):
+
+    def __init__(self, name, start_weight, end_weight, min_reps=3,
+                 max_reps=8, reps=None, avg_intensity=None,
+                 round_to=None):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
     
@@ -72,16 +71,16 @@ class DynamicExercise(object):
         if round_to is None:
             self.round = None
         else:
-            self.round = functools.partial(round_to_nearest, nearest = round_to)
-        
+            self.round = functools.partial(round_to_nearest, nearest=round_to)
+
         if self.start_weight > self.end_weight:
             msg = "Start weight larger than end weight for exericse '{}'."
             warnings.warn(msg.format(self.name))
-            
+
         if self.min_reps > self.max_reps:
             msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
             raise ValueError(msg.format(self.name))
-        
+
     def weekly_growth(self, weeks):
         """Calculate the weekly growth in percentage, and rounds
         to one digit.
@@ -106,33 +105,32 @@ class DynamicExercise(object):
         4.7
         """
         start, end = self.start_weight, self.end_weight
-        growth_factor = ((end/start)**(1/weeks) - 1)*100
+        growth_factor = ((end / start) ** (1 / weeks) - 1) * 100
         return round(growth_factor, 1)
 
-
-        
     def __repr__(self):
         return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
-        
+
     def __str__(self):
         """
         Human readable output.
         """
 
-        strvar = ['name', 'start_weight', 'end_weight', 'min_reps', 
-                'max_reps', 'reps', 'avg_intensity']
-        
-        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k 
+        strvar = ['name', 'start_weight', 'end_weight', 'min_reps',
+                  'max_reps', 'reps', 'avg_intensity']
+
+        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k
                              in strvar if self.__dict__[k] is not None])
-        
+
         return '{}({})'.format(type(self).__name__, arg_str)
+
 
 class StaticExercise(object):
     """
     Class for static exercises.
     """
-    
-    def __init__(self, name, sets_reps = '4 x 10'):
+
+    def __init__(self, name, sets_reps='4 x 10'):
         """Initialize a new static exercise. A static exercise
         is simply a placeholder for some text.
     
@@ -158,27 +156,27 @@ class StaticExercise(object):
         """
         self.name = name
         self.sets_reps = sets_reps
-        
+
     def __repr__(self):
         return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
-        
+
     def __str__(self):
         """
         String formatting for readable human output.
         """
 
         strvar = ['name', 'sets_reps']
-        
-        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k 
+
+        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k
                              in strvar if self.__dict__[k] is not None])
-        
+
         return '{}({})'.format(type(self).__name__, arg_str)
-    
-    
-    
+
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)
-    
+
     bench = DynamicExercise('Bench press', 100, 120, 3, 8)
     print(DynamicExercise('Bench press', 100, 120, 3, 8))

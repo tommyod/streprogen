@@ -7,6 +7,7 @@ import math
 import statistics
 import operator
 
+
 class RepellentGenerator(object):
     """
     Generates objects from a domain,
@@ -14,8 +15,8 @@ class RepellentGenerator(object):
     the probability of it being drawn again
     is determined by the probability function.
     """
-    
-    def __init__(self, domain, probability_func = None, generated = None):
+
+    def __init__(self, domain, probability_func=None, generated=None):
         """Initialize a RepellentGenerator, which is a generator
         where when an object is generated, the probability of it 
         begin generated changes.
@@ -46,22 +47,22 @@ class RepellentGenerator(object):
         >>> generator.generate_one() in domain
         True
         """
-        
+
         # Initialize the domain
         self.domain = domain
-        
+
         # If no probability function is given, default to exponential
         if probability_func is None:
-            self.probability_func = lambda x: 1 / 2**x
+            self.probability_func = lambda x: 1 / 2 ** x
         else:
             self.probability_func = probability_func
-            
+
         # If no seed values are given, default to zeros
         if generated is None:
-            self.generated = {element:0 for element in domain}
+            self.generated = {element: 0 for element in domain}
         else:
             self.generated = generated
-   
+
     def generate_one(self):
         """Generate a single element.
     
@@ -79,18 +80,18 @@ class RepellentGenerator(object):
         True
         """
         # Get the weights for all items in the domain
-        weights = [self.probability_func(self.generated[element]) 
-                    for element in self.domain]
-        
+        weights = [self.probability_func(self.generated[element])
+                   for element in self.domain]
+
         # Sample from the domain using the weights
-        element = random.choices(self.domain, weights = weights)[0]
-        
+        element = random.choices(self.domain, weights=weights)[0]
+
         # Update the generated values and return
         self.generated[element] += 1
-        
+
         return element
-        
-    def yield_from_domain(self, num = 1):
+
+    def yield_from_domain(self, num=1):
         """Yield 'num' elements from the domain.
     
         Yields
@@ -111,10 +112,9 @@ class RepellentGenerator(object):
         # Yield the appropriate number of elements
         for i in range(num):
             yield self.generate_one()
-            
-            
-            
-def reps_to_intensity(reps, slope = -4.8, constant = 97.5, quadratic = True):
+
+
+def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
     """A function mapping from repetitions in the range 1 to 12
     to intensities in the range 0 to 100.
 
@@ -149,10 +149,10 @@ def reps_to_intensity(reps, slope = -4.8, constant = 97.5, quadratic = True):
     """
     intensity = constant + slope * (reps - 1)
     if quadratic:
-        return intensity + 0.05 * (reps - 1)**2
+        return intensity + 0.05 * (reps - 1) ** 2
     else:
         return intensity
-    
+
 
 def progression_linear(week, start_weight, end_weight, start_week, end_week):
     """A linear progression function going through the points
@@ -188,30 +188,30 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
     """
     # Calculate the slope of the linear function
     slope = (start_weight - end_weight) / (start_week - end_week)
-    
+
     # Return the answer y = slope (x - x_0) + y_0
     return slope * (week - start_week) + start_weight
 
-def progression_sinusoidal(week, start_weight, end_weight, start_week, end_week, 
-                           periods = 2, scale = 0.025, offset = 0):
+
+def progression_sinusoidal(week, start_weight, end_weight, start_week, end_week,
+                           periods=2, scale=0.025, offset=0):
     """
     """
     # Get the linear model
     linear = progression_linear(week, start_weight, end_weight, start_week, end_week)
-    
+
     # Calculate the time period and the argument to the sine function
     time_period = end_week - start_week
     sine_argument = (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
-    
+
     linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
     return linear_with_sinusoidal
 
 
-
-reps_to_intensity_tight = functools.partial(reps_to_intensity, slope = -4)
-reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope = -5.6)
-
+reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-4)
+reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-5.6)
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)
