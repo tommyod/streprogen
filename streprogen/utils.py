@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-import random
 import math
+import random
 
 
 def chunker(iterable, size=5, fill=''):
@@ -33,7 +33,6 @@ def chunker(iterable, size=5, fill=''):
     >>> chunks == [[0, 1, 2, 3], [4, 5, '', '']]
     True
     """
-
 
     for index in range(0, len(iterable) // size + 1):
         to_yield = iterable[index * size: (index + 1) * size]
@@ -250,6 +249,6 @@ def spread(iterable):
 
 
 if __name__ == "__main__":
-
     import doctest
+
     doctest.testmod(verbose=True)

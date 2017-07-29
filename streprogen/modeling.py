@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import random
 import functools
 import math
-import statistics
-import operator
+import random
 
 
 class RepellentGenerator(object):
@@ -196,7 +194,8 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
     return slope * (week - start_week) + start_weight
 
 
-def progression_sinusoidal(week, start_weight, end_weight, start_week, end_week,
+def progression_sinusoidal(week, start_weight, end_weight, start_week,
+                           end_week,
                            periods=2, scale=0.025, offset=0):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('end_week', 'end_weight'), evaluated
@@ -239,12 +238,12 @@ def progression_sinusoidal(week, start_weight, end_weight, start_week, end_week,
     106.44931454758678
     """
     # Get the linear model
-    linear = progression_linear(week, start_weight, end_weight, 
+    linear = progression_linear(week, start_weight, end_weight,
                                 start_week, end_week)
 
     # Calculate the time period and the argument to the sine function
     time_period = end_week - start_week
-    sine_argument = ((week - offset - start_week) * (math.pi * 2) / 
+    sine_argument = ((week - offset - start_week) * (math.pi * 2) /
                      (time_period / periods))
 
     linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
@@ -256,4 +255,5 @@ reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-5.6)
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)

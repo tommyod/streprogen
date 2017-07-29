@@ -2,22 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import functools
-import operator
 import statistics
 import warnings
 from os import path
-from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
+from jinja2 import Environment, FileSystemLoader
+
+from streprogen.day import Day
+from streprogen.exercises import (DynamicExercise)
+from streprogen.modeling import (RepellentGenerator, reps_to_intensity,
+                                 progression_sinusoidal)
 from streprogen.utils import (round_to_nearest, all_equal, min_between,
                               spread, prioritized_not_None,
                               generate_reps, chunker)
-
-from streprogen.modeling import (RepellentGenerator, reps_to_intensity_tight,
-                                 reps_to_intensity, progression_sinusoidal)
-
-from streprogen.exercises import (StaticExercise, DynamicExercise)
-
-from streprogen.day import Day
 
 
 class ProgramError(Exception):
@@ -32,23 +29,16 @@ class Program(object):
 
     REP_SET_SEP = ' x '
     TEMPLATE_DIR = path.join(path.dirname(__file__), 'templates')
+    TEMPLATE_NAMES = {extension: 'program_template.' + extension
+                      for extension in ['html', 'txt', 'tex']}
 
-    def __init__(self,
-                 name='Untitled',
-                 duration=8,
-                 reps_per_exercise=25,
-                 reps_scalers=None,
-                 avg_intensity=75,
-                 intensity_scalers=None,
-                 progression_func=None,
-                 reps_to_intensity_func=None,
-                 units='kg',
-                 round_to=2.5,
-                 min_reps_consistency=None,
-                 minimum_percentile=0.2,
-                 go_to_min=False,
-                 times_to_render=100,
+    def __init__(self, name='Untitled', duration=8, reps_per_exercise=25,
+                 reps_scalers=None, avg_intensity=75, intensity_scalers=None,
+                 progression_func=None, reps_to_intensity_func=None,
+                 units='kg', round_to=2.5, min_reps_consistency=None,
+                 minimum_percentile=0.2, go_to_min=False, times_to_render=100,
                  verbose=False):
+
         """Initialize a new program.
     
         Parameters
@@ -146,10 +136,12 @@ class Program(object):
             # Draw self-repellent numbers from domain
             domain = [0.8, 1, 1.2]
             generator = RepellentGenerator(domain)
-            self.reps_scalers = list(generator.yield_from_domain(self.duration))
+            self.reps_scalers = list(
+                generator.yield_from_domain(self.duration))
         else:
             if len(reps_scalers) != self.duration:
-                raise ProgramError('Length of `reps_scalers` must match program duration.')
+                raise ProgramError(
+                    'Length of `reps_scalers` must match program duration.')
             self.reps_scalers = reps_scalers
 
         # Set default value for intensity_scalers if None
@@ -157,17 +149,20 @@ class Program(object):
             # Draw self-repellent numbers from domain
             domain = [0.95, 1, 1.05]
             generator = RepellentGenerator(domain)
-            self.intensity_scalers = list(generator.yield_from_domain(self.duration))
+            self.intensity_scalers = list(
+                generator.yield_from_domain(self.duration))
         else:
             if len(intensity_scalers) != self.duration:
-                raise ProgramError('Length of `intensity_scalers` must match program duration.')
+                raise ProgramError(
+                    'Length of `intensity_scalers` must match program duration.')
             self.intensity_scalers = intensity_scalers
 
         self.progression_func = prioritized_not_None(progression_func,
                                                      progression_sinusoidal)
 
-        self.reps_to_intensity_func = prioritized_not_None(reps_to_intensity_func,
-                                                           reps_to_intensity)
+        self.reps_to_intensity_func = prioritized_not_None(
+            reps_to_intensity_func,
+            reps_to_intensity)
         self.units = units
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.days = []
@@ -363,7 +358,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         # Perform a sanity check:
         # If repetitions are too low, a high average intensity cannot be attained
-        if desired_intensity < self.reps_to_intensity_func(dynamic_exercise.max_reps):
+        if desired_intensity < self.reps_to_intensity_func(
+                dynamic_exercise.max_reps):
             msg = """
 WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}],
 but the desired average intensity for this week is {}. Reaching this intensity
@@ -375,8 +371,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             warnings.warn(msg)
 
         if self.verbose:
-            print('Found optimal repstring for "{}".'.format(dynamic_exercise.name))
-            print(' Reps   (desired/actual):', int(desired_reps), int(sum(reps)), sep='\t')
+            print('Found optimal repstring for "{}".'.format(
+                dynamic_exercise.name))
+            print(' Reps   (desired/actual):', int(desired_reps),
+                  int(sum(reps)), sep='\t')
             print(' MI     (desired/actual):', desired_intensity,
                   round(statistics.mean(intensities), 3), sep='\t')
             print(' minrep (limit/actual): ', minimum_rep,
@@ -454,7 +452,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 minimum_rep_this_week = generator.generate_one()
                 for day in self.days:
                     for dynamic_ex in day.dynamic_exercises:
-                        self._rendered[week][day][dynamic_ex]['minimum'] = minimum_rep_this_week
+                        self._rendered[week][day][dynamic_ex][
+                            'minimum'] = minimum_rep_this_week
 
         # --------------------------------
         # If the mode is daily, set minimum reps on a daily basis
@@ -476,7 +475,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 for day in self.days:
                     minimum_rep_this_day = generators[day].generate_one()
                     for dynamic_ex in day.dynamic_exercises:
-                        self._rendered[week][day][dynamic_ex]['minimum'] = minimum_rep_this_day
+                        self._rendered[week][day][dynamic_ex][
+                            'minimum'] = minimum_rep_this_day
 
         # --------------------------------
         # If the mode is by exercise, set minimum reps on an exercise basis
@@ -497,8 +497,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             for week in range(1, self.duration + 1):
                 for day in self.days:
                     for dynamic_ex in day.dynamic_exercises:
-                        minimum_rep_this_ex = generators[dynamic_ex].generate_one()
-                        self._rendered[week][day][dynamic_ex]['minimum'] = minimum_rep_this_ex
+                        minimum_rep_this_ex = generators[
+                            dynamic_ex].generate_one()
+                        self._rendered[week][day][dynamic_ex][
+                            'minimum'] = minimum_rep_this_ex
 
     def _yield_week_day_dynamic(self):
         """A helper function to reduce the number of nested loops.
@@ -575,14 +577,14 @@ or (3) ignore this message. The software will do it's best to remedy this.
             for static_ex in day.static_exercises:
                 yield static_ex
 
-    def render(self, validate_first=True):
+    def render(self, validate=True):
         """Render the training program to perform the calculations.
         The program can be rendered several times to produce new
         information given the same input parameters.
     
         Parameters
         ----------
-        validate_first
+        validate
             Boolean that indicates whether or not to run a validation
             heurestic on the program before rendering. The validation
             will warn the user if inputs seem unreasonable.
@@ -626,7 +628,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         self._set_min_reps()
 
         # Validate the program
-        if validate_first:
+        if validate:
             self._validate()
 
         # --------------------------------
@@ -642,14 +644,16 @@ or (3) ignore this message. The software will do it's best to remedy this.
             total_reps = prioritized_not_None(dynamic_ex.reps,
                                               self.reps_per_exercise)
             desired_reps = total_reps * self.reps_scalers[week - 1]
-            self._rendered[week][day][dynamic_ex]['desired_reps'] = int(desired_reps)
+            self._rendered[week][day][dynamic_ex]['desired_reps'] = int(
+                desired_reps)
 
             # The desired intensity
             intensity_unscaled = prioritized_not_None(dynamic_ex.avg_intensity,
                                                       self.avg_intensity)
             intensity_scale = self.intensity_scalers[week - 1]
             desired_intensity = intensity_unscaled * intensity_scale
-            self._rendered[week][day][dynamic_ex]['desired_intensity'] = int(desired_intensity)
+            self._rendered[week][day][dynamic_ex]['desired_intensity'] = int(
+                desired_intensity)
 
             # A dictionary returned with keys 'reps' and 'intensities'
             out = self._render_dynamic(dynamic_ex,
@@ -672,7 +676,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
             round_func = prioritized_not_None(dynamic_ex.round, self.round)
 
             out['strings'] = [self.REP_SET_SEP.join(
-                [str(r), str(pretty_weight(weight, i, round_func)) + self.units])
+                [str(r),
+                 str(pretty_weight(weight, i, round_func)) + self.units])
                 for (i, r) in zip(out['intensities'], out['reps'])]
 
             # Update the dictionary
@@ -695,7 +700,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         env.filters['round2digits'] = functools.partial(round_to_nearest,
                                                         nearest=0.1)
 
-        template = env.get_template('program_template.html')
+        template = env.get_template(self.TEMPLATE_NAMES['html'])
         return template.render(program=self, table_width=table_width)
 
     def to_text(self, verbose=False):
@@ -715,7 +720,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                        self._rendered[week][day][dynamic_ex]['strings']]
             max_ex_scheme = max(max_ex_scheme, max(lengths))
 
-
         template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
         env = Environment(loader=template_loader, trim_blocks=True,
                           lstrip_blocks=True)
@@ -724,7 +728,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         env.filters['round2digits'] = round2digits
         env.filters['mean'] = statistics.mean
 
-        template = env.get_template('program_template.txt')
+        template = env.get_template(self.TEMPLATE_NAMES['txt'])
         return template.render(program=self, max_ex_name=max_ex_name,
                                max_ex_scheme=max_ex_scheme, verbose=verbose)
 
@@ -740,7 +744,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                        self._rendered[week][day][dynamic_ex]['strings']]
             max_ex_scheme = max(max_ex_scheme, max(lengths))
 
-
         template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
         env = Environment(loader=template_loader, trim_blocks=True,
                           lstrip_blocks=True)
@@ -750,7 +753,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         round2digits = functools.partial(round_to_nearest, nearest=0.1)
         env.filters['round2digits'] = round2digits
 
-        template = env.get_template('program_template.tex')
+        template = env.get_template(self.TEMPLATE_NAMES['tex'])
 
         return template.render(program=self, text_size=text_size,
                                table_width=table_width)
@@ -791,4 +794,5 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)

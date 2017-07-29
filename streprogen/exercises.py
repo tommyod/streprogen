@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from streprogen.utils import (round_to_nearest, prioritized_not_None)
 import functools
 import warnings
+
+from streprogen.utils import (round_to_nearest)
 
 
 class DynamicExercise(object):
@@ -11,7 +12,7 @@ class DynamicExercise(object):
     Class for dynamic exercises.
     """
 
-    def __init__(self, name, start_weight, end_weight, min_reps=3,max_reps=8,
+    def __init__(self, name, start_weight, end_weight, min_reps=3, max_reps=8,
                  reps=None, avg_intensity=None, round_to=None):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
@@ -181,4 +182,5 @@ class StaticExercise(object):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)

@@ -11,23 +11,23 @@ class Day(object):
 
     def __init__(self, name=None, exercises=None):
         """Initialize a new day object.
-    
+
         Parameters
         ----------
         name
             The name of the day, e.g. 'Day A'. If no name is given then the day
             will automatically be given a numeric name such as 'Day 1', 'Day 2', etc.
-            
+
         exercises
             A list of exercises. Exercises can also be associated with a day using
             the 'add_exercises' method later on.
-    
+
         Returns
         -------
         Day
             A day object.
-    
-    
+
+
         Examples
         -------
         >>> monday = Day(name = 'Monday')
@@ -46,13 +46,13 @@ class Day(object):
     def add_exercises(self, *exercises):
         """Add the exercises to the day. The method will automatically infer
         whether a static or dynamic exercise is passed to it.
-    
+
         Parameters
         ----------
         *exercises
             An unpacked tuple of exercises.
-    
-    
+
+
         Examples
         -------
         >>> monday = Day(name = 'Monday')
@@ -77,7 +77,7 @@ class Day(object):
     def __str__(self):
         """
         String formatting for readable human output.
-        
+
         Examples
         -------
         >>> monday = Day(name = 'Monday')
@@ -95,12 +95,17 @@ class Day(object):
             stat = "static_exercises = [{}]".format(stat)
 
         out_str = "{}({})".format(type(self).__name__, ', '.join([s for s in
-                                                                  ['name = {}'.format(self.name), dyn, stat]
-                                                                  if len(s) > 2]))
+                                                                  [
+                                                                      'name = {}'.format(
+                                                                          self.name),
+                                                                      dyn,
+                                                                      stat]
+                                                                  if
+                                                                  len(s) > 2]))
         return out_str
 
 
 if __name__ == "__main__":
-
     import doctest
+
     doctest.testmod(verbose=True)
