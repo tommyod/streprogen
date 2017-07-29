@@ -6,7 +6,7 @@ import operator
 import statistics
 import warnings
 from os import path
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
 from streprogen.utils import (round_to_nearest, all_equal, min_between,
                               spread, prioritized_not_None,
@@ -31,6 +31,7 @@ class Program(object):
     """
 
     REP_SET_SEP = ' x '
+    TEMPLATE_DIR = path.join(path.dirname(__file__), 'templates')
 
     def __init__(self,
                  name='Untitled',
@@ -224,7 +225,7 @@ class Program(object):
                 start, end = dynamic_ex.start_weight, dynamic_ex.end_weight
                 percentage_growth = (end / start) ** (1 / self.duration)
                 percentage_growth = dynamic_ex.weekly_growth(self.duration)
-                if percentage_growth > 2.5:
+                if percentage_growth > 4:
                     msg = '\n"{}" grows with {}% each week.'.format(
                         dynamic_ex.name, percentage_growth)
                     warnings.warn(msg)
@@ -679,96 +680,79 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # print(out['string'])
             # print(self._rendered[week][day][dynamic_ex])
 
-    def to_html(self, verbose=False, table_width=5):
+    def to_html(self, table_width=5):
         """
 
         :param verbosity:
         :return:
         """
 
-        env = Environment(
-            loader=PackageLoader('streprogen', 'templates'),
-            autoescape=select_autoescape(['html', 'xml']),
-            trim_blocks=True,
-            lstrip_blocks=True
-        )
+        template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
+        env = Environment(loader=template_loader, trim_blocks=True,
+                          lstrip_blocks=True)
 
         env.globals.update(chunker=chunker, enumerate=enumerate)
-        round2digits = functools.partial(round_to_nearest, nearest=0.1)
-        env.filters['round2digits'] = round2digits
+        env.filters['round2digits'] = functools.partial(round_to_nearest,
+                                                        nearest=0.1)
 
         template = env.get_template('program_template.html')
-
-        return template.render(program=self,
-                               table_width=table_width,
-                               verbose=verbose)
+        return template.render(program=self, table_width=table_width)
 
     def to_text(self, verbose=False):
         """
 
         """
-
         # Get information related to formatting
-        max_ex_name = max(len(ex.name) for ex in self._yield_exercises())
+        if self._rendered:
+            max_ex_name = max(len(ex.name) for ex in self._yield_exercises())
+        else:
+            max_ex_name = 0
+
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
-        if self._rendered:
-            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
-                lengths = [len(s) for s in
-                           self._rendered[week][day][dynamic_ex]['strings']]
-                max_ex_scheme = max(max_ex_scheme, max(lengths))
+        for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+            lengths = [len(s) for s in
+                       self._rendered[week][day][dynamic_ex]['strings']]
+            max_ex_scheme = max(max_ex_scheme, max(lengths))
 
-        env = Environment(
-            loader=PackageLoader('streprogen', 'templates'),
-            autoescape=select_autoescape(['html', 'xml']),
-            trim_blocks=True,
-            lstrip_blocks=True
-        )
+
+        template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
+        env = Environment(loader=template_loader, trim_blocks=True,
+                          lstrip_blocks=True)
 
         round2digits = functools.partial(round_to_nearest, nearest=0.1)
         env.filters['round2digits'] = round2digits
         env.filters['mean'] = statistics.mean
 
         template = env.get_template('program_template.txt')
-
         return template.render(program=self, max_ex_name=max_ex_name,
-                               max_ex_scheme=max_ex_scheme,
-                               verbose=verbose)
+                               max_ex_scheme=max_ex_scheme, verbose=verbose)
 
-    def to_tex(self, verbose=False, text_size='large', table_width=5):
+    def to_tex(self, text_size='large', table_width=5):
         """
 
         """
 
-        # Get information related to formatting
-        max_ex_name = max(len(ex.name) for ex in self._yield_exercises())
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
-        if self._rendered:
-            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
-                lengths = [len(s) for s in
-                           self._rendered[week][day][dynamic_ex]['strings']]
-                max_ex_scheme = max(max_ex_scheme, max(lengths))
+        for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+            lengths = [len(s) for s in
+                       self._rendered[week][day][dynamic_ex]['strings']]
+            max_ex_scheme = max(max_ex_scheme, max(lengths))
 
-        env = Environment(
-            loader=PackageLoader('streprogen', 'templates'),
-            autoescape=select_autoescape(['html', 'xml']),
-            trim_blocks=True,
-            lstrip_blocks=True
-        )
+
+        template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
+        env = Environment(loader=template_loader, trim_blocks=True,
+                          lstrip_blocks=True)
 
         env.globals.update(chunker=chunker, enumerate=enumerate)
 
         round2digits = functools.partial(round_to_nearest, nearest=0.1)
         env.filters['round2digits'] = round2digits
-        env.filters['mean'] = statistics.mean
 
         template = env.get_template('program_template.tex')
 
-        return template.render(program=self, max_ex_name=max_ex_name,
-                               max_ex_scheme=max_ex_scheme,
-                               verbose=verbose,
-                               text_size=text_size,
+        return template.render(program=self, text_size=text_size,
                                table_width=table_width)
 
     def __str__(self):

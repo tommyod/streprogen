@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
+
+    <style>
+        @media screen {
+            @page {
+                margin: 0.5cm;
+            }
+
+            div.row > div {
+                display: inline-block;
+                margin: 0.2cm;
+            }
+
+            div.row {
+                display: block;
+                margin: 0.2cm 0.2cm;
+            }
+        }
+
+        .table {
+            display: table;
+            border-spacing: 1px;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .row > div {
+            display: table-cell;
+            padding: 1px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .table td, .table td {
+            padding: .25rem .5rem .25rem .5rem;
+        }
+    </style>
+
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2>Program with dynamic exercise</h2>
+            <p>This program was made using <code>streprogen</code>,
+                the Python strength program generator.
+                The latest version can be found at <code>https://pypi.python.org/pypi/streprogen/</code>.</p>
+
+            <h2>Program parameters</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Parameter name</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>duration</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>reps_per_exercise</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>avg_intensity</td>
+                            <td>70</td>
+                        </tr>
+                        <tr>
+                            <td>reps_scalers</td>
+                            <td>1.2, 1, 0.8, 1.2, 0.8, 1, 0.8, 1</td>
+                        </tr>
+                        <tr>
+                            <td>intensity_scalers</td>
+                            <td>1, 1, 1, 0.9, 1, 0.9, 1, 1</td>
+                        </tr>
+                        <tr>
+                            <td>units</td>
+                            <td>kg</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <h2>Exercise information</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>[Min, Max]</th>
+                            <th>Weekly_inc.</th>
+                            <th>Reps</th>
+                            <th>Avg_intensity</th>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><strong>Day A</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Squats</td>
+                                    <td>100kg</td>
+                                    <td>120kg</td>
+                                    <td>[4, 8]</td>
+                                    <td>2.3%</td>
+                                        <td>20</td>
+
+                                        <td>70</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Bench press</td>
+                                    <td>80kg</td>
+                                    <td>95kg</td>
+                                    <td>[4, 8]</td>
+                                    <td>2.2%</td>
+                                        <td>20</td>
+
+                                        <td>70</td>
+                                </tr>
+
+
+                            <tr>
+                                <td colspan="8"><strong>Day B</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Squats</td>
+                                    <td>100kg</td>
+                                    <td>110kg</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.2%</td>
+                                        <td>20</td>
+
+                                        <td>70</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Bench press</td>
+                                    <td>80kg</td>
+                                    <td>95kg</td>
+                                    <td>[4, 8]</td>
+                                    <td>2.2%</td>
+                                        <td>20</td>
+
+                                        <td>70</td>
+                                </tr>
+
+
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10">
+            <h2>Program</h2>
+                <table class="table table-condensed">
+
+                        <tr>
+                            <td colspan="8"><h3>Week 1</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 70kg </td>
+                                            <td>7 x 70kg </td>
+                                            <td>7 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 55kg </td>
+                                            <td>7 x 55kg </td>
+                                            <td>7 x 55kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 70kg </td>
+                                            <td>7 x 70kg </td>
+                                            <td>7 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>8 x 55kg </td>
+                                            <td>7 x 55kg </td>
+                                            <td>6 x 60kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 2</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 75kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 60kg </td>
+                                            <td>6 x 65kg </td>
+                                            <td>6 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 75kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 60kg </td>
+                                            <td>6 x 65kg </td>
+                                            <td>6 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 3</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 75kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td>5 x 85kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>6 x 60kg </td>
+                                            <td>6 x 60kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 70kg </td>
+                                            <td>6 x 75kg </td>
+                                            <td>5 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>6 x 60kg </td>
+                                            <td>6 x 60kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 4</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>8 x 70kg </td>
+                                            <td>8 x 70kg </td>
+                                            <td>8 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>8 x 55kg </td>
+                                            <td>8 x 55kg </td>
+                                            <td>8 x 55kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>8 x 70kg </td>
+                                            <td>8 x 70kg </td>
+                                            <td>8 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>8 x 55kg </td>
+                                            <td>8 x 55kg </td>
+                                            <td>8 x 55kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 5</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 80kg </td>
+                                            <td>7 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 75kg </td>
+                                            <td>7 x 75kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 6</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>8 x 75kg </td>
+                                            <td>7 x 80kg </td>
+                                            <td>7 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>8 x 60kg </td>
+                                            <td>8 x 60kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>8 x 70kg </td>
+                                            <td>8 x 70kg </td>
+                                            <td>7 x 75kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>8 x 60kg </td>
+                                            <td>8 x 60kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 7</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 80kg </td>
+                                            <td>6 x 85kg </td>
+                                            <td>5 x 90kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>6 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 75kg </td>
+                                            <td>6 x 80kg </td>
+                                            <td>5 x 85kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>6 x 70kg </td>
+                                            <td>5 x 70kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+
+                        <tr>
+                            <td colspan="8"><h3>Week 8</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day A</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 85kg </td>
+                                            <td>7 x 85kg </td>
+                                            <td>7 x 85kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="8"><h5>&nbsp;Day B</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Squats</td>
+                                            <td>7 x 80kg </td>
+                                            <td>7 x 80kg </td>
+                                            <td>7 x 80kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench press</td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td>7 x 65kg </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+
+
+                </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

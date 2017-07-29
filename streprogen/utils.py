@@ -130,6 +130,9 @@ def all_equal(iterable):
     >>> all_equal([1, 2, 3])
     False
     """
+    if len(iterable) in [0, 1]:
+        return False
+
     first = iterable[0]
     return all([first == i for i in iterable[1:]])
 

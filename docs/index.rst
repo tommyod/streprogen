@@ -32,7 +32,7 @@ Installation
 (2) Run ``pip install streprogen`` in the terminal (cmd.exe on Windows)
     to install streprogen from PyPi_.
 (3) Open a Python Editor (such as Spyder, which comes with Anaconda_).
-(4) Look at the examples: :ref:`example_simple`, :ref:`example_intermediate` and :ref:`example_advanced`.
+(4) Look at the tutorial.
 
 
 .. _Python: http://www.python.org/
@@ -114,9 +114,10 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   classes_overview
-   examples
-   classes_full
+   jupyter_notebooks/getting_started.ipynb
+   jupyter_notebooks/advanced.ipynb
+   classes
+   functions
  
 Indices and tables
 ==================

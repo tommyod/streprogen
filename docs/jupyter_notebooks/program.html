@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+            integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
+
+    <style>
+        @media screen {
+            @page {
+                margin: 0.5cm;
+            }
+
+            div.row > div {
+                display: inline-block;
+                margin: 0.2cm;
+            }
+
+            div.row {
+                display: block;
+                margin: 0.2cm 0.2cm;
+            }
+        }
+
+        .table {
+            display: table;
+            border-spacing: 1px;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .row > div {
+            display: table-cell;
+            padding: 1px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .table td, .table td {
+            padding: .25rem .5rem .25rem .5rem;
+        }
+    </style>
+
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2>TommyAugust17</h2>
+            <p>This program was made using <code>streprogen</code>,
+                the Python strength program generator.
+                The latest version can be found at <code>https://pypi.python.org/pypi/streprogen/</code>.</p>
+
+            <h2>Program parameters</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Parameter name</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>duration</td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>reps_per_exercise</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>avg_intensity</td>
+                            <td>75</td>
+                        </tr>
+                        <tr>
+                            <td>reps_scalers</td>
+                            <td>1.2, 0.8, 1.1, 1.3, 1, 0.8, 1.1, 1.2, 0.8, 0.8, 1.1, 1</td>
+                        </tr>
+                        <tr>
+                            <td>intensity_scalers</td>
+                            <td>0.9, 1, 1, 0.9, 1, 1, 1, 1, 1.1, 1, 1, 1</td>
+                        </tr>
+                        <tr>
+                            <td>units</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <h2>Exercise information</h2>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Name</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>[Min, Max]</th>
+                            <th>Weekly_inc.</th>
+                            <th>Reps</th>
+                            <th>Avg_intensity</th>
+                        </tr>
+
+                            <tr>
+                                <td colspan="8"><strong>Mandag</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Knebøy</td>
+                                    <td>70</td>
+                                    <td>120</td>
+                                    <td>[1, 8]</td>
+                                    <td>4.6%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Benk (kloss)</td>
+                                    <td>137</td>
+                                    <td>170</td>
+                                    <td>[1, 6]</td>
+                                    <td>1.8%</td>
+                                        <td>20</td>
+
+                                        <td>85</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Roing</td>
+                                    <td>100</td>
+                                    <td>125</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.9%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+
+                                <tr>
+                                    <td>&nbsp;Triceps</td>
+                                    <td colspan="7">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="8"><strong>Tirsdag</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Bench</td>
+                                    <td>125</td>
+                                    <td>155</td>
+                                    <td>[1, 8]</td>
+                                    <td>1.8%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Chin ups (l)</td>
+                                    <td>126</td>
+                                    <td>144</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.1%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Militærpress (l)</td>
+                                    <td>70</td>
+                                    <td>85</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.6%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+
+                                <tr>
+                                    <td>&nbsp;Biceps</td>
+                                    <td colspan="7">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="8"><strong>Torsdag</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Knebøy (lett)</td>
+                                    <td>70</td>
+                                    <td>120</td>
+                                    <td>[4, 8]</td>
+                                    <td>4.6%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Chin ups (t)</td>
+                                    <td>140</td>
+                                    <td>160</td>
+                                    <td>[1, 8]</td>
+                                    <td>1.1%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Markløft (l)</td>
+                                    <td>60</td>
+                                    <td>80</td>
+                                    <td>[2, 6]</td>
+                                    <td>2.4%</td>
+                                        <td>20</td>
+
+                                        <td>85</td>
+                                </tr>
+
+                                <tr>
+                                    <td>&nbsp;Triceps</td>
+                                    <td colspan="7">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="8"><strong>Fredag</strong></td>
+                            </tr>
+                                <tr>
+                                    <td>&nbsp;Knebøy (tung)</td>
+                                    <td>70</td>
+                                    <td>120</td>
+                                    <td>[1, 8]</td>
+                                    <td>4.6%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Smalbenk</td>
+                                    <td>118</td>
+                                    <td>147</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.8%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;Militærpress (t)</td>
+                                    <td>70</td>
+                                    <td>85</td>
+                                    <td>[4, 8]</td>
+                                    <td>1.6%</td>
+                                        <td>25</td>
+
+                                        <td>75</td>
+                                </tr>
+
+                                <tr>
+                                    <td>&nbsp;Triceps</td>
+                                    <td colspan="7">4 x 10</td>
+                                </tr>
+
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10">
+            <h2>Program</h2>
+                <table class="table table-condensed">
+
+                        <tr>
+                            <td colspan="7"><h3>Week 1</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 45 </td>
+                                            <td>8 x 45 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 100 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 115 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>8 x 65 </td>
+                                            <td>8 x 65 </td>
+                                            <td>7 x 70 </td>
+                                            <td>6 x 75 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 85 </td>
+                                            <td>8 x 85 </td>
+                                            <td>6 x 95 </td>
+                                            <td>6 x 95 </td>
+                                            <td>4 x 105 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>8 x 85 </td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>6 x 95 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>8 x 45 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>8 x 45 </td>
+                                            <td>7 x 50 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>8 x 95 </td>
+                                            <td>6 x 105 </td>
+                                            <td>6 x 105 </td>
+                                            <td>6 x 105 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>6 x 45 </td>
+                                            <td>6 x 45 </td>
+                                            <td>5 x 45 </td>
+                                            <td>4 x 50 </td>
+                                            <td>3 x 55 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 45 </td>
+                                            <td>6 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td>5 x 55 </td>
+                                            <td>5 x 55 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>8 x 80 </td>
+                                            <td>8 x 80 </td>
+                                            <td>7 x 85 </td>
+                                            <td>6 x 90 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>8 x 45 </td>
+                                            <td>7 x 50 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 2</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 50 </td>
+                                            <td>7 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                            <td>4 x 120 </td>
+                                            <td>3 x 125 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 85 </td>
+                                            <td>6 x 100 </td>
+                                            <td>4 x 110 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>8 x 85 </td>
+                                            <td>6 x 100 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td>4 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 105 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>3 x 130 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>4 x 55 </td>
+                                            <td>4 x 55 </td>
+                                            <td>4 x 55 </td>
+                                            <td>3 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 3</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 125 </td>
+                                            <td>2 x 135 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>8 x 70 </td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 100 </td>
+                                            <td>5 x 105 </td>
+                                            <td>4 x 110 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>8 x 90 </td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 100 </td>
+                                            <td>5 x 105 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>8 x 50 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>8 x 100 </td>
+                                            <td>7 x 105 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>5 x 50 </td>
+                                            <td>5 x 50 </td>
+                                            <td>4 x 55 </td>
+                                            <td>4 x 55 </td>
+                                            <td>3 x 60 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>8 x 85 </td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>7 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 4</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 110 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>8 x 70 </td>
+                                            <td>7 x 75 </td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 85 </td>
+                                            <td>7 x 95 </td>
+                                            <td>7 x 95 </td>
+                                            <td>5 x 105 </td>
+                                            <td>5 x 105 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>8 x 85 </td>
+                                            <td>7 x 90 </td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>6 x 95 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>8 x 50 </td>
+                                            <td>7 x 50 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 100 </td>
+                                            <td>7 x 100 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>6 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td>6 x 50 </td>
+                                            <td>5 x 50 </td>
+                                            <td>4 x 55 </td>
+                                            <td>2 x 60 </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>8 x 85 </td>
+                                            <td>8 x 85 </td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>8 x 50 </td>
+                                            <td>8 x 50 </td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 5</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>3 x 75 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                            <td>3 x 125 </td>
+                                            <td>2 x 135 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>7 x 90 </td>
+                                            <td>7 x 90 </td>
+                                            <td>5 x 105 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>7 x 90 </td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td>5 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>7 x 50 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>6 x 65 </td>
+                                            <td>6 x 65 </td>
+                                            <td>6 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>8 x 95 </td>
+                                            <td>8 x 95 </td>
+                                            <td>6 x 105 </td>
+                                            <td>2 x 130 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>5 x 50 </td>
+                                            <td>4 x 55 </td>
+                                            <td>3 x 55 </td>
+                                            <td>3 x 55 </td>
+                                            <td>3 x 55 </td>
+                                            <td>2 x 60 </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 55 </td>
+                                            <td>6 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>7 x 85 </td>
+                                            <td>6 x 95 </td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td>6 x 55 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 6</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>7 x 65 </td>
+                                            <td>6 x 70 </td>
+                                            <td>5 x 70 </td>
+                                            <td>3 x 80 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>4 x 125 </td>
+                                            <td>4 x 125 </td>
+                                            <td>4 x 125 </td>
+                                            <td>3 x 130 </td>
+                                            <td>1 x 145 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 100 </td>
+                                            <td>4 x 115 </td>
+                                            <td>3 x 120 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 100 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td>5 x 60 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>6 x 70 </td>
+                                            <td>6 x 70 </td>
+                                            <td>5 x 70 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>6 x 110 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>5 x 55 </td>
+                                            <td>4 x 55 </td>
+                                            <td>3 x 60 </td>
+                                            <td>2 x 65 </td>
+                                            <td>2 x 65 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>7 x 65 </td>
+                                            <td>6 x 70 </td>
+                                            <td>5 x 70 </td>
+                                            <td>5 x 70 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td>5 x 100 </td>
+                                            <td>4 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td>5 x 60 </td>
+                                            <td>4 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 7</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 65 </td>
+                                            <td>7 x 70 </td>
+                                            <td>6 x 75 </td>
+                                            <td>4 x 85 </td>
+                                            <td>4 x 85 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 120 </td>
+                                            <td>5 x 125 </td>
+                                            <td>4 x 130 </td>
+                                            <td>4 x 130 </td>
+                                            <td>3 x 140 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>8 x 75 </td>
+                                            <td>8 x 75 </td>
+                                            <td>6 x 85 </td>
+                                            <td>4 x 95 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 95 </td>
+                                            <td>8 x 95 </td>
+                                            <td>6 x 110 </td>
+                                            <td>4 x 120 </td>
+                                            <td>2 x 135 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>8 x 90 </td>
+                                            <td>8 x 90 </td>
+                                            <td>6 x 105 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>8 x 65 </td>
+                                            <td>7 x 70 </td>
+                                            <td>6 x 75 </td>
+                                            <td>5 x 80 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 110 </td>
+                                            <td>6 x 115 </td>
+                                            <td>5 x 120 </td>
+                                            <td>5 x 120 </td>
+                                            <td>5 x 120 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 55 </td>
+                                            <td>4 x 60 </td>
+                                            <td>3 x 65 </td>
+                                            <td>3 x 65 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 65 </td>
+                                            <td>7 x 70 </td>
+                                            <td>5 x 80 </td>
+                                            <td>5 x 80 </td>
+                                            <td>4 x 85 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>8 x 90 </td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 100 </td>
+                                            <td>5 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>8 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 8</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>5 x 85 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>5 x 130 </td>
+                                            <td>5 x 130 </td>
+                                            <td>4 x 135 </td>
+                                            <td>4 x 135 </td>
+                                            <td>3 x 145 </td>
+                                            <td>2 x 150 </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>7 x 85 </td>
+                                            <td>7 x 85 </td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>4 x 100 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 100 </td>
+                                            <td>8 x 100 </td>
+                                            <td>6 x 110 </td>
+                                            <td>4 x 125 </td>
+                                            <td>4 x 125 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>7 x 100 </td>
+                                            <td>7 x 100 </td>
+                                            <td>6 x 105 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 120 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>8 x 70 </td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 110 </td>
+                                            <td>6 x 120 </td>
+                                            <td>6 x 120 </td>
+                                            <td>6 x 120 </td>
+                                            <td>5 x 125 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td>4 x 65 </td>
+                                            <td>3 x 65 </td>
+                                            <td>3 x 65 </td>
+                                            <td>2 x 70 </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 70 </td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>7 x 100 </td>
+                                            <td>7 x 100 </td>
+                                            <td>6 x 105 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>7 x 60 </td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 9</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 120 </td>
+                                            <td>4 x 135 </td>
+                                            <td>2 x 150 </td>
+                                            <td>1 x 160 </td>
+                                            <td>1 x 160 </td>
+                                            <td>1 x 160 </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>4 x 100 </td>
+                                            <td>4 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>8 x 100 </td>
+                                            <td>6 x 110 </td>
+                                            <td>4 x 125 </td>
+                                            <td>2 x 140 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 110 </td>
+                                            <td>6 x 115 </td>
+                                            <td>4 x 130 </td>
+                                            <td>3 x 135 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>4 x 65 </td>
+                                            <td>4 x 65 </td>
+                                            <td>3 x 65 </td>
+                                            <td>2 x 70 </td>
+                                            <td>2 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>7 x 75 </td>
+                                            <td>6 x 80 </td>
+                                            <td>4 x 90 </td>
+                                            <td>3 x 95 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 10</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>6 x 80 </td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>3 x 95 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>5 x 125 </td>
+                                            <td>4 x 135 </td>
+                                            <td>3 x 140 </td>
+                                            <td>2 x 150 </td>
+                                            <td>1 x 155 </td>
+                                            <td>1 x 155 </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>5 x 95 </td>
+                                            <td>4 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>7 x 95 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>6 x 60 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>6 x 80 </td>
+                                            <td>5 x 85 </td>
+                                            <td>5 x 85 </td>
+                                            <td>4 x 90 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>8 x 100 </td>
+                                            <td>6 x 115 </td>
+                                            <td>4 x 125 </td>
+                                            <td>2 x 140 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>5 x 60 </td>
+                                            <td>4 x 60 </td>
+                                            <td>3 x 65 </td>
+                                            <td>2 x 70 </td>
+                                            <td>2 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 70 </td>
+                                            <td>6 x 80 </td>
+                                            <td>4 x 90 </td>
+                                            <td>2 x 100 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>6 x 105 </td>
+                                            <td>5 x 110 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 65 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 11</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 75 </td>
+                                            <td>8 x 75 </td>
+                                            <td>6 x 85 </td>
+                                            <td>4 x 95 </td>
+                                            <td>3 x 100 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>5 x 130 </td>
+                                            <td>5 x 130 </td>
+                                            <td>4 x 135 </td>
+                                            <td>3 x 140 </td>
+                                            <td>3 x 140 </td>
+                                            <td>2 x 150 </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>7 x 85 </td>
+                                            <td>7 x 85 </td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>5 x 95 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>7 x 105 </td>
+                                            <td>6 x 110 </td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 125 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>7 x 95 </td>
+                                            <td>7 x 95 </td>
+                                            <td>6 x 105 </td>
+                                            <td>5 x 110 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>7 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>7 x 80 </td>
+                                            <td>7 x 80 </td>
+                                            <td>6 x 85 </td>
+                                            <td>5 x 90 </td>
+                                            <td>4 x 95 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>8 x 100 </td>
+                                            <td>7 x 110 </td>
+                                            <td>7 x 110 </td>
+                                            <td>4 x 130 </td>
+                                            <td>2 x 140 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>6 x 55 </td>
+                                            <td>5 x 60 </td>
+                                            <td>4 x 65 </td>
+                                            <td>3 x 65 </td>
+                                            <td>2 x 70 </td>
+                                            <td>2 x 70 </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 75 </td>
+                                            <td>7 x 80 </td>
+                                            <td>6 x 85 </td>
+                                            <td>5 x 90 </td>
+                                            <td>5 x 90 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>8 x 95 </td>
+                                            <td>8 x 95 </td>
+                                            <td>6 x 105 </td>
+                                            <td>4 x 115 </td>
+                                            <td>4 x 115 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>7 x 55 </td>
+                                            <td>7 x 55 </td>
+                                            <td>6 x 60 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+
+                        <tr>
+                            <td colspan="7"><h3>Week 12</h3></td>
+                        </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Mandag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy</td>
+                                            <td>8 x 80 </td>
+                                            <td>7 x 85 </td>
+                                            <td>5 x 95 </td>
+                                            <td>3 x 105 </td>
+                                            <td>1 x 115 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Benk (kloss)</td>
+                                            <td>6 x 125 </td>
+                                            <td>4 x 140 </td>
+                                            <td>3 x 150 </td>
+                                            <td>2 x 160 </td>
+                                            <td>2 x 160 </td>
+                                            <td>1 x 165 </td>
+                                    </tr>
+                                    <tr>
+                                            <td></td>
+                                            <td>1 x 165 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Roing</td>
+                                            <td>6 x 95 </td>
+                                            <td>5 x 100 </td>
+                                            <td>5 x 100 </td>
+                                            <td>4 x 105 </td>
+                                            <td>4 x 105 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Tirsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Bench</td>
+                                            <td>7 x 110 </td>
+                                            <td>6 x 115 </td>
+                                            <td>5 x 125 </td>
+                                            <td>4 x 130 </td>
+                                            <td>3 x 135 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (l)</td>
+                                            <td>6 x 110 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 120 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (l)</td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Biceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Torsdag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (lett)</td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>5 x 95 </td>
+                                            <td>5 x 95 </td>
+                                            <td>4 x 100 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Chin ups (t)</td>
+                                            <td>7 x 115 </td>
+                                            <td>6 x 120 </td>
+                                            <td>5 x 125 </td>
+                                            <td>4 x 135 </td>
+                                            <td>2 x 150 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Markløft (l)</td>
+                                            <td>4 x 65 </td>
+                                            <td>4 x 65 </td>
+                                            <td>3 x 70 </td>
+                                            <td>2 x 75 </td>
+                                            <td>2 x 75 </td>
+                                            <td>2 x 75 </td>
+                                    </tr>
+                                    <tr>
+                                            <td></td>
+                                            <td>2 x 75 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+                            <tr>
+                                <td colspan="7"><h5>&nbsp;Fredag</h5></td>
+                            </tr>
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Knebøy (tung)</td>
+                                            <td>8 x 80 </td>
+                                            <td>6 x 90 </td>
+                                            <td>5 x 95 </td>
+                                            <td>4 x 100 </td>
+                                            <td>2 x 110 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Smalbenk</td>
+                                            <td>7 x 105 </td>
+                                            <td>7 x 105 </td>
+                                            <td>5 x 115 </td>
+                                            <td>4 x 125 </td>
+                                            <td> </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                            <td>&nbsp;&nbsp;&nbsp;Militærpress (t)</td>
+                                            <td>7 x 60 </td>
+                                            <td>6 x 65 </td>
+                                            <td>5 x 65 </td>
+                                            <td>4 x 70 </td>
+                                            <td>4 x 70 </td>
+                                            <td> </td>
+                                    </tr>
+
+
+
+                                <tr>
+                                    <td>&nbsp;&nbsp;&nbsp;Triceps</td>
+                                    <td colspan="6">4 x 10</td>
+                                </tr>
+
+
+                </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
