@@ -30,8 +30,10 @@ The latest version can be found at \\
 	\verb|duration|             & {{program.duration}} \\
 	\verb|reps_per_exercise|    & {{program.reps_per_exercise}} \\
 	\verb|avg_intensity|        & {{program.avg_intensity}} \\
-	\verb|reps_scalers|         & {{ program.reps_scalers | map('round2digits') | join(', ') }} \\
-	\verb|intensity_scalers|    & {{ program.intensity_scalers | map('round2digits') | join(', ') }} \\
+	\verb|reps_scalers|         & {{ program._rep_scalers | map
+	('round2digits') | join(', ') }} \\
+	\verb|intensity_scalers|    & {{ program._intensity_scalers | map
+	('round2digits') | join(', ') }} \\
 	\verb|units|                & {{program.units}}
 \end{tabular}
 

@@ -88,11 +88,13 @@
                         </tr>
                         <tr>
                             <td>reps_scalers</td>
-                            <td>{{ program.reps_scalers | map('round2digits') | join(', ') }}</td>
+                            <td>{{ program._rep_scalers | map
+                            ('round2digits') | join(', ') }}</td>
                         </tr>
                         <tr>
                             <td>intensity_scalers</td>
-                            <td>{{ program.intensity_scalers | map('round2digits') | join(', ') }}</td>
+                            <td>{{ program._intensity_scalers | map
+                            ('round2digits') | join(', ') }}</td>
                         </tr>
                         <tr>
                             <td>units</td>

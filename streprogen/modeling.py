@@ -52,7 +52,7 @@ class RepellentGenerator(object):
 
         # If no probability function is given, default to exponential
         if probability_func is None:
-            self.probability_func = lambda x: 1 / 2 ** x
+            self.probability_func = lambda x: 1 / 4 ** x
         else:
             self.probability_func = probability_func
 
