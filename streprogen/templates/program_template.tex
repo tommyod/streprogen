@@ -41,7 +41,7 @@ The latest version can be found at \\
 
 
 \section*{Exercise information}
-\begin{tabular}{lrrrrr}
+\begin{tabular}{llllll}
     \textbf{Exercise} & \textbf{Start} & \textbf{End} & \textbf{Reps min}
     & \textbf{Reps max} & \textbf{Weekly increase} \\ \hline
 	{% for day in program.days %}
@@ -52,7 +52,7 @@ The latest version can be found at \\
           {{dynamic_ex.weekly_growth(program.duration)}}\%\\
     {% endfor %}
     {% for static_ex in day.static_exercises %}
-       \hspace{0.5em}{{static_ex.name}} & {{static_ex.sets_reps}} & & & & \\
+       \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps(1)}} } \\
       {% endfor %}
 {% endfor %}
 \end{tabular}
@@ -69,8 +69,8 @@ Not rendered. Call Program.render() to render it.
   \subsection*{\hspace{0.5em} {{day.name}} }
 
 
-  \begin{tabular}{l|{% for i in range(table_width - 1) %}r{% endfor %}}
-  \hspace{0.75em} \textbf{Exercise} & \textbf{Sets / reps} \\ \hline
+  \begin{tabular}{l|{% for i in range(table_width - 1) %}l{% endfor %}}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ {{table_width - 1}} }{l}{ \textbf{Sets / reps} } \\ \hline
   {% for dynamic_ex in day.dynamic_exercises %}
       {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
 
@@ -88,7 +88,7 @@ Not rendered. Call Program.render() to render it.
   {% endfor %}
 
   {% for static_ex in day.static_exercises %}
-   \hspace{0.75em} {{static_ex.name}} & {{static_ex.sets_reps}} \\
+   \hspace{0.75em} {{static_ex.name}} &  \multicolumn{ {{table_width - 1}} }{l}{ {{static_ex.sets_reps(week)}} } \\
   {% endfor %}
   \end{tabular}
 

@@ -145,6 +145,9 @@ class StaticExercise(object):
             
         sets_reps
             A static set/rep scheme, e.g. '4 x 10', or '10 minutes'.
+            This paramter can also be a function of one parameter,
+            the current week. The function must return a string
+            for that specific week.
 
 
         Returns
@@ -159,7 +162,21 @@ class StaticExercise(object):
         >>> stretching = StaticExercise('Stretching', '10 minutes')
         """
         self.name = name
-        self.sets_reps = sets_reps
+        if isinstance(sets_reps, str):
+            self.sets_reps = self._function_from_string(sets_reps)
+        else:
+            self.sets_reps = sets_reps
+
+
+    @staticmethod
+    def _function_from_string(string):
+        """
+        Static method that takes a string and returns a function which returns
+        the string.
+        """
+        def function(*args, **kwargs):
+            return string
+        return function
 
     def __repr__(self):
         """

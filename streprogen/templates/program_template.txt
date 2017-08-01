@@ -10,14 +10,14 @@ Program parameters
   join(', ') }}
   units: {{program.units}}
 ----------------------------------------------------------------
-Exercise information
+Exercise information {{max_ex_name}}
 {% for day in program.days %}
   {{day.name}}
 {% for dynamic_ex in day.dynamic_exercises %}
-   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(dynamic_ex.start_weight, program.units, dynamic_ex.end_weight, program.units).ljust(12 + 2*program.units|length)}} {{'reps: [{}, {}]'.format(dynamic_ex.min_reps, dynamic_ex.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex.weekly_growth(program.duration))}}
+   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(str(dynamic_ex.start_weight).rjust(3), program.units, str(dynamic_ex.end_weight).rjust(3), program.units).ljust(12 + 2*program.units|length)}} {{'reps: [{}, {}]'.format(dynamic_ex.min_reps, dynamic_ex.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex.weekly_growth(program.duration))}}
 {% endfor %}
 {% for static_ex in day.static_exercises %}
-   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps}}
+   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps(1)}}
   {% endfor %}
 {% endfor %}
 ----------------------------------------------------------------
@@ -38,7 +38,7 @@ Not rendered. Call Program.render() to render it.
 
   {% endfor %}
   {% for static_ex in day.static_exercises %}
-   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps}}
+   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps(week)}}
   {% endfor %}
 
 {% endfor %}

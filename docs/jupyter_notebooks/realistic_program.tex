@@ -1,0 +1,1088 @@
+% -----------------------------------------------
+% Package imports
+% -----------------------------------------------
+\documentclass[12pt, a4paper]{article}% 'twoside' for printing
+\usepackage[utf8]{inputenc}% Allow input to be UTF-8
+\usepackage[expansion=false]{microtype}% Fixes to make typography better
+\setlength{\marginparwidth}{2cm}% More space for the todo notes
+\usepackage{tikz-cd}% For diagrams
+\usepackage{listings}% To include source-code
+\usepackage[sc]{mathpazo}% A nice font, alternative to CM
+\usepackage[margin = 2cm]{geometry}% May be used to set margins
+% -----------------------------------------------
+% Document start
+% -----------------------------------------------
+
+\begin{document}
+\large
+
+\section*{Program: A realistic program}
+
+This program was made using \verb|streprogen|,
+the Python strength program generator.
+The latest version can be found at \\
+\verb|https://pypi.python.org/pypi/streprogen/|.
+
+
+\section*{Program parameters}
+\begin{tabular}{l|l}
+	\textbf{Parameter} & \textbf{Value} \\ \hline
+	\verb|duration|             & 8 \\
+	\verb|reps_per_exercise|    & 25 \\
+	\verb|avg_intensity|        & 75 \\
+	\verb|reps_scalers|         & 0.8, 1, 1.2, 0.8, 0.8, 1.2, 1, 0.8 \\
+	\verb|intensity_scalers|    & 0.9, 1, 0.9, 1, 1, 1, 1, 1 \\
+	\verb|units|                & 
+\end{tabular}
+
+
+
+
+\section*{Exercise information}
+\begin{tabular}{llllll}
+    \textbf{Exercise} & \textbf{Start} & \textbf{End} & \textbf{Reps min}
+    & \textbf{Reps max} & \textbf{Weekly increase} \\ \hline
+      \textbf{ Monday } & & & & & \\ \hline
+        \hspace{0.5em}Squats & 95  &
+         111  & 3 & 8 &
+          2.0\%\\
+        \hspace{0.5em}Chins (light) & 100  &
+         117  & 3 & 8 &
+          2.0\%\\
+        \hspace{0.5em}Military press & 50  &
+         58  & 3 & 8 &
+          1.9\%\\
+      \textbf{ Wednesday } & & & & & \\ \hline
+        \hspace{0.5em}Deadlifts & 120  &
+         140  & 3 & 8 &
+          1.9\%\\
+        \hspace{0.5em}Bench & 70  &
+         82  & 3 & 8 &
+          2.0\%\\
+        \hspace{0.5em}Chin ups & 100  &
+         117  & 3 & 8 &
+          2.0\%\\
+       \hspace{0.5em}Dips & \multicolumn{ 5 }{l}{ 4 x 10 @ bodyweight } \\
+      \textbf{ Friday } & & & & & \\ \hline
+        \hspace{0.5em}Squats & 85  &
+         99  & 3 & 8 &
+          1.9\%\\
+        \hspace{0.5em}Chins (light) & 100  &
+         117  & 3 & 8 &
+          2.0\%\\
+        \hspace{0.5em}Military press & 50  &
+         58  & 3 & 8 &
+          1.9\%\\
+\end{tabular}
+
+
+\clearpage
+\section*{Program}
+ \subsection*{\hspace{0.25em} Week 1 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 67.5
+            & 7 x 67.5
+            & 7 x 67.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 70
+            & 7 x 70
+            & 6 x 75
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 35
+            & 7 x 35
+            & 7 x 35
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 7 x 85
+            & 7 x 85
+            & 6 x 90
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 7 x 50
+            & 7 x 50
+            & 6 x 52.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 7 x 70
+            & 7 x 70
+            & 6 x 75
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 10 @ bodyweight } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 60
+            & 7 x 60
+            & 6 x 62.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 70
+            & 7 x 70
+            & 7 x 70
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 35
+            & 7 x 35
+            & 6 x 37.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 2 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 70
+            & 6 x 75
+            & 6 x 75
+            & 5 x 80
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 75
+            & 6 x 77.5
+            & 6 x 77.5
+            & 5 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 37.5
+            & 6 x 40
+            & 6 x 40
+            & 5 x 42.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 7 x 87.5
+            & 6 x 95
+            & 6 x 95
+            & 5 x 100
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 7 x 52.5
+            & 6 x 55
+            & 6 x 55
+            & 5 x 57.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 7 x 75
+            & 7 x 75
+            & 6 x 77.5
+            & 5 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 10 @ bodyweight } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 62.5
+            & 7 x 62.5
+            & 6 x 67.5
+            & 5 x 70
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 75
+            & 7 x 75
+            & 6 x 77.5
+            & 5 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 37.5
+            & 7 x 37.5
+            & 6 x 40
+            & 5 x 42.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 3 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 8 x 65
+            & 8 x 65
+            & 7 x 70
+            & 5 x 77.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 8 x 70
+            & 7 x 72.5
+            & 7 x 72.5
+            & 6 x 77.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 8 x 35
+            & 8 x 35
+            & 7 x 37.5
+            & 6 x 37.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 8 x 82.5
+            & 7 x 87.5
+            & 7 x 87.5
+            & 6 x 92.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 8 x 47.5
+            & 8 x 47.5
+            & 7 x 50
+            & 6 x 55
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 8 x 70
+            & 7 x 72.5
+            & 6 x 77.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 10 @ bodyweight } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 62.5
+            & 7 x 62.5
+            & 6 x 65
+            & 6 x 65
+            & 5 x 70
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 8 x 70
+            & 7 x 72.5
+            & 6 x 77.5
+            & 6 x 77.5
+            & 5 x 82.5
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 8 x 35
+            & 8 x 35
+            & 7 x 37.5
+            & 6 x 37.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 4 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 6 x 75
+            & 5 x 80
+            & 5 x 80
+            & 4 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 5 x 82.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 6 x 40
+            & 5 x 42.5
+            & 5 x 42.5
+            & 4 x 45
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 6 x 95
+            & 5 x 100
+            & 5 x 100
+            & 4 x 105
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 6 x 55
+            & 5 x 57.5
+            & 5 x 57.5
+            & 4 x 62.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 5 x 82.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 10 @ bodyweight } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 6 x 67.5
+            & 5 x 70
+            & 5 x 70
+            & 4 x 75
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 6 x 77.5
+            & 5 x 82.5
+            & 5 x 82.5
+            & 4 x 87.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 6 x 40
+            & 5 x 42.5
+            & 5 x 42.5
+            & 4 x 45
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 5 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 6 x 80
+            & 5 x 85
+            & 5 x 85
+            & 4 x 87.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 4 x 92.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 6 x 42.5
+            & 5 x 45
+            & 5 x 45
+            & 4 x 47.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 6 x 100
+            & 6 x 100
+            & 5 x 105
+            & 4 x 112.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 6 x 57.5
+            & 5 x 62.5
+            & 5 x 62.5
+            & 4 x 65
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 4 x 92.5
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 12 @ bodyweight + 10kg } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 6 x 70
+            & 5 x 75
+            & 5 x 75
+            & 4 x 80
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 4 x 92.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 6 x 42.5
+            & 5 x 45
+            & 5 x 45
+            & 4 x 47.5
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 6 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 6 x 80
+            & 6 x 80
+            & 6 x 80
+            & 5 x 85
+            & 4 x 90
+            & 3 x 95
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 80
+            & 6 x 85
+            & 5 x 90
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 6 x 42.5
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 50
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 7 x 95
+            & 6 x 102.5
+            & 5 x 107.5
+            & 5 x 107.5
+            & 4 x 112.5
+            & 3 x 120
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 6 x 60
+            & 6 x 60
+            & 6 x 60
+            & 5 x 62.5
+            & 4 x 67.5
+            & 3 x 70
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 7 x 80
+            & 6 x 85
+            & 5 x 90
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 12 @ bodyweight + 10kg } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 67.5
+            & 6 x 72.5
+            & 5 x 75
+            & 5 x 75
+            & 4 x 80
+            & 3 x 85
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 80
+            & 6 x 85
+            & 5 x 90
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 5 x 45
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 50
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 7 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 75
+            & 6 x 80
+            & 6 x 80
+            & 5 x 85
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 80
+            & 6 x 82.5
+            & 6 x 82.5
+            & 5 x 87.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 6 x 42.5
+            & 5 x 45
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 7 x 95
+            & 6 x 100
+            & 6 x 100
+            & 5 x 105
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 7 x 55
+            & 6 x 57.5
+            & 6 x 57.5
+            & 5 x 62.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 7 x 80
+            & 6 x 82.5
+            & 6 x 82.5
+            & 5 x 87.5
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 12 @ bodyweight + 10kg } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 67.5
+            & 6 x 70
+            & 6 x 70
+            & 5 x 75
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 80
+            & 6 x 82.5
+            & 6 x 82.5
+            & 5 x 87.5
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 6 x 42.5
+            & 5 x 45
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+ \subsection*{\hspace{0.25em} Week 8 }
+  \subsection*{\hspace{0.5em} Monday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 7 x 77.5
+            & 6 x 82.5
+            & 5 x 87.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 7 x 82.5
+            & 6 x 87.5
+            & 6 x 87.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 5 x 45
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Wednesday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Deadlifts
+            & 7 x 97.5
+            & 6 x 105
+            & 5 x 110
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Bench
+            & 7 x 57.5
+            & 6 x 62.5
+            & 5 x 65
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chin ups
+            & 7 x 82.5
+            & 6 x 87.5
+            & 5 x 92.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+   \hspace{0.75em} Dips &  \multicolumn{ 7 }{l}{ 4 x 12 @ bodyweight + 10kg } \\
+  \end{tabular}
+
+  \subsection*{\hspace{0.5em} Friday }
+
+
+  \begin{tabular}{l|lllllll}
+  \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
+
+            \hspace{0.75em} Squats
+            & 8 x 65
+            & 6 x 75
+            & 4 x 82.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Chins (light)
+            & 8 x 77.5
+            & 6 x 87.5
+            & 4 x 97.5
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+            \hspace{0.75em} Military press
+            & 7 x 40
+            & 6 x 42.5
+            & 5 x 45
+            & 
+            & 
+            & 
+            & 
+            \\
+
+
+  \end{tabular}
+
+
+
+
+
+
+
+
+\end{document}

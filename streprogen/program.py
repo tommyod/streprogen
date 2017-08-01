@@ -701,7 +701,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
         env = Environment(loader=template_loader, trim_blocks=True,
                           lstrip_blocks=True)
-        env.globals.update(chunker=chunker, enumerate=enumerate)
+        env.globals.update(chunker=chunker, enumerate=enumerate, str = str)
 
         # Add filters to the environment
         round2digits = functools.partial(round_to_nearest, nearest=0.1)
@@ -730,7 +730,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         template = env.get_template(self.TEMPLATE_NAMES['html'])
         return template.render(program=self, table_width=table_width)
 
-    def to_text(self, verbose=False):
+    def to_txt(self, verbose=False):
         """Write the program information to text,
         which can be printed in a terminal.
 
@@ -745,10 +745,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             Program as text.
         """
         # Get information related to formatting
-        if self._rendered:
-            max_ex_name = max(len(ex.name) for ex in self._yield_exercises())
-        else:
-            max_ex_name = 0
+        exercises = list(self._yield_exercises())
+        max_ex_name = 0
+        if len(exercises) != 0:
+            max_ex_name = max(len(ex.name) for ex in exercises)
 
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
@@ -804,7 +804,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """
         String formatting for readable human output.
         """
-        return self.to_text()
+        return self.to_txt()
 
     def _autoset_min_reps_consistency(self):
         """
@@ -860,4 +860,23 @@ or (3) ignore this message. The software will do it's best to remedy this.
 if __name__ == "__main__":
     import doctest
 
+    from streprogen import StaticExercise
+
+    def curl_func(week):
+        return '{} x 10'.format(week)
+
     doctest.testmod(verbose=True)
+
+    # Create a 4-week program
+    program = Program('My first program!', duration=4)
+
+    # Create some dynamic and static exercises
+    bench = DynamicExercise('Bench press', 60, 80)
+    squats = DynamicExercise('Squats', 80, 95)
+    curls = StaticExercise('Curls', curl_func)
+    day = Day(exercises=[bench, squats, curls])
+
+    # Add day(s) to program and render it
+    program.add_days(day)
+    program.render()
+    print(program)
