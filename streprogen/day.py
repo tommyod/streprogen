@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from streprogen.exercises import DynamicExercise, StaticExercise
+from streprogen.utils import escape_string
 
 
 class Day(object):
@@ -36,7 +37,7 @@ class Day(object):
         >>> curls in monday.static_exercises
         True
         """
-        self.name = name
+        self.name = escape_string(name)
         self.dynamic_exercises = []
         self.static_exercises = []
 

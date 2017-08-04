@@ -29,15 +29,13 @@ The latest version can be found at \\
 	\textbf{Parameter} & \textbf{Value} \\ \hline
 	\verb|duration|             & {{program.duration}} \\
 	\verb|reps_per_exercise|    & {{program.reps_per_exercise}} \\
-	\verb|avg_intensity|        & {{program.avg_intensity}} \\
+	\verb|intensity|        & {{program.intensity}} \\
 	\verb|reps_scalers|         & {{ program._rep_scalers | map
 	('round2digits') | join(', ') }} \\
 	\verb|intensity_scalers|    & {{ program._intensity_scalers | map
 	('round2digits') | join(', ') }} \\
 	\verb|units|                & {{program.units}}
 \end{tabular}
-
-
 
 
 \section*{Exercise information}
@@ -93,6 +91,8 @@ Not rendered. Call Program.render() to render it.
   \end{tabular}
 
 {% endfor %}
+
+{% if clear_pages == True and week != program.duration%}\clearpage{% endif %}
 {% endfor %}
 {% endif %}
 

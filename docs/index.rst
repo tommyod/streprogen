@@ -3,14 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Streprogen Documentation
+Streprogen documentation
 ======================================
-Welcome to the documentation for streprogen, the Python strength program generator.
+Streprogen is a Python strength program generator.
+It helps strength athletes and their trainers efficiently build
+dynamic strength training programs with great flexibility and power.
 
 Project summary
 -----------------
 
-Streprogen (short for **Stre**\ ngth **Pro**\ gram **Gen**\ erator) is a Python_
+Streprogen (short for **stre**\ ngth **pro**\ gram **gen**\ erator) is a
+Python_
 package which allows the user to easily create dynamic, flexible
 strength training programs. The main features are:
 
@@ -20,30 +23,42 @@ strength training programs. The main features are:
 * **High level of customization**\ : Every important parameter can be changed by the user.
   It is possible to create long-term training programs with several layers of periodization
   if the user wishes to do so.
-* **Simple object oriented interface**\ : The four main classes are ``StaticExercise``, ``DynamicExercise``,
-  ``Day`` and ``Program``.
-* **Pretty output**\ : The training programs are easily saved as ``.txt``, ``.html`` or ``.tex`` files.
-
+* **Simple object oriented interface**\ : The software is built of the four
+  classes ``StaticExercise``, ``DynamicExercise``, ``Day`` and ``Program``.
+  In addition to these classes, a set of utility functions is provided for
+  advanced usage.
+* **Pretty output**\ : The training programs are easily
+  saved as ``.txt``, ``.html`` or ``.tex`` files. From there you
+  can print it and bring it to the gym.
 
 
 Installation
 -----------------
-(1) The Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
-(2) Run ``pip install streprogen`` in the terminal (cmd.exe on Windows)
-    to install streprogen from PyPi_.
+Here's the layman guide to installation.
+
+(1) Download Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
+(2) Install ``streprogen`` from PyPI_.
+
+    (a) **Windows**: Open the Anaconda prompt from the start menu and run
+        ``pip install streprogen``.
+    (b) **Linux**: Open the terminal and run
+        ``pip install streprogen``.
+
 (3) Open a Python Editor (such as Spyder, which comes with Anaconda_).
-(4) Look at the tutorial.
+(4) Write ``from streprogen import *`` to import everything from
+    ``streprogen``.
 
 
 .. _Python: http://www.python.org/
 .. _Anaconda: https://www.continuum.io/downloads
-.. _PyPi: https://pypi.org/project/streprogen/
+.. _PyPI: https://pypi.org/project/streprogen/
 
 
 Sample code
 -----------------
 
 .. code-block:: python
+    :linenos:
 
     from streprogen import Program, Day, DynamicExercise, StaticExercise
 

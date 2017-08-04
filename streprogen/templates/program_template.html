@@ -83,8 +83,8 @@
                             <td>{{ program.reps_per_exercise }}</td>
                         </tr>
                         <tr>
-                            <td>avg_intensity</td>
-                            <td>{{ program.avg_intensity }}</td>
+                            <td>intensity</td>
+                            <td>{{ program.intensity }}</td>
                         </tr>
                         <tr>
                             <td>reps_scalers</td>
@@ -115,7 +115,7 @@
                             <th>[Min, Max]</th>
                             <th>Weekly_inc.</th>
                             <th>Reps</th>
-                            <th>Avg_intensity</th>
+                            <th>intensity</th>
                         </tr>
 
                         {% for day in program.days %}
@@ -135,10 +135,10 @@
                                         <td>{{ exercise.reps }}</td>
                                     {% endif %}
 
-                                    {% if exercise.avg_intensity == None %}
-                                        <td>{{ program.avg_intensity }}</td>
+                                    {% if exercise.intensity == None %}
+                                        <td>{{ program.intensity }}</td>
                                     {% else %}
-                                        <td>{{ exercise.avg_intensity }}</td>
+                                        <td>{{ exercise.intensity }}</td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}

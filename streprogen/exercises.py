@@ -4,7 +4,7 @@
 import functools
 import warnings
 
-from streprogen.utils import (round_to_nearest)
+from streprogen.utils import (round_to_nearest, escape_string, compose)
 
 
 class DynamicExercise(object):
@@ -12,8 +12,8 @@ class DynamicExercise(object):
     Class for dynamic exercises.
     """
 
-    def __init__(self, name, start_weight, end_weight, min_reps=3, max_reps=8,
-                 reps=None, avg_intensity=None, round_to=None):
+    def __init__(self, name, start_weight, final_weight, min_reps=3, max_reps=8,
+                 reps=None, intensity=None, round_to=None):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
     
@@ -25,7 +25,7 @@ class DynamicExercise(object):
         start_weight
             Maximum weight you can lift at the start of the program, e.g. 80.
             
-        end_weight
+        final_weight
             The goal weight to work towards during the program. This should be
             set in relation to the duration of the training program, e.g. 90.
             
@@ -41,9 +41,9 @@ class DynamicExercise(object):
             parameter for the training program. The repetitions will still
             be scaled by the 'reps_scalers' parameter in the training program.
             
-        avg_intensity
+        intensity
             The average intensity for this exercise. If set, this will
-            override the 'avg_intensity' parameter in the training program.
+            override the 'intensity' parameter in the training program.
             The intensity will still be scaled by the 'intensity_scalers'
             parameter.
             
@@ -61,20 +61,20 @@ class DynamicExercise(object):
         -------
         >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
         """
-        self.name = name
+        self.name = escape_string(name)
         self.start_weight = start_weight
-        self.end_weight = end_weight
+        self.final_weight = final_weight
         self.min_reps = min_reps
         self.max_reps = max_reps
         self.reps = reps
-        self.avg_intensity = avg_intensity
+        self.intensity = intensity
 
         if round_to is None:
             self.round = None
         else:
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 
-        if self.start_weight > self.end_weight:
+        if self.start_weight > self.final_weight:
             msg = "Start weight larger than end weight for exericse '{}'."
             warnings.warn(msg.format(self.name))
 
@@ -105,7 +105,7 @@ class DynamicExercise(object):
         >>> bench.weekly_growth(4)
         4.7
         """
-        start, end = self.start_weight, self.end_weight
+        start, end = self.start_weight, self.final_weight
         growth_factor = ((end / start) ** (1 / weeks) - 1) * 100
         return round(growth_factor, 1)
 
@@ -120,8 +120,8 @@ class DynamicExercise(object):
         Human readable output.
         """
 
-        strvar = ['name', 'start_weight', 'end_weight', 'min_reps',
-                  'max_reps', 'reps', 'avg_intensity']
+        strvar = ['name', 'start_weight', 'final_weight', 'min_reps',
+                  'max_reps', 'reps', 'intensity']
 
         arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k
                              in strvar if self.__dict__[k] is not None])
@@ -161,11 +161,15 @@ class StaticExercise(object):
         >>> curls = StaticExercise('Curls', '4 x 10')
         >>> stretching = StaticExercise('Stretching', '10 minutes')
         """
-        self.name = name
+        self.name = escape_string(name)
         if isinstance(sets_reps, str):
             self.sets_reps = self._function_from_string(sets_reps)
         else:
             self.sets_reps = sets_reps
+
+        # Escape after function evaluation
+        self.sets_reps = compose(self.sets_reps, escape_string)
+
 
 
     @staticmethod

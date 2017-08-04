@@ -6,7 +6,7 @@ import statistics
 import warnings
 from os import path
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from streprogen.day import Day
 from streprogen.exercises import (DynamicExercise)
@@ -14,7 +14,7 @@ from streprogen.modeling import (RepellentGenerator, reps_to_intensity,
                                  progression_sinusoidal)
 from streprogen.utils import (round_to_nearest, all_equal, min_between,
                               spread, prioritized_not_None,
-                              generate_reps, chunker)
+                              generate_reps, chunker, escape_string)
 
 
 class ProgramError(Exception):
@@ -44,7 +44,7 @@ class Program(object):
         Parameters
         ----------
         name
-            The name of the training program, e.g. 'Tommy_August_2017'.
+            The name of the training program, e.g. 'TommyAugust2017'.
 
         duration
             The duration of the training program in weeks, e.g. 8.
@@ -163,10 +163,10 @@ class Program(object):
         >>> program._rendered
         False
         """
-        self.name = name
+        self.name = escape_string(name)
         self.duration = duration
         self.reps_per_exercise = reps_per_exercise
-        self.avg_intensity = intensity
+        self.intensity = intensity
         self.rep_scalers = rep_scalers
         self.intensity_scalers = intensity_scalers
         self.units = units
@@ -230,10 +230,10 @@ class Program(object):
         Apart from these sanity checks, the user is on his own.
         """
         # Validate the intensity
-        if max([s * self.avg_intensity for s in self._intensity_scalers]) > 85:
+        if max([s * self.intensity for s in self._intensity_scalers]) > 85:
             warnings.warn('\nWARNING: Average intensity is > 85.')
 
-        if min([s * self.avg_intensity for s in self._intensity_scalers]) < 65:
+        if min([s * self.intensity for s in self._intensity_scalers]) < 65:
             warnings.warn('\nWARNING: Average intensity is < 65.')
 
         # Validate the repetitions
@@ -259,7 +259,7 @@ class Program(object):
         # Validate the exercises
         for day in self.days:
             for dynamic_ex in day.dynamic_exercises:
-                start, end = dynamic_ex.start_weight, dynamic_ex.end_weight
+                start, end = dynamic_ex.start_weight, dynamic_ex.final_weight
                 percentage_growth = (end / start) ** (1 / self.duration)
                 percentage_growth = dynamic_ex.weekly_growth(self.duration)
                 if percentage_growth > 4:
@@ -346,7 +346,7 @@ class Program(object):
         return sum([2 * error1, 0.5 * error2, 2.5 * error3, 0.5 * error4])
 
     def _render_dynamic(self, dynamic_exercise, min_rep,
-                        desired_reps, desired_intensity):
+                        desired_reps, desired_intensity, validate):
         """
         Render a single dynamic exercise.
         This is done for each exercise every week.
@@ -385,7 +385,7 @@ class Program(object):
 
         # Perform a sanity check:
         # If repetitions are too high, a low average intensity cannot be attained
-        if desired_intensity > self.reps_to_intensity_func(min_rep):
+        if desired_intensity > self.reps_to_intensity_func(min_rep) and validate:
             msg = """
 WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}],
 but the desired average intensity for this week is {}. Reaching this intensity
@@ -399,7 +399,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Perform a sanity check:
         # If repetitions are too low, a high average intensity cannot be attained
         if desired_intensity < self.reps_to_intensity_func(
-                dynamic_exercise.max_reps):
+                dynamic_exercise.max_reps) and validate:
             msg = """
 WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}],
 but the desired average intensity for this week is {}. Reaching this intensity
@@ -654,19 +654,19 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 desired_reps)
 
             # The desired intensity to work up to
-            local_i, global_i = dyn_ex.avg_intensity, self.avg_intensity
+            local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
             scale_factor = self._intensity_scalers[week - 1]
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]['desired_intensity'] = int(desired_intensity)
 
             # A dictionary is returned with keys 'reps' and 'intensities'
-            render_args = dyn_ex, min_rep, desired_reps, desired_intensity
+            render_args = dyn_ex, min_rep, desired_reps, desired_intensity, validate
             out = self._render_dynamic(*render_args)
 
             # Calculate the 1RM at this point in time
-            start_w, end_w = dyn_ex.start_weight, dyn_ex.end_weight
-            args = (week, start_w, end_w, 1, self.duration)
+            start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
+            args = (week, start_w, final_w, 1, self.duration)
             weight = self.progression_func(*args)
 
             # Define a function to prettify the weights
@@ -699,6 +699,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """
 
         template_loader = FileSystemLoader(searchpath=self.TEMPLATE_DIR)
+
         env = Environment(loader=template_loader, trim_blocks=True,
                           lstrip_blocks=True)
         env.globals.update(chunker=chunker, enumerate=enumerate, str = str)
@@ -764,7 +765,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         return template.render(program=self, max_ex_name=max_ex_name,
                                max_ex_scheme=max_ex_scheme, verbose=verbose)
 
-    def to_tex(self, text_size='large', table_width=5):
+    def to_tex(self, text_size='large', table_width=5, clear_pages = False):
         """
         Write the program information to a .tex file, which can be
         rendered to .pdf running pdflatex. The program can then be
@@ -798,7 +799,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         template = env.get_template(self.TEMPLATE_NAMES['tex'])
 
         return template.render(program=self, text_size=text_size,
-                               table_width=table_width)
+                               table_width=table_width, clear_pages = clear_pages)
 
     def __str__(self):
         """

@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0.0',
+    version='1.1.0',
 
     description='The Python strength program generator.',
     long_description= read('README.rst'),
@@ -58,7 +58,8 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='strength training program health fitness',
+    keywords='strength training program health fitness generator '
+             'weightlifting powerlifting exercise',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
