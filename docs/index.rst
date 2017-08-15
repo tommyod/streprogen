@@ -23,10 +23,10 @@ strength training programs. The main features are:
 * **High level of customization**\ : Every important parameter can be changed by the user.
   It is possible to create long-term training programs with several layers of periodization
   if the user wishes to do so.
-* **Simple object oriented interface**\ : The software is built of the four
-  classes ``StaticExercise``, ``DynamicExercise``, ``Day`` and ``Program``.
-  In addition to these classes, a set of utility functions is provided for
-  advanced usage.
+* **Simple object oriented interface**\ : The software is essentially built
+  on four classes ``StaticExercise``, ``DynamicExercise``, ``Day`` and
+  ``Program``. In addition to these classes, a set of utility functions is
+  provided for advanced usage.
 * **Pretty output**\ : The training programs are easily
   saved as ``.txt``, ``.html`` or ``.tex`` files. From there you
   can print it and bring it to the gym.
@@ -66,8 +66,10 @@ Sample code
     program = Program('My first program!', duration = 4)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise('Bench press', 60, 80)
-    squats = DynamicExercise('Squats', 80, 95)
+    bench = DynamicExercise('Bench press',
+                            start_weight = 60, final_weight = 80)
+    squats = DynamicExercise('Squats',
+                            start_weight = 80, final_weight = 95)
     curls = StaticExercise('Curls', '3 x 12')
     day = Day(exercises = [bench, squats, curls])
 

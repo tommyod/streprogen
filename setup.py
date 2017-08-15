@@ -10,6 +10,8 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
+from streprogen import __version__
+VERSION = __version__
 
 here = path.abspath(path.dirname(__file__))
 
@@ -23,7 +25,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.1.0',
+    version=VERSION,
 
     description='The Python strength program generator.',
     long_description= read('README.rst'),
@@ -32,7 +34,7 @@ setup(
 
     # Author details
     author='Tommy Odland',
-    author_email='',
+    author_email='tommy.odland@gmail.com',
 
     # Choose your license
     license='GPLv3',
@@ -63,7 +65,8 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages('.', exclude=['contrib', 'docs', 'tests']),
+    package_dir={'':'.'},
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
@@ -87,9 +90,10 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    #package_data={
-    #    'sample': ['package_data.dat'],
-    #},
+    #include_package_data=True,
+    package_data={
+        '': ['templates/*', '*.tex', '*.html'],
+    },
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:

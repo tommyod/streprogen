@@ -7,3 +7,6 @@ streprogen/exercises.py
 streprogen/modeling.py
 streprogen/program.py
 streprogen/utils.py
+streprogen/templates/program_template.txt
+streprogen/templates/program_template.html
+streprogen/templates/program_template.tex

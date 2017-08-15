@@ -13,9 +13,10 @@ Install by running ``pip install streprogen``. Remember to read the documentatio
 
 
 Project summary
-----------------------------------
+-----------------
 
-Streprogen (short for **Stre**\ ngth **Pro**\ gram **Gen**\ erator) is a Python_
+Streprogen (short for **stre**\ ngth **pro**\ gram **gen**\ erator) is a
+Python_
 package which allows the user to easily create dynamic, flexible
 strength training programs. The main features are:
 
@@ -25,31 +26,42 @@ strength training programs. The main features are:
 * **High level of customization**\ : Every important parameter can be changed by the user.
   It is possible to create long-term training programs with several layers of periodization
   if the user wishes to do so.
-* **Simple object oriented interface**\ : The four main classes are ``StaticExercise``, ``DynamicExercise``,
-  ``Day`` and ``Program``.
-* **Pretty output**\ : The training programs are easily saved as ``.txt``, ``.html`` or ``.tex`` files.
-
+* **Simple object oriented interface**\ : The software is essentially built
+  on four classes ``StaticExercise``, ``DynamicExercise``, ``Day`` and
+  ``Program``. In addition to these classes, a set of utility functions is
+  provided for advanced usage.
+* **Pretty output**\ : The training programs are easily
+  saved as ``.txt``, ``.html`` or ``.tex`` files. From there you
+  can print it and bring it to the gym.
 
 
 Installation
-----------------------------------
-(1) The Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
-(2) Run ``pip install streprogen`` in the terminal (cmd.exe on Windows)
-    to install streprogen from PyPi_.
+-----------------
+Here's the layman guide to installation.
+
+(1) Download Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
+(2) Install ``streprogen`` from PyPI_.
+
+    (a) **Windows**: Open the Anaconda prompt from the start menu and run
+        ``pip install streprogen``.
+    (b) **Linux**: Open the terminal and run
+        ``pip install streprogen``.
+
 (3) Open a Python Editor (such as Spyder, which comes with Anaconda_).
-(4) Take a look at the documentation_ for examples.
+(4) Write ``from streprogen import *`` to import everything from
+    ``streprogen``.
 
 
-.. _documentation: http://streprogen.readthedocs.io/en/latest/
 .. _Python: http://www.python.org/
 .. _Anaconda: https://www.continuum.io/downloads
-.. _PyPi: https://pypi.org/project/streprogen/
+.. _PyPI: https://pypi.org/project/streprogen/
 
 
 Sample code
-----------------------------------
+-----------------
 
 .. code-block:: python
+    :linenos:
 
     from streprogen import Program, Day, DynamicExercise, StaticExercise
 
@@ -57,8 +69,10 @@ Sample code
     program = Program('My first program!', duration = 4)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise('Bench press', 60, 80)
-    squats = DynamicExercise('Squats', 80, 95)
+    bench = DynamicExercise('Bench press',
+                            start_weight = 60, final_weight = 80)
+    squats = DynamicExercise('Squats',
+                            start_weight = 80, final_weight = 95)
     curls = StaticExercise('Curls', '3 x 12')
     day = Day(exercises = [bench, squats, curls])
 
@@ -68,7 +82,7 @@ Sample code
     print(program)
 
 
-::
+.. code-block:: none
 
     ----------------------------------------------------------------
     Program: My first program!
@@ -113,4 +127,3 @@ Sample code
        Curls         3 x 12
 
     ----------------------------------------------------------------
-
