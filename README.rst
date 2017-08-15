@@ -63,7 +63,6 @@ Sample code
 -----------------
 
 .. code-block:: python
-    :linenos:
 
     from streprogen import Program, Day, DynamicExercise, StaticExercise
 
@@ -84,7 +83,7 @@ Sample code
     print(program)
 
 
-.. code-block:: none
+.. code-block::
 
     ----------------------------------------------------------------
     Program: My first program!
