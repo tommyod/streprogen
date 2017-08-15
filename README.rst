@@ -11,6 +11,8 @@ Streprogen - the Python strength program generator.
 
 Install by running ``pip install streprogen``. Remember to read the documentation_.
 
+.. _documentation: http://streprogen.readthedocs.io/en/latest/
+
 
 Project summary
 -----------------
