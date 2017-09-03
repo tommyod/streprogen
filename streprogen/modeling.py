@@ -153,9 +153,9 @@ def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
         return intensity
 
 
-def progression_linear(week, start_weight, end_weight, start_week, end_week):
+def progression_linear(week, start_weight, final_weight, start_week, end_week):
     """A linear progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'end_weight'), evaluated
+    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
     in 'week'.
 
     Parameters
@@ -164,7 +164,7 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
         The week to evaluate the linear function at.
     start_weight
         The weight at 'start_week'.
-    end_weight
+    final_weight
         The weight at 'end_week'.
     start_week
         The number of the first week, typically 1.
@@ -180,7 +180,7 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
 
     Examples
     -------
-    >>> progression_linear(week = 2, start_weight = 100, end_weight = 120, 
+    >>> progression_linear(week = 2, start_weight = 100, final_weight = 120,
     ...                    start_week = 1, end_week = 3)
     110.0
     
@@ -188,17 +188,17 @@ def progression_linear(week, start_weight, end_weight, start_week, end_week):
     120.0
     """
     # Calculate the slope of the linear function
-    slope = (start_weight - end_weight) / (start_week - end_week)
+    slope = (start_weight - final_weight) / (start_week - end_week)
 
     # Return the answer y = slope (x - x_0) + y_0
     return slope * (week - start_week) + start_weight
 
 
-def progression_sinusoidal(week, start_weight, end_weight, start_week,
+def progression_sinusoidal(week, start_weight, final_weight, start_week,
                            end_week,
                            periods=2, scale=0.025, offset=0):
     """A sinusoidal progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'end_weight'), evaluated
+    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
     in 'week'. This function calls a linear progression function
     and multiplies it by a sinusoid.
 
@@ -208,7 +208,7 @@ def progression_sinusoidal(week, start_weight, end_weight, start_week,
         The week to evaluate the linear function at.
     start_weight
         The weight at 'start_week'.
-    end_weight
+    final_weight
         The weight at 'end_week'.
     start_week
         The number of the first week, typically 1.
@@ -238,7 +238,7 @@ def progression_sinusoidal(week, start_weight, end_weight, start_week,
     106.44931454758678
     """
     # Get the linear model
-    linear = progression_linear(week, start_weight, end_weight,
+    linear = progression_linear(week, start_weight, final_weight,
                                 start_week, end_week)
 
     # Calculate the time period and the argument to the sine function
