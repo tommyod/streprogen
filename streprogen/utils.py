@@ -32,6 +32,7 @@ def compose(first_func, second_func):
 
     return composed_func
 
+
 def escape_string(text):
     """Remove problematic characters.
 
@@ -55,16 +56,14 @@ def escape_string(text):
     if text is None:
         return text
 
-
-    TO_REMOVE = [r'&', r'%', r'$', r'#', r'_', r'{', r'}',
-                 r'~', r'^', r'\\']
+    TO_REMOVE = [r"&", r"%", r"$", r"#", r"_", r"{", r"}", r"~", r"^", r"\\"]
 
     for char in TO_REMOVE:
-        text = text.replace(char, '')
+        text = text.replace(char, "")
     return text
 
 
-def chunker(iterable, size=5, fill=''):
+def chunker(iterable, size=5, fill=""):
     """Chunk the iterable.
 
     Parameters
@@ -93,7 +92,7 @@ def chunker(iterable, size=5, fill=''):
     """
 
     for index in range(0, len(iterable) // size + 1):
-        to_yield = iterable[index * size: (index + 1) * size]
+        to_yield = iterable[index * size : (index + 1) * size]
 
         # Stop yielding if empty
         if len(to_yield) == 0:
@@ -151,8 +150,12 @@ def round_to_nearest(number, nearest=1):
 
     Examples
     -------
-    >>> round_to_nearest(6.8, nearest = 2.5)
+    >>> round_to_nearest(6.8, nearest=2.5)
     7.5
+    >>> round_to_nearest(6.8, nearest=1)
+    7
+    >>> round_to_nearest(6.8, nearest=5)
+    5
     """
     result = nearest * round(number / nearest)
     if result % 1 == 0:

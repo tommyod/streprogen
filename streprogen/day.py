@@ -65,7 +65,7 @@ class Day(object):
         >>> pulldowns in monday.static_exercises
         True
         """
-        for exercise in list(exercises):
+        for exercise in exercises:
             if isinstance(exercise, DynamicExercise):
                 self.dynamic_exercises.append(exercise)
 
@@ -73,7 +73,7 @@ class Day(object):
                 self.static_exercises.append(exercise)
 
     def __repr__(self):
-        return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
+        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
         """
@@ -88,21 +88,19 @@ class Day(object):
         >>> print(monday)
         Day(name = Monday, static_exercises = [Curls, Pulldowns])
         """
-        dyn = ', '.join([d.name for d in self.dynamic_exercises])
+        dyn = ", ".join([d.name for d in self.dynamic_exercises])
         if len(dyn) > 0:
             dyn = "dynamic_exercises = [{}]".format(dyn)
-        stat = ', '.join([d.name for d in self.static_exercises])
+        stat = ", ".join([d.name for d in self.static_exercises])
         if len(stat) > 0:
             stat = "static_exercises = [{}]".format(stat)
 
-        out_str = "{}({})".format(type(self).__name__, ', '.join([s for s in
-                                                                  [
-                                                                      'name = {}'.format(
-                                                                          self.name),
-                                                                      dyn,
-                                                                      stat]
-                                                                  if
-                                                                  len(s) > 2]))
+        out_str = "{}({})".format(
+            type(self).__name__,
+            ", ".join(
+                [s for s in ["name = {}".format(self.name), dyn, stat] if len(s) > 2]
+            ),
+        )
         return out_str
 
 
