@@ -4,7 +4,7 @@
 import functools
 import warnings
 
-from streprogen.utils import (round_to_nearest, escape_string, compose)
+from streprogen.utils import round_to_nearest, escape_string, compose
 
 
 class DynamicExercise(object):
@@ -12,8 +12,17 @@ class DynamicExercise(object):
     Class for dynamic exercises.
     """
 
-    def __init__(self, name, start_weight, final_weight, min_reps=3, max_reps=8,
-                 reps=None, intensity=None, round_to=None):
+    def __init__(
+        self,
+        name,
+        start_weight,
+        final_weight,
+        min_reps=3,
+        max_reps=8,
+        reps=None,
+        intensity=None,
+        round_to=None,
+    ):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
     
@@ -113,20 +122,32 @@ class DynamicExercise(object):
         """
         Representation.
         """
-        return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
+        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
         """
         Human readable output.
         """
 
-        strvar = ['name', 'start_weight', 'final_weight', 'min_reps',
-                  'max_reps', 'reps', 'intensity']
+        strvar = [
+            "name",
+            "start_weight",
+            "final_weight",
+            "min_reps",
+            "max_reps",
+            "reps",
+            "intensity",
+        ]
 
-        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k
-                             in strvar if self.__dict__[k] is not None])
+        arg_str = ", ".join(
+            [
+                "{} = {}".format(k, self.__dict__[k])
+                for k in strvar
+                if self.__dict__[k] is not None
+            ]
+        )
 
-        return '{}({})'.format(type(self).__name__, arg_str)
+        return "{}({})".format(type(self).__name__, arg_str)
 
 
 class StaticExercise(object):
@@ -134,7 +155,7 @@ class StaticExercise(object):
     Class for static exercises.
     """
 
-    def __init__(self, name, sets_reps='4 x 10'):
+    def __init__(self, name, sets_reps="4 x 10"):
         """Initialize a new static exercise. A static exercise
         is simply a placeholder for some text.
     
@@ -170,35 +191,40 @@ class StaticExercise(object):
         # Escape after function evaluation
         self.sets_reps = compose(self.sets_reps, escape_string)
 
-
-
     @staticmethod
     def _function_from_string(string):
         """
         Static method that takes a string and returns a function which returns
         the string.
         """
+
         def function(*args, **kwargs):
             return string
+
         return function
 
     def __repr__(self):
         """
         Representation.
         """
-        return '{}({})'.format(type(self).__name__, str(self.__dict__)[:60])
+        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
         """
         String formatting for readable human output.
         """
 
-        strvar = ['name', 'sets_reps']
+        strvar = ["name", "sets_reps"]
 
-        arg_str = ', '.join(['{} = {}'.format(k, self.__dict__[k]) for k
-                             in strvar if self.__dict__[k] is not None])
+        arg_str = ", ".join(
+            [
+                "{} = {}".format(k, self.__dict__[k])
+                for k in strvar
+                if self.__dict__[k] is not None
+            ]
+        )
 
-        return '{}({})'.format(type(self).__name__, arg_str)
+        return "{}({})".format(type(self).__name__, arg_str)
 
 
 if __name__ == "__main__":

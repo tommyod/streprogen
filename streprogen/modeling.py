@@ -79,8 +79,9 @@ class RepellentGenerator(object):
         True
         """
         # Get the weights for all items in the domain
-        weights = [self.probability_func(self.generated[element])
-                   for element in self.domain]
+        weights = [
+            self.probability_func(self.generated[element]) for element in self.domain
+        ]
 
         # Sample from the domain using the weights
         element = random.choices(self.domain, weights=weights)[0]
@@ -194,9 +195,16 @@ def progression_linear(week, start_weight, final_weight, start_week, end_week):
     return slope * (week - start_week) + start_weight
 
 
-def progression_sinusoidal(week, start_weight, final_weight, start_week,
-                           end_week,
-                           periods=2, scale=0.025, offset=0):
+def progression_sinusoidal(
+    week,
+    start_weight,
+    final_weight,
+    start_week,
+    end_week,
+    periods=2,
+    scale=0.025,
+    offset=0,
+):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
     in 'week'. This function calls a linear progression function
@@ -238,13 +246,13 @@ def progression_sinusoidal(week, start_weight, final_weight, start_week,
     106.44931454758678
     """
     # Get the linear model
-    linear = progression_linear(week, start_weight, final_weight,
-                                start_week, end_week)
+    linear = progression_linear(week, start_weight, final_weight, start_week, end_week)
 
     # Calculate the time period and the argument to the sine function
     time_period = end_week - start_week
-    sine_argument = ((week - offset - start_week) * (math.pi * 2) /
-                     (time_period / periods))
+    sine_argument = (
+        (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
+    )
 
     linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
     return linear_with_sinusoidal
