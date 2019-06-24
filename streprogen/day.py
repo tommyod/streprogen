@@ -65,7 +65,7 @@ class Day(object):
         >>> pulldowns in monday.static_exercises
         True
         """
-        for exercise in list(exercises):
+        for exercise in exercises:
             if isinstance(exercise, DynamicExercise):
                 self.dynamic_exercises.append(exercise)
 

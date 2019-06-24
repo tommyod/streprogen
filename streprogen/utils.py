@@ -150,8 +150,12 @@ def round_to_nearest(number, nearest=1):
 
     Examples
     -------
-    >>> round_to_nearest(6.8, nearest = 2.5)
+    >>> round_to_nearest(6.8, nearest=2.5)
     7.5
+    >>> round_to_nearest(6.8, nearest=1)
+    7
+    >>> round_to_nearest(6.8, nearest=5)
+    5
     """
     result = nearest * round(number / nearest)
     if result % 1 == 0:

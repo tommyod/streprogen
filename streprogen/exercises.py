@@ -4,13 +4,11 @@
 import functools
 import warnings
 
-from streprogen.utils import round_to_nearest, escape_string, compose
+from streprogen.utils import compose, escape_string, round_to_nearest
 
 
 class DynamicExercise(object):
-    """
-    Class for dynamic exercises.
-    """
+    """Class for dynamic exercises."""
 
     def __init__(
         self,
@@ -84,7 +82,7 @@ class DynamicExercise(object):
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 
         if self.start_weight > self.final_weight:
-            msg = "Start weight larger than end weight for exericse '{}'."
+            msg = "Start weight larger than end weight for exercise '{}'."
             warnings.warn(msg.format(self.name))
 
         if self.min_reps > self.max_reps:
@@ -92,8 +90,7 @@ class DynamicExercise(object):
             raise ValueError(msg.format(self.name))
 
     def weekly_growth(self, weeks):
-        """Calculate the weekly growth in percentage, and rounds
-        to one digit.
+        """Calculate the weekly growth in percentage, and round to one digit.
     
         Parameters
         ----------
@@ -104,7 +101,6 @@ class DynamicExercise(object):
         -------
         growth_factor
             A real number such that start * growth_factor** weeks = end.
-    
     
         Examples
         -------
@@ -119,15 +115,11 @@ class DynamicExercise(object):
         return round(growth_factor, 1)
 
     def __repr__(self):
-        """
-        Representation.
-        """
+        """Representation."""
         return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
     def __str__(self):
-        """
-        Human readable output.
-        """
+        """Human readable output."""
 
         strvar = [
             "name",
@@ -141,7 +133,7 @@ class DynamicExercise(object):
 
         arg_str = ", ".join(
             [
-                "{} = {}".format(k, self.__dict__[k])
+                "{}={}".format(k, self.__dict__[k])
                 for k in strvar
                 if self.__dict__[k] is not None
             ]
@@ -218,7 +210,7 @@ class StaticExercise(object):
 
         arg_str = ", ".join(
             [
-                "{} = {}".format(k, self.__dict__[k])
+                "{}={}".format(k, self.__dict__[k])
                 for k in strvar
                 if self.__dict__[k] is not None
             ]

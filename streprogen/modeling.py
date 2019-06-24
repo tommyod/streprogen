@@ -6,7 +6,7 @@ import math
 import random
 
 
-class RepellentGenerator(object):
+class RepellentGenerator:
     """
     Generates objects from a domain,
     each time an object is drawn,
@@ -110,7 +110,7 @@ class RepellentGenerator(object):
         True
         """
         # Yield the appropriate number of elements
-        for i in range(num):
+        for _ in range(num):
             yield self.generate_one()
 
 

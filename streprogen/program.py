@@ -6,24 +6,24 @@ import statistics
 import warnings
 from os import path
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise
 from streprogen.modeling import (
     RepellentGenerator,
-    reps_to_intensity,
     progression_sinusoidal,
+    reps_to_intensity,
 )
 from streprogen.utils import (
-    round_to_nearest,
     all_equal,
-    min_between,
-    spread,
-    prioritized_not_None,
-    generate_reps,
     chunker,
     escape_string,
+    generate_reps,
+    min_between,
+    prioritized_not_None,
+    round_to_nearest,
+    spread,
 )
 
 
@@ -221,6 +221,7 @@ class Program(object):
             domain = [0.8, 1, 1.2]
             gen = RepellentGenerator(domain)
             self._rep_scalers = list(gen.yield_from_domain(self.duration))
+
         else:
             if len(self.rep_scalers) != self.duration:
                 raise ProgramError(
@@ -309,9 +310,9 @@ class Program(object):
         >>> program = Program('My training program')
         >>> day1, day2 = Day(), Day()
         >>> program.add_days(day1, day2)
+        >>> program.add_days(day1)
         """
-        for day in list(days):
-            self.days.append(day)
+        self.days.extend(days)
 
     @staticmethod
     def repstring_penalty(
