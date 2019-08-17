@@ -5,17 +5,20 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
 
+import re
+
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 
 # To use a consistent encoding
 from codecs import open
 from os import path
-from streprogen import __version__
-
-VERSION = __version__
 
 here = path.abspath(path.dirname(__file__))
+
+# Get version
+with open(path.join(here, "streprogen/__init__.py"), encoding="utf-8") as file:
+    VERSION = re.search(r"__version__ = \"(.*?)\"", file.read()).group(1)
 
 
 def read(fname):
@@ -51,6 +54,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
@@ -64,11 +68,12 @@ setup(
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
     #   py_modules=["my_module"],
+    python_requires=">=3.5",
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=["jinja2"],
+    install_requires=["jinja2>=2.10.1", "ortools>=7.2.6977"],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:

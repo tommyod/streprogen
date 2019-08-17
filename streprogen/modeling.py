@@ -4,117 +4,10 @@
 import functools
 import math
 import random
+import collections.abc
 
 
-class RepellentGenerator:
-    """
-    Generates objects from a domain,
-    each time an object is drawn,
-    the probability of it being drawn again
-    is determined by the probability function.
-    """
-
-    def __init__(self, domain, probability_func=None, generated=None):
-        """Initialize a RepellentGenerator, which is a generator
-        where when an object is generated, the probability of it 
-        begin generated changes.
-    
-        Parameters
-        ----------
-        domain
-            A list of objects to generate from, e.g. [1, 2, 3].
-        probability_func
-            A decreasing probability function, e.g. lambda x: 1 / 2**x. 
-        generated
-            A user specified dictionary of the form 
-            {element1: num1, element2: num2, ...}
-            where num1, num2, ... are the initial states descriping how many
-            times the elements element1, element2, ... have been generated. 
-            This argument changes the initial probability distribution.
-    
-    
-        Returns
-        -------
-        RepellentGenerator
-            A RepellentGenerator object.
-    
-    
-        Examples
-        -------
-        >>> domain = [1, 2, 3]
-        >>> generator = RepellentGenerator(domain)
-        >>> generator.generate_one() in domain
-        True
-        """
-
-        # Initialize the domain
-        self.domain = domain
-
-        # If no probability function is given, default to exponential
-        if probability_func is None:
-            self.probability_func = lambda x: 1 / 4 ** x
-        else:
-            self.probability_func = probability_func
-
-        # If no seed values are given, default to zeros
-        if generated is None:
-            self.generated = {element: 0 for element in domain}
-        else:
-            self.generated = generated
-
-    def generate_one(self):
-        """Generate a single element.
-    
-        Returns
-        -------
-        element
-            An element from the domain.
-    
-    
-        Examples
-        -------
-        >>> generator = RepellentGenerator(['a', 'b'])
-        >>> gen_item = generator.generate_one()
-        >>> gen_item in ['a', 'b']
-        True
-        """
-        # Get the weights for all items in the domain
-        weights = [
-            self.probability_func(self.generated[element]) for element in self.domain
-        ]
-
-        # Sample from the domain using the weights
-        element = random.choices(self.domain, weights=weights)[0]
-
-        # Update the generated values and return
-        self.generated[element] += 1
-
-        return element
-
-    def yield_from_domain(self, num=1):
-        """Yield 'num' elements from the domain.
-    
-        Yields
-        -------
-        A sequence of elements from the domain.
-    
-    
-        Examples
-        -------
-        >>> domain = ['a', 1]
-        >>> generator = RepellentGenerator(domain)
-        >>> for element in generator.yield_from_domain(3):
-        ...     print(element in domain)
-        True
-        True
-        True
-        """
-        # Yield the appropriate number of elements
-        for _ in range(num):
-            yield self.generate_one()
-
-
-def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
+def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
     """A function mapping from repetitions in the range 1 to 12
     to intensities in the range 0 to 100.
 
@@ -147,6 +40,9 @@ def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
     >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = False)
     65
     """
+    if isinstance(reps, collections.abc.Iterable):
+        return list(reps_to_intensity(rep, slope, constant, quadratic) for rep in reps)
+
     intensity = constant + slope * (reps - 1)
     if quadratic:
         return intensity + 0.05 * (reps - 1) ** 2
@@ -154,59 +50,19 @@ def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
         return intensity
 
 
-def progression_linear(week, start_weight, final_weight, start_week, end_week):
-    """A linear progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
-    in 'week'.
-
-    Parameters
-    ----------
-    week
-        The week to evaluate the linear function at.
-    start_weight
-        The weight at 'start_week'.
-    final_weight
-        The weight at 'end_week'.
-    start_week
-        The number of the first week, typically 1.
-    end_week
-        The number of the final week, e.g. 8.
-
-
-    Returns
-    -------
-    weight
-        The weight at 'week'.
-
-
-    Examples
-    -------
-    >>> progression_linear(week = 2, start_weight = 100, final_weight = 120,
-    ...                    start_week = 1, end_week = 3)
-    110.0
-    
-    >>> progression_linear(3, 100, 140, 1, 5)
-    120.0
-    """
-    # Calculate the slope of the linear function
-    slope = (start_weight - final_weight) / (start_week - end_week)
-
-    # Return the answer y = slope (x - x_0) + y_0
-    return slope * (week - start_week) + start_weight
-
-
 def progression_sinusoidal(
     week,
     start_weight,
     final_weight,
     start_week,
-    end_week,
+    final_week,
     periods=2,
     scale=0.025,
     offset=0,
+    k=0,
 ):
     """A sinusoidal progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
+    ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
     in 'week'. This function calls a linear progression function
     and multiplies it by a sinusoid.
 
@@ -217,10 +73,10 @@ def progression_sinusoidal(
     start_weight
         The weight at 'start_week'.
     final_weight
-        The weight at 'end_week'.
+        The weight at 'final_week'.
     start_week
         The number of the first week, typically 1.
-    end_week
+    final_week
         The number of the final week, e.g. 8.
     periods
         Number of sinusoidal periods in the time range.
@@ -228,6 +84,8 @@ def progression_sinusoidal(
         The scale (amplitude) of the sinusoidal term.
     offset
         The offset (shift) of the sinusoid.
+    k
+        Exponential growth. Higher results in more exponential growth.
 
 
     Returns
@@ -238,30 +96,102 @@ def progression_sinusoidal(
 
     Examples
     -------
-    >>> progression_sinusoidal(1, 100, 120, 1, 8)
-    100.0
-    >>> progression_sinusoidal(8, 100, 120, 1, 8)
-    120.0
-    >>> progression_sinusoidal(4, 100, 120, 1, 8)
-    106.44931454758678
+    >>> progression_sinusoidal(1, 123, 123, 1, 8, periods=1)
+    123.0
+    >>> progression_sinusoidal(8, 123, 123, 1, 8, periods=1)
+    123.0
     """
-    # Get the linear model
-    linear = progression_linear(week, start_weight, final_weight, start_week, end_week)
+    if isinstance(week, collections.abc.Iterable):
+        return list(
+            progression_sinusoidal(
+                w,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                periods,
+                scale,
+                offset,
+                k,
+            )
+            for w in week
+        )
+
+    # Get the base model
+    base = progression_diffeq(
+        week, start_weight, final_weight, start_week, final_week, k
+    )
 
     # Calculate the time period and the argument to the sine function
-    time_period = end_week - start_week
+    time_period = final_week - start_week + 0
     sine_argument = (
         (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
     )
 
-    linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
-    return linear_with_sinusoidal
+    base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
+    return base_with_sinusoidal
 
 
-reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-4)
-reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-5.6)
+def progression_diffeq(week, start_weight, final_weight, start_week, final_week, k=0):
+    """A linear/exponential progression function going through the points
+    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
+    in 'week'.
+
+    Parameters
+    ----------
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    final_weight
+        The weight at 'final_week'.
+    start_week
+        The number of the first week, typically 1.
+    final_week
+        The number of the final week, e.g. 8.
+    k
+        How much the function "bends". k=0 is linear, k>0 bends it.
+
+
+    Returns
+    -------
+    weight
+        The weight at 'week'.
+
+
+    Examples
+    -------
+    >>> progression_diffeq(week = 2, start_weight = 100, final_weight = 120,
+    ...                    start_week = 1, final_week = 3)
+    110.0
+    
+    >>> progression_diffeq(3, 100, 140, 1, 5)
+    120.0
+    """
+    if isinstance(week, collections.abc.Iterable):
+        return list(
+            progression_diffeq(w, start_weight, final_weight, start_week, final_week, k)
+            for w in week
+        )
+
+    S_i = start_weight
+    S_m = final_weight
+    t = week
+    t_i = start_week
+    t_m = final_week
+    assert k >= 0
+
+    # Normalize the time
+    a = (t_i - t) / (t_m - t_i)
+
+    # Return the answer
+    return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
+
+
+reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.5)
+reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-4.5)
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
 
-    doctest.testmod(verbose=True)
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])

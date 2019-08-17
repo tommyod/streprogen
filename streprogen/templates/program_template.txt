@@ -5,9 +5,6 @@ Program parameters
   duration: {{program.duration}}
   reps_per_exercise: {{program.reps_per_exercise}}
   intensity: {{program.intensity}}
-  reps_scalers: {{ program._rep_scalers | map('round2digits') | join(', ') }}
-  intensity_scalers: {{ program._intensity_scalers | map('round2digits') |
-  join(', ') }}
   units: {{program.units}}
 ----------------------------------------------------------------
 Exercise information

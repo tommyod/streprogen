@@ -4,8 +4,7 @@
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
-    RepellentGenerator,
-    progression_linear,
+    progression_diffeq,
     progression_sinusoidal,
     reps_to_intensity,
     reps_to_intensity_relaxed,
@@ -13,17 +12,16 @@ from streprogen.modeling import (
 )
 from streprogen.program import Program
 
-__version__ = "1.1.8"
+__version__ = "2.0.0"
 
 __all__ = [
     "StaticExercise",
     "DynamicExercise",
     "Day",
     "Program",
-    "RepellentGenerator",
     "reps_to_intensity",
     "reps_to_intensity_tight",
     "reps_to_intensity_relaxed",
-    "progression_linear",
+    "progression_diffeq",
     "progression_sinusoidal",
 ]

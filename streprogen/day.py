@@ -23,11 +23,6 @@ class Day(object):
             A list of exercises. Exercises can also be associated with a day using
             the 'add_exercises' method later on.
 
-        Returns
-        -------
-        Day
-            A day object.
-
 
         Examples
         -------
@@ -41,8 +36,17 @@ class Day(object):
         self.dynamic_exercises = []
         self.static_exercises = []
 
+        self.program = None
+
         if exercises is not None:
             self.add_exercises(*tuple(exercises))
+
+    def __enter__(self):
+        self.program.active_day = self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.program.days.append(self)
+        self.program.active_day = None
 
     def add_exercises(self, *exercises):
         """Add the exercises to the day. The method will automatically infer
@@ -105,6 +109,6 @@ class Day(object):
 
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
 
-    doctest.testmod(verbose=True)
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])

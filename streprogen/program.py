@@ -3,32 +3,26 @@
 
 import functools
 import statistics
+import random
 import warnings
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
 
 from streprogen.day import Day
-from streprogen.exercises import DynamicExercise
+from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
-    RepellentGenerator,
     progression_sinusoidal,
     reps_to_intensity,
+    progression_diffeq,
 )
 from streprogen.utils import (
-    all_equal,
     chunker,
     escape_string,
-    generate_reps,
-    min_between,
     prioritized_not_None,
     round_to_nearest,
-    spread,
 )
-
-
-class ProgramError(Exception):
-    pass
+from streprogen.optimization import optimize_sets
 
 
 class Program(object):
@@ -38,28 +32,51 @@ class Program(object):
     """
 
     REP_SET_SEP = " x "
-    TIMES_TO_RENDER = 50
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
     TEMPLATE_NAMES = {
         extension: "program_template." + extension
         for extension in ["html", "txt", "tex"]
     }
 
+    # Default functions
+    _default_rep_scaler_func = staticmethod(
+        functools.partial(
+            progression_sinusoidal,
+            start_weight=1,
+            final_weight=1,
+            start_week=1,
+            scale=0.1,
+            offset=0,
+            k=0,
+        )
+    )
+    _default_intensity_scaler_func = staticmethod(
+        functools.partial(
+            progression_sinusoidal,
+            start_weight=1,
+            final_weight=1,
+            start_week=1,
+            scale=0.025,
+            offset=2,
+            k=0,
+        )
+    )
+
+    _default_reps_to_intensity_func = staticmethod(reps_to_intensity)
+    _default_progression_func = staticmethod(functools.partial(progression_diffeq, k=1))
+
     def __init__(
         self,
         name="Untitled",
         duration=8,
         reps_per_exercise=25,
-        rep_scalers=None,
-        intensity=75,
-        intensity_scalers=None,
+        rep_scaler_func=None,
+        intensity=80,
+        intensity_scaler_func=None,
         units="kg",
         round_to=2.5,
-        progress_func=None,
+        progression_func=None,
         reps_to_intensity_func=None,
-        min_reps_consistency=None,
-        minimum_percentile=0.2,
-        go_to_min=False,
         verbose=False,
     ):
 
@@ -77,12 +94,11 @@ class Program(object):
             The baseline number of repetitions per dynamic exercise.
             Typically a value in the range [20, ..., 35].
 
-        rep_scalers
-            A list of factors of length 'duration', e.g. [1, 0.9, 1.1, ...].
-            For each week, the baseline number of repetitions is multiplied
-            by the corresponding factor, adding variation to the training
-            program. Each factor is typically in the range [0.7, ..., 1.3].
-            If None, a list of random factors is generated.
+        rep_scaler_func
+            A function mapping from a week in the range [1, `duration`] to a scaling
+            value (factor). The scaling value will be multiplied with the 
+            `reps_per_exercise` parameter for that week. Should typically return factors
+            between 0.7 and 1.3.
 
         intensity
             The baseline intensity for each dynamic exercise. The intensity
@@ -90,12 +106,11 @@ class Program(object):
             repetition is compared to the expected 1RM (max weight one can
             lift) for that given week. Typically a value around 75.
 
-        intensity_scalers
-            A list of factors of length 'duration', e.g. [1, 0.95, 1.05, ...].
-            For each week, the baseline intensity is multiplied by the
-            corresponding factor, adding variation to the training
-            program. Each factor is typically in the range [0.95, ..., 1.05].
-            If None, a list of random factors is generated.
+        intensity_scaler_func
+            A function mapping from a week in the range [1, `duration`] to a scaling
+            value (factor). The scaling value will be multiplied with the 
+            `intensity` parameter for that week. Should typically return factors
+            between 0.9 and 1.1.
 
         units
             The units used for exporting and printing the program, e.g. 'kg'.
@@ -106,70 +121,12 @@ class Program(object):
 
         progress_func
             The function used to model overall 1RM progression in the
-            training program. If None, the program uses
-            :py:meth:`streprogen.progression_sinusoidal`. Custom functions
-            may be used, but they must implement arguments like the
-            :py:meth:`streprogen.progression_sinusoidal` and
-            :py:meth:`streprogen.progression_linear` functions.
+            training program. The function must have a signature like:
+                func(week, start_weight, final_weight, start_week, end_week)
 
         reps_to_intensity_func
             The function used to model the relationship between repetitions
-            and intensity. If None, the program uses
-            :py:meth:`streprogen.reps_to_intensity`.
-            Custom functions may be used,
-            and the functions
-            :py:meth:`streprogen.reps_to_intensity_tight`
-            and
-            :py:meth:`streprogen.reps_to_intensity_relaxed`
-            are available.
-
-        min_reps_consistency
-            This is an advanced feature.  By default, the program will
-            examine the dynamic exercises and try to set a minimum
-            repetition consistency mode. If all dynamic exercises in the
-            program use the same repetition range, it will be set to
-            'weekly'. If all dynamic exercises in each day use the same
-            repetition range, it will be set to 'daily'.
-            If neither, it will be set to 'exercise'.
-
-            The minimum reps consistency mode tells the program how often
-            it should draw a new random value for the minimum repetition
-            to work up to. If 'min_reps_consistency' is 'weekly' and
-            the 'go_to_min' parameter is set to True, you can expect that
-            every exercise will work up to the same minimum number of
-            repetitions.
-
-            The 'min_reps_consistency' argument will override the program
-            default. If, for example, every exercise is set to the
-            repetition range 3-8 but you wish to work up to different
-            minimum values, set 'min_reps_consistency' to 'daily' or
-            'exercise'.
-
-        minimum_percentile
-            This is an advanced feature. To protect the athlete against
-            often working up to heavy weights, the repetition range is
-            "clipped" randomly. A repetition range 1-8 might be clipped
-            to, say, 3-8, 2-8 or 1-8. If clipped to 3-8, the repetitions
-            are drawn from [3, ..., 8] instead of [1, ..., 8].
-
-            The 'minimum_percentile' determines the percentile of the
-            repetition range to clip away. If 0, no clipping occurs.
-            If 0.5, half the repetition range could potentially be clipped
-            away. How often the range is clipped and a new minimum
-            repetition value is computed is determined by the minimum
-            repetition consistency mode, which may be controlled by the
-            'minimum_percentile' argument.
-
-        go_to_min
-            This is an advanced feature.
-            Whether or not to force the program to work up to the minimum
-            repetition possible for a given dynamic exercise. Consider a
-            program where 'minimum_percentile' is 0.2, and a dynamic exercise
-            has a repetition range 1-8. The program will drawn repetitions
-            in ranges 1-8, 2-8 or 3-8. If 'go_to_min' is True, the program
-            will be forced to work up to 1, 2 or 3 repetitions respectively.
-            If 'go_to_min' is False, the same range will be used, but the
-            program need not go to the minimum number of repeitions.
+            and intensity. Maps from a repetition to an intensity in the range 0-100.
 
         verbose
             If True, information will be outputted as the program is created.
@@ -191,56 +148,60 @@ class Program(object):
         self.duration = duration
         self.reps_per_exercise = reps_per_exercise
         self.intensity = intensity
-        self.rep_scalers = rep_scalers
-        self.intensity_scalers = intensity_scalers
         self.units = units
         self.round = functools.partial(round_to_nearest, nearest=round_to)
-        self.min_reps_consistency = min_reps_consistency
-        self.minimum_percentile = minimum_percentile
-        self.go_to_min = go_to_min
         self.verbose = verbose
-        user, default = progress_func, progression_sinusoidal
+
+        # Set functions to user supplied, or defaults if None was passed
+        user, default = (
+            rep_scaler_func,
+            functools.partial(
+                self._default_rep_scaler_func,
+                final_week=self.duration,
+                periods=self.duration // 4,
+            ),
+        )
+        self.rep_scaler_func = prioritized_not_None(user, default)
+
+        user, default = (
+            intensity_scaler_func,
+            functools.partial(
+                self._default_intensity_scaler_func,
+                final_week=self.duration,
+                periods=self.duration // 4,
+            ),
+        )
+        self.intensity_scaler_func = prioritized_not_None(user, default)
+
+        user, default = progression_func, self._default_progression_func
         self.progression_func = prioritized_not_None(user, default)
 
-        user, default = reps_to_intensity_func, reps_to_intensity
+        user, default = reps_to_intensity_func, self._default_reps_to_intensity_func
         self.reps_to_intensity_func = prioritized_not_None(user, default)
 
+        # Setup variables that the user has no control over
         self.days = []
+        self.active_day = None  # Used for Program.Day context manager API
         self._rendered = False
         self._set_jinja2_enviroment()
 
-    def _set_scalers(self):
-        """
-        Set the variables self._scalers as given by self.scalers,
-        if self.scalers is None, then a default value is used.
-        """
+    def Day(self, *args, **kwargs):
+        """TODO"""
+        day = Day(*args, **kwargs)
+        day.program = self
+        return day
 
-        # Set default value for rep_scalers if None
-        if self.rep_scalers is None:
-            # Draw self-repellent numbers from domain
-            domain = [0.8, 1, 1.2]
-            gen = RepellentGenerator(domain)
-            self._rep_scalers = list(gen.yield_from_domain(self.duration))
+    def DynamicExercise(self, *args, **kwargs):
+        """TODO"""
+        ex = DynamicExercise(*args, **kwargs)
+        self.active_day.dynamic_exercises.append(ex)
+        return ex
 
-        else:
-            if len(self.rep_scalers) != self.duration:
-                raise ProgramError(
-                    "Length of `rep_scalers` must match program duration."
-                )
-            self._rep_scalers = self.rep_scalers
-
-        # Set default value for intensity_scalers if None
-        if self.intensity_scalers is None:
-            # Draw self-repellent numbers from domain
-            domain = [0.95, 1, 1.05]
-            gen = RepellentGenerator(domain)
-            self._intensity_scalers = list(gen.yield_from_domain(self.duration))
-        else:
-            if len(self.intensity_scalers) != self.duration:
-                raise ProgramError(
-                    "Length of `intensity_scalers` must match program duration."
-                )
-            self._intensity_scalers = self.intensity_scalers
+    def StaticExercise(self, *args, **kwargs):
+        """TODO"""
+        ex = StaticExercise(*args, **kwargs)
+        self.active_day.static_exercises.append(ex)
+        return ex
 
     def _validate(self):
         """
@@ -256,18 +217,23 @@ class Program(object):
             
         Apart from these sanity checks, the user is on his own.
         """
+        weeks = list(range(1, self.duration + 1))
+
         # Validate the intensity
-        if max([s * self.intensity for s in self._intensity_scalers]) > 85:
+        intensities = [self.intensity_scaler_func(w) * self.intensity for w in weeks]
+
+        if max(intensities) > 85:
             warnings.warn("\nWARNING: Average intensity is > 85.")
 
-        if min([s * self.intensity for s in self._intensity_scalers]) < 65:
+        if min(intensities) < 65:
             warnings.warn("\nWARNING: Average intensity is < 65.")
 
         # Validate the repetitions
-        if max([s * self.reps_per_exercise for s in self._rep_scalers]) > 45:
+        repetitions = [self.rep_scaler_func(w) * self.reps_per_exercise for w in weeks]
+        if max(repetitions) > 45:
             warnings.warn("\nWARNING: Number of repetitions > 45.")
 
-        if min([s * self.reps_per_exercise for s in self._rep_scalers]) < 15:
+        if min(repetitions) < 15:
             warnings.warn("\nWARNING: Number of repetitions < 15.")
 
         # Validate the 'reps_to_intensity_func'
@@ -286,8 +252,6 @@ class Program(object):
         # Validate the exercises
         for day in self.days:
             for dynamic_ex in day.dynamic_exercises:
-                start, end = dynamic_ex.start_weight, dynamic_ex.final_weight
-                percentage_growth = (end / start) ** (1 / self.duration)
                 percentage_growth = dynamic_ex.weekly_growth(self.duration)
                 if percentage_growth > 4:
                     msg = '\n"{}" grows with {}% each week.'.format(
@@ -314,66 +278,6 @@ class Program(object):
         """
         self.days.extend(days)
 
-    @staticmethod
-    def repstring_penalty(
-        reps, intensities, desired_reps, desired_intensity, minimum_rep
-    ):
-        """Penalty function which calculates how "bad" a set of
-        reps and intensities is, compared to the desired repetitions,
-        the desired intensity level and the minimum repetitions.
-        Advanced users may substitute this function for their own version.
-    
-        Parameters
-        ----------
-        reps
-            A list of repetitions (sorted), e.g. [8, 6, 5, 2].
-        intensities
-            A list of intensities corresponding to the repetitions,
-            e.g. [64.7, 72.3, 76.25, 88.7].
-        desired_reps
-            Desired number of repetitions in total, e.g. 25.
-        desired_intensity
-            The desired average intensity, e.g. 75.
-        minimum_rep
-            The minimum repetition which is allowed, e.g. 2.
-    
-    
-        Returns
-        -------
-        float
-            A penalty, a positive real number.
-    
-    
-        Examples
-        -------
-        >>> desired_reps = 25
-        >>> desired_intensity = 75
-        >>> minimum_rep = 1
-        >>> high = Program().repstring_penalty([8, 8, 8], [60, 60, 60], 
-        ...                              desired_reps, desired_intensity, 
-        ...                              minimum_rep)
-        >>> low = Program().repstring_penalty([8, 6, 5, 4, 2], [64, 72, 75, 80, 88], 
-        ...                              desired_reps, desired_intensity, 
-        ...                              minimum_rep)
-        >>> high > low
-        True
-        """
-        # Punish when the mean intensity is far from the desired one
-        desired = desired_intensity
-        error1 = abs(statistics.mean(intensities) - desired)
-
-        # Punish when the repetitions are far from the desired amount
-        error2 = abs(sum(reps) - desired_reps)
-
-        # Punish when the spread of repetitions is large
-        error3 = spread(reps)
-
-        # Punish deviation from the minimum reptition
-        error4 = abs(min(reps) - minimum_rep)
-
-        # Take a linear combination and return
-        return sum([2 * error1, 0.5 * error2, 2.5 * error3, 0.5 * error4])
-
     def _render_dynamic(
         self, dynamic_exercise, min_rep, desired_reps, desired_intensity, validate
     ):
@@ -382,36 +286,30 @@ class Program(object):
         This is done for each exercise every week.
         """
 
-        # --------------------------------
-        # Generate possible repstring and calculate penalties
-        # --------------------------------
-        repstrings = []
-        for k in range(self.TIMES_TO_RENDER):
+        # Prepare input for the optimization routine
+        reps_in = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps))
+        intensities_in = tuple(map(self.reps_to_intensity_func, reps_in))
+        intensities_in = tuple([i / 100 for i in intensities_in])
 
-            # If going to minimum, add the minimum repetition to the reps
-            if self.go_to_min:
-                reps = generate_reps(
-                    min_rep,
-                    dynamic_exercise.max_reps,
-                    desired_reps - min_rep,
-                    [min_rep],
-                )
-            else:
-                reps = generate_reps(min_rep, dynamic_exercise.max_reps, desired_reps)
+        # Optimize
+        # x is a vector with entries saying how many sets of each reps to do
+        x, data = optimize_sets(
+            reps=reps_in,
+            intensities=intensities_in,
+            reps_goal=int(desired_reps),
+            intensities_goal=desired_intensity / 100,
+        )
 
-            # Calculate the penalty
-            intensities = list(map(self.reps_to_intensity_func, reps))
+        # Collect the results
+        reps = []
+        intensities = []
 
-            pargs = reps, intensities, desired_reps, desired_intensity, min_rep
-            penalty_value = self.repstring_penalty(*pargs)
-
-            repstrings.append((penalty_value, reps, intensities))
-
-        # --------------------------------
-        # Find the best generated repstring and verify it
-        # --------------------------------
-        best_repstring = min(repstrings)
-        (penalty_value, reps, intensities) = best_repstring
+        for rep, intensity, x_j in reversed(list(zip(reps_in, intensities_in, x))):
+            if x_j == 0:
+                continue
+            for _ in range(int(x_j)):
+                reps.append(rep)
+                intensities.append(intensity * 100)
 
         # Perform a sanity check:
         # If repetitions are too high, a low average intensity cannot be attained
@@ -479,90 +377,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 # Iterate over all main exercises
                 for dynamic_ex in day.dynamic_exercises:
                     self._rendered[week][day][dynamic_ex] = dict()
-
-    def _set_min_reps(self):
-        """Populate the _rendered dictionary with entries corresponding
-        to the minimum number of reps to go to for each exercise
-        and for the entire duration.
-    
-    
-        Examples
-        -------
-        >>> program = Program('My training program', duration = 2)
-        >>> bench_press = DynamicExercise('Bench', 100, 120)
-        >>> day = Day(exercises = [bench_press])
-        >>> program.add_days(day)
-        >>> program._initialize_render_dictionary()
-        >>> program._autoset_min_reps_consistency()
-        >>> program._set_min_reps()
-        >>> for week in range(1, program.duration + 1):
-        ...     for day in program.days:
-        ...         for d_ex in day.dynamic_exercises:
-        ...             print(program._rendered[week][day][d_ex]['minimum'] > 0)
-        True
-        True
-        """
-
-        min_percent = self.minimum_percentile
-        # --------------------------------
-        # If the mode is weekly, set minimum reps on a weekly basis
-        # --------------------------------
-        if self._min_reps_consistency == "weekly":
-
-            # Set up generator. Only one is needed
-            exercise = self.days[0].dynamic_exercises[0]
-            margs = exercise.min_reps, exercise.max_reps, min_percent
-            low, high = min_between(*margs)
-            generator = RepellentGenerator(list(range(low, high + 1)))
-
-            # Use generator to populate the dictionary with minimum values
-            for week in range(1, self.duration + 1):
-                min_rep_week = generator.generate_one()
-                for day in self.days:
-                    for d_ex in day.dynamic_exercises:
-                        self._rendered[week][day][d_ex]["minimum"] = min_rep_week
-
-        # --------------------------------
-        # If the mode is daily, set minimum reps on a daily basis
-        # --------------------------------
-        if self._min_reps_consistency == "daily":
-
-            # Set up generators. One is needed for each day
-            generators = dict()
-            for day in self.days:
-                exercise = day.dynamic_exercises[0]
-                margs = exercise.min_reps, exercise.max_reps, min_percent
-                low, high = min_between(*margs)
-                generator = RepellentGenerator(list(range(low, high + 1)))
-                generators[day] = generator
-
-            # Use generators to populate the dictionary with minimum values
-            for week in range(1, self.duration + 1):
-                for day in self.days:
-                    min_rep_day = generators[day].generate_one()
-                    for d_ex in day.dynamic_exercises:
-                        self._rendered[week][day][d_ex]["minimum"] = min_rep_day
-
-        # --------------------------------
-        # If the mode is by exercise, set minimum reps on an exercise basis
-        # --------------------------------
-        if self._min_reps_consistency == "exercise":
-
-            # Set up generators. One is needed for each exercise
-            generators = dict()
-            for day in self.days:
-                for d_ex in day.dynamic_exercises:
-                    margs = d_ex.min_reps, d_ex.max_reps, min_percent
-                    low, high = min_between(*margs)
-                    generator = RepellentGenerator(list(range(low, high + 1)))
-                    generators[d_ex] = generator
-
-            # Use generators to populate the dictionary with minimum values
-            for week in range(1, self.duration + 1):
-                for day in self.days:
-                    for d_ex in day.dynamic_exercises:
-                        min_rep_ex = generators[d_ex].generate_one()
-                        self._rendered[week][day][d_ex]["minimum"] = min_rep_ex
 
     def _yield_week_day_dynamic(self):
         """A helper function to reduce the number of nested loops.
@@ -658,22 +472,12 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Prepare for rendering the dynamic exercises
         # --------------------------------
 
-        # Set the minimum repetitions consistency mode,
-        # which is either 'weekly', 'daily' or 'exercise'
-        self._autoset_min_reps_consistency()
-
         # Initialize the structure of the _rendered dictionary
         self._initialize_render_dictionary()
 
         # Set the day names
         for i, day in enumerate(self.days):
             day.name = prioritized_not_None(day.name, "Day {}".format(i + 1))
-
-        # Set the minimum reps per week in the render dictionary
-        self._set_min_reps()
-
-        # Set the scalers
-        self._set_scalers()
 
         # Validate the program if the user wishes to validate
         if validate:
@@ -686,19 +490,19 @@ or (3) ignore this message. The software will do it's best to remedy this.
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
             # The minimum repeition to work up to
-            min_rep = self._rendered[week][day][dyn_ex]["minimum"]
+            min_rep = dyn_ex.min_reps  # self._rendered[week][day][dyn_ex]["minimum"]
 
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = total_reps * self._rep_scalers[week - 1]
+            desired_reps = round(total_reps * self.rep_scaler_func(week))
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired intensity to work up to
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
-            scale_factor = self._intensity_scalers[week - 1]
-            desired_intensity = intensity_unscaled * scale_factor
+            scale_factor = self.intensity_scaler_func(week)
+            desired_intensity = round(intensity_unscaled * scale_factor)
             self._rendered[week][day][dyn_ex]["desired_intensity"] = int(
                 desired_intensity
             )
@@ -708,7 +512,12 @@ or (3) ignore this message. The software will do it's best to remedy this.
             out = self._render_dynamic(*render_args)
 
             # Calculate the 1RM at this point in time
+            if dyn_ex.final_weight is None:
+                factor = 1 + (dyn_ex.percent_inc_per_week / 100) * self.duration
+                dyn_ex.final_weight = round(dyn_ex.start_weight * factor, 1)
+
             start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
+
             args = (week, start_w, final_w, 1, self.duration)
             weight = self.progression_func(*args)
 
@@ -858,81 +667,42 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """
         return self.to_txt()
 
-    def _autoset_min_reps_consistency(self):
-        """
-        Sets the program mode to 'weekly', 'daily' or 'exercise'
-        by automatically iterating over all exercises.
-        """
 
-        # -------------------------------------------
-        # Set automatically by investigating program
-        # -------------------------------------------
-
-        # Check whether the mode is WEEKLY
-        min_reps, max_reps = [], []
-        for day in self.days:
-            for dynamic_ex in day.dynamic_exercises:
-                min_reps.append(dynamic_ex.min_reps)
-                max_reps.append(dynamic_ex.max_reps)
-        if all_equal(min_reps) and all_equal(max_reps):
-            self._min_reps_consistency = "weekly"
-            return None
-
-        # Check if mode is DAILY
-        for day in self.days:
-            min_reps, max_reps = [], []
-            for dynamic_ex in day.dynamic_exercises:
-                min_reps.append(dynamic_ex.min_reps)
-                max_reps.append(dynamic_ex.max_reps)
-            if not all_equal(min_reps) or not all_equal(max_reps):
-                self._min_reps_consistency = "exercise"
-                return None
-        self._min_reps_consistency = "daily"
-
-        # -------------------------------------------
-        # Respect user wishes if possible
-        # -------------------------------------------
-
-        # Set the minimum consistency mode of the program
-        if self.min_reps_consistency is not None:
-
-            # Make sure the user defined consistency mode is
-            # never more broad than what is allowed by inputs
-            if (
-                self._min_reps_consistency == "exercise"
-                and self.min_reps_consistency != "exercise"
-            ):
-                raise ProgramError("Error with 'min_reps_consistency'.")
-
-            if (
-                self._min_reps_consistency == "daily"
-                and self.min_reps_consistency == "weekly"
-            ):
-                raise ProgramError("Error with 'min_reps_consistency'.")
-
-            self._min_reps_consistency = self.min_reps_consistency
-
+# Patch up the docs
+Program.Day.__doc__ = Day.__doc__ + "\nSee streprogen.Day for accurate signature."
+Program.DynamicExercise.__doc__ = (
+    DynamicExercise.__doc__ + "\nSee streprogen.DynamicExercise for accurate signature."
+)
+Program.StaticExercise.__doc__ = (
+    StaticExercise.__doc__ + "\nSee streprogen.StaticExercise for accurate signature."
+)
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
 
-    from streprogen import StaticExercise
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
 
-    def curl_func(week):
-        return "{} x 10".format(week)
+if __name__ == "__main__":
 
-    doctest.testmod(verbose=True)
+    from streprogen import Program
 
-    # Create a 4-week program
-    program = Program("My first program!", duration=4)
+    # Create a 4-week program, rounding every exercise to nearest unit og 5kg
+    program = Program("My first program!", duration=8, units="kg", round_to=5)
 
-    # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, 80)
-    squats = DynamicExercise("Squats", 80, 95)
-    curls = StaticExercise("Curls", curl_func)
-    day = Day(exercises=[bench, squats, curls])
+    with program.Day("Day A"):
+        program.DynamicExercise("Bench press", start_weight=80, min_reps=3, max_reps=8)
+        program.DynamicExercise("Squats", start_weight=100, min_reps=3, max_reps=8)
 
-    # Add day(s) to program and render it
-    program.add_days(day)
+    with program.Day("Day B"):
+        program.DynamicExercise(
+            "Deadlifts",
+            start_weight=100,
+            percent_inc_per_week=2,
+            min_reps=2,
+            max_reps=7,
+        )
+        program.StaticExercise("Curls", "3 x 10 @ 18kg")
+
+    # Render the program, then print it
     program.render()
     print(program)
