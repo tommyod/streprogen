@@ -17,8 +17,16 @@ Streprogen - the Python strength program generator.
 To install the Python package locally, run `pip install streprogen`.
 To run the code without installing Python, run these notebooks:
 
-* AA
-* BB
+* Run code live: `Streprogen - Essential Features<https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Essential%20features.ipynb>`_
+* Run code live: `Streprogen - Intermediate Features<https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Intermediate%20features.ipynb>`_
+* Run code live: `Streprogen - Advanced Features<https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%Advanced%20features.ipynb>`_
+
+
+
+`Python
+<http://www.python.org/>`_
+
+https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Essential%20features.ipynb
 
 
 Project summary

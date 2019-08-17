@@ -12,7 +12,7 @@ from streprogen.modeling import (
 )
 from streprogen.program import Program
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 __all__ = [
     "StaticExercise",
