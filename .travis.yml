@@ -2,22 +2,15 @@ language: python
 
 notifications:
   email: false
-
-matrix:
-  include:
   
-    - os: linux
-      sudo: required
-      python: '3.5'
-  
-    - os: linux
-      sudo: required
-      python: '3.6'
-  
-    - os: linux
-      dist: xenial    # required for Python 3.7 (travis-ci/travis-ci#9069)
-      sudo: required
-      python: '3.7'
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8-dev"  # 3.8 development branch
+  - "nightly"  # nightly build
 
 # The Travis CI job lifecycle specifies the order of the commands below phases.
 # https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
