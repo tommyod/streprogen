@@ -19,12 +19,12 @@ from streprogen.utils import (
     all_equal,
     chunker,
     escape_string,
-    generate_reps,
     min_between,
     prioritized_not_None,
     round_to_nearest,
     spread,
 )
+from streprogen.optimization import optimize_sets
 
 
 class ProgramError(Exception):
@@ -314,66 +314,6 @@ class Program(object):
         """
         self.days.extend(days)
 
-    @staticmethod
-    def repstring_penalty(
-        reps, intensities, desired_reps, desired_intensity, minimum_rep
-    ):
-        """Penalty function which calculates how "bad" a set of
-        reps and intensities is, compared to the desired repetitions,
-        the desired intensity level and the minimum repetitions.
-        Advanced users may substitute this function for their own version.
-    
-        Parameters
-        ----------
-        reps
-            A list of repetitions (sorted), e.g. [8, 6, 5, 2].
-        intensities
-            A list of intensities corresponding to the repetitions,
-            e.g. [64.7, 72.3, 76.25, 88.7].
-        desired_reps
-            Desired number of repetitions in total, e.g. 25.
-        desired_intensity
-            The desired average intensity, e.g. 75.
-        minimum_rep
-            The minimum repetition which is allowed, e.g. 2.
-    
-    
-        Returns
-        -------
-        float
-            A penalty, a positive real number.
-    
-    
-        Examples
-        -------
-        >>> desired_reps = 25
-        >>> desired_intensity = 75
-        >>> minimum_rep = 1
-        >>> high = Program().repstring_penalty([8, 8, 8], [60, 60, 60], 
-        ...                              desired_reps, desired_intensity, 
-        ...                              minimum_rep)
-        >>> low = Program().repstring_penalty([8, 6, 5, 4, 2], [64, 72, 75, 80, 88], 
-        ...                              desired_reps, desired_intensity, 
-        ...                              minimum_rep)
-        >>> high > low
-        True
-        """
-        # Punish when the mean intensity is far from the desired one
-        desired = desired_intensity
-        error1 = abs(statistics.mean(intensities) - desired)
-
-        # Punish when the repetitions are far from the desired amount
-        error2 = abs(sum(reps) - desired_reps)
-
-        # Punish when the spread of repetitions is large
-        error3 = spread(reps)
-
-        # Punish deviation from the minimum reptition
-        error4 = abs(min(reps) - minimum_rep)
-
-        # Take a linear combination and return
-        return sum([2 * error1, 0.5 * error2, 2.5 * error3, 0.5 * error4])
-
     def _render_dynamic(
         self, dynamic_exercise, min_rep, desired_reps, desired_intensity, validate
     ):
@@ -382,36 +322,30 @@ class Program(object):
         This is done for each exercise every week.
         """
 
-        # --------------------------------
-        # Generate possible repstring and calculate penalties
-        # --------------------------------
-        repstrings = []
-        for k in range(self.TIMES_TO_RENDER):
+        # Prepare input for the optimization routine
+        reps_in = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps))
+        intensities_in = tuple(map(self.reps_to_intensity_func, reps_in))
+        intensities_in = tuple([i / 100 for i in intensities_in])
 
-            # If going to minimum, add the minimum repetition to the reps
-            if self.go_to_min:
-                reps = generate_reps(
-                    min_rep,
-                    dynamic_exercise.max_reps,
-                    desired_reps - min_rep,
-                    [min_rep],
-                )
-            else:
-                reps = generate_reps(min_rep, dynamic_exercise.max_reps, desired_reps)
+        # Optimize
+        # x is a vector with entries saying how many sets of each reps to do
+        x, data = optimize_sets(
+            reps=reps_in,
+            intensities=intensities_in,
+            reps_goal=int(desired_reps),
+            intensities_goal=desired_intensity / 100,
+        )
 
-            # Calculate the penalty
-            intensities = list(map(self.reps_to_intensity_func, reps))
+        # Collect the results
+        reps = []
+        intensities = []
 
-            pargs = reps, intensities, desired_reps, desired_intensity, min_rep
-            penalty_value = self.repstring_penalty(*pargs)
-
-            repstrings.append((penalty_value, reps, intensities))
-
-        # --------------------------------
-        # Find the best generated repstring and verify it
-        # --------------------------------
-        best_repstring = min(repstrings)
-        (penalty_value, reps, intensities) = best_repstring
+        for rep, intensity, x_j in reversed(list(zip(reps_in, intensities_in, x))):
+            if x_j == 0:
+                continue
+            for _ in range(int(x_j)):
+                reps.append(rep)
+                intensities.append(intensity * 100)
 
         # Perform a sanity check:
         # If repetitions are too high, a low average intensity cannot be attained

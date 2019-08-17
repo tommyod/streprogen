@@ -204,6 +204,7 @@ def progression_sinusoidal(
     periods=2,
     scale=0.025,
     offset=0,
+    k=0,
 ):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
@@ -228,6 +229,8 @@ def progression_sinusoidal(
         The scale (amplitude) of the sinusoidal term.
     offset
         The offset (shift) of the sinusoid.
+    k
+        Exponential growth. Higher results in more exponential growth.
 
 
     Returns
@@ -238,24 +241,38 @@ def progression_sinusoidal(
 
     Examples
     -------
-    >>> progression_sinusoidal(1, 100, 120, 1, 8)
+    >>> progression_sinusoidal(1, 100, 100, 1, 8, periods=4)
     100.0
-    >>> progression_sinusoidal(8, 100, 120, 1, 8)
-    120.0
-    >>> progression_sinusoidal(4, 100, 120, 1, 8)
-    106.44931454758678
+    >>> progression_sinusoidal(3, 100, 100, 1, 8, periods=4)
+    100.0
+    >>> progression_sinusoidal(5, 100, 100, 1, 8, periods=4)
+    100.0
     """
-    # Get the linear model
-    linear = progression_linear(week, start_weight, final_weight, start_week, end_week)
+    # Get the base model
+    base = progression_diffeq(week, start_weight, final_weight, start_week, end_week, k)
 
     # Calculate the time period and the argument to the sine function
-    time_period = end_week - start_week
+    time_period = end_week - start_week + 1
     sine_argument = (
         (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
     )
 
-    linear_with_sinusoidal = linear * (1 + scale * math.sin(sine_argument))
-    return linear_with_sinusoidal
+    base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
+    return base_with_sinusoidal
+
+
+def progression_diffeq(week, start_weight, final_weight, start_week, end_week, k):
+    """
+    Returns the current strength level from linearly adjusted differential eq.
+    """
+    S_i = start_weight
+    S_m = final_weight
+    t = week
+    t_i = start_week
+    t_m = end_week
+
+    a = (t_i - t) / (t_m - t_i)
+    return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
 
 
 reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-4)

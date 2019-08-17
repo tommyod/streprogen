@@ -1,0 +1,45 @@
+language: python
+
+notifications:
+  email: false
+
+matrix:
+  include:
+  
+    - os: linux
+      sudo: required
+      python: '3.6'
+  
+    - os: linux
+      dist: xenial    # required for Python 3.7 (travis-ci/travis-ci#9069)
+      sudo: required
+      python: '3.7'
+
+# The Travis CI job lifecycle specifies the order of the commands below phases.
+# https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
+
+# -------------------- install: install any dependencies required -------------
+before_install:
+  - uname --all # Print system information
+  - python --version # Print python information
+  
+# -------------------- script: run the build script ---------------------------
+before_script:
+  - pip install . # Install the package
+  - pip show streprogen # Show information about the package
+  - black . --check # Check that code is formatted correctly w.r.t. black
+
+script:
+  # Install the test package before running the tests
+  - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
+
+# -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
+after_script:
+  - python setup.py sdist # Source distribution
+  # report any problems rendering your README. If your markup renders fine, 
+  # the command will output Checking distribution FILENAME: Passed.
+  - twine check dist/*
+  - echo "$TRAVIS_TAG"
+  - if [ -n "$TRAVIS_TAG" ]; then
+    python -m twine upload dist/* --username tommyod --password $TWINE --skip-existing;
+    fi

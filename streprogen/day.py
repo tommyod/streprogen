@@ -23,11 +23,6 @@ class Day(object):
             A list of exercises. Exercises can also be associated with a day using
             the 'add_exercises' method later on.
 
-        Returns
-        -------
-        Day
-            A day object.
-
 
         Examples
         -------
