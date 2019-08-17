@@ -166,6 +166,6 @@ reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.5)
 reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-4.5)
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
 
-    doctest.testmod(verbose=True)
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])

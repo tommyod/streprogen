@@ -249,6 +249,6 @@ class StaticExercise(object):
 
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
 
-    doctest.testmod(verbose=True)
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])

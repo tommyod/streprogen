@@ -676,14 +676,16 @@ Program.DynamicExercise.__doc__ = DynamicExercise.__doc__
 Program.StaticExercise.__doc__ = StaticExercise.__doc__
 
 if __name__ == "__main__":
-    import doctest
+    import pytest
+
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+
+if __name__ == "__main__":
 
     from streprogen import StaticExercise
 
     def curl_func(week):
         return "{} x 10".format(week)
-
-    doctest.testmod(verbose=True)
 
     # Create a 4-week program
     program = Program("My first program!", duration=8)

@@ -39,5 +39,4 @@ def test_example_notebooks(notebook):
 
 
 if __name__ == "__main__":
-
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])

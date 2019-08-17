@@ -235,6 +235,12 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
 
 
 if __name__ == "__main__":
+    import pytest
+
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+
+
+if __name__ == "__main__":
     reps = tuple([8, 7, 6, 5, 4, 3, 2, 1])
     intensities = tuple([0.7, 0.74, 0.78, 0.82, 0.86, 0.9, 0.94, 0.98])
 

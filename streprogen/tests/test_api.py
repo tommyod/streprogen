@@ -88,59 +88,6 @@ def test_decorator_api():
     assert program._rendered
 
 
-# =============================================================================
-#
-#
-# import numpy as np
-# from KDEpy.FFTKDE import FFTKDE
-# from KDEpy.NaiveKDE import NaiveKDE
-# from KDEpy.TreeKDE import TreeKDE
-# import itertools
-# import pytest
-# import matplotlib
-#
-# matplotlib.use("Agg")  # For testing on servers
-#
-# kernels = list(NaiveKDE._available_kernels.keys())
-# kdes = [NaiveKDE, TreeKDE, FFTKDE]
-# kde_pairs = list(itertools.combinations(kdes, 2))
-#
-#
-# @pytest.mark.parametrize(
-#     "kde1, kde2, bw, kernel",
-#     [
-#         (k[0], k[1], bw, ker)
-#         for (k, bw, ker) in itertools.product(kde_pairs, [0.1, "silverman", 1], kernels)
-#     ],
-# )
-# def test_api_models_kernels_bandwidths(kde1, kde2, bw, kernel):
-#     """
-#     Test the API. More specifically the chained version and the non-chained
-#     version of the API. It's tested over every implementation, several
-#     bandwidths and kernels.
-#     """
-#     data = np.array([-1, 0, 0.1, 3, 10])
-#     weights = [1, 2, 1, 0.8, 2]
-#
-#     # Chained expression
-#     x1, y1 = kde1(kernel=kernel, bw=bw).fit(data, weights).evaluate()
-#
-#     # Step by step, with previous grid
-#     model = kde2(kernel=kernel, bw=bw)
-#     model.fit(data, weights)
-#     y2 = model.evaluate(x1)
-#
-#     # Mean error
-#     err = np.sqrt(np.mean((y1 - y2) ** 2))
-#     if kernel == "box":
-#         assert err < 0.025
-#     else:
-#         assert err < 0.002
-#
-#
-# =============================================================================
-
-
 if __name__ == "__main__":
     if True:
         # --durations=10  <- May be used to show potentially slow tests
