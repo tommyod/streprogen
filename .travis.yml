@@ -33,18 +33,8 @@ before_script:
 script:
   # Install the test package before running the tests
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
-  - for file in `examples/*.ipynb`; do 
-      sudo ipython nbconvert --to script $file.ipynb 
-    ;done
-    
-  - (for file in `examples/*.ipynb`; do 
-      chmod +x $file
-      if (( $(ipython nbconvert --to script $file.ipynb) != 1 )) ; then
-        echo "Command succeeded"
-      else
-        false; exit;
-      fi
-    ;done);
+  - pytest examples --verbose --doctest-modules --color=yes # Run all tests
+
 
 # -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
 after_script:
