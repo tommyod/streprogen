@@ -9,7 +9,12 @@ Streprogen - the Python strength program generator.
    :target: http://streprogen.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
    
-Install locally using ``pip install streprogen``, or run live notebooks online:
+Install locally using ``pip install streprogen``, or run live notebooks online.
+
+Run code in your browser
+------------------------
+
+If you don't have Python installed, you can run code in your browser.
 
 Learn how to use streprogen
 ***************************
@@ -26,7 +31,6 @@ Example program library
 * Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%203%20Day%20split%20with%20periodization.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/examples/3DaySplitWithPeriodization.pdf>`_.
-
 
 **Instructions for live code:**
 Click "*Runtime*", then "Run all".
@@ -51,7 +55,7 @@ strength training programs. The main features are:
 * **Pretty output**\ : Training programs may be saved as ``.txt``, ``.html`` or ``.tex`` files.
   Print it and bring it to the gym.
   
-
+  
 .. image:: https://raw.githubusercontent.com/tommyod/streprogen/master/examples/streprogen_overview.png
 
 
