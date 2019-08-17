@@ -3,6 +3,7 @@
 
 import functools
 import warnings
+import operator
 
 from streprogen.utils import compose, escape_string, round_to_nearest
 
@@ -67,6 +68,11 @@ class DynamicExercise(object):
         Examples
         -------
         >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
+        >>> bench2 = DynamicExercise('Bench press', 100, 120, 3, 8)
+        >>> bench == bench2
+        True
+        
+        
         """
         self.name = escape_string(name)
         self.start_weight = start_weight
@@ -140,6 +146,16 @@ class DynamicExercise(object):
         )
 
         return "{}({})".format(type(self).__name__, arg_str)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __hash__(self):
+
+        dict_sorted = sorted(self.__dict__.items(), key=operator.itemgetter(0))
+        values = [v for (k, v) in dict_sorted]
+
+        return hash(tuple(values))
 
 
 class StaticExercise(object):
