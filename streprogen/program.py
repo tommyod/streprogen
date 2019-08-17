@@ -10,7 +10,7 @@ from os import path
 from jinja2 import Environment, FileSystemLoader
 
 from streprogen.day import Day
-from streprogen.exercises import DynamicExercise
+from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import progression_sinusoidal, reps_to_intensity
 from streprogen.utils import (
     all_equal,
@@ -54,6 +54,7 @@ class Program(object):
         progress_func=None,
         reps_to_intensity_func=None,
         verbose=False,
+        random_seed=123
     ):
 
         """Initialize a new program.
@@ -118,6 +119,9 @@ class Program(object):
 
         verbose
             If True, information will be outputted as the program is created.
+            
+        random_seed
+            Random seed used for random generation.
 
     
         Returns
@@ -143,6 +147,7 @@ class Program(object):
         self.verbose = verbose
         user, default = progress_func, progression_sinusoidal
         self.progression_func = prioritized_not_None(user, default)
+        self.random_seed = random_seed
 
         user, default = reps_to_intensity_func, reps_to_intensity
         self.reps_to_intensity_func = prioritized_not_None(user, default)
@@ -175,12 +180,14 @@ class Program(object):
         Set the variables self._scalers as given by self.scalers,
         if self.scalers is None, then a default value is used.
         """
+        
+        random_generator = random.Random(self.random_seed)
 
         # Set default value for rep_scalers if None
         if self.rep_scalers is None:
             # Draw self-repellent numbers from domain
             domain = [0.8, 1, 1.2]
-            self._rep_scalers = random.choices(domain, k=self.duration)
+            self._rep_scalers = random_generator.choices(domain, k=self.duration)
 
         else:
             if len(self.rep_scalers) != self.duration:
@@ -193,7 +200,7 @@ class Program(object):
         if self.intensity_scalers is None:
             # Draw self-repellent numbers from domain
             domain = [0.95, 1, 1.05]
-            self._intensity_scalers = random.choices(domain, k=self.duration)
+            self._intensity_scalers = random_generator.choices(domain, k=self.duration)
         else:
             if len(self.intensity_scalers) != self.duration:
                 raise ProgramError(
@@ -718,6 +725,11 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             self._min_reps_consistency = self.min_reps_consistency
 
+
+# Patch up the docs
+Program.Day.__doc__ = Day.__doc__
+Program.DynamicExercise.__doc__ = DynamicExercise.__doc__
+Program.StaticExercise.__doc__ = StaticExercise.__doc__
 
 if __name__ == "__main__":
     import doctest
