@@ -287,7 +287,7 @@ class Program(object):
         """
 
         # Prepare input for the optimization routine
-        reps_in = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps))
+        reps_in = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
         intensities_in = tuple(map(self.reps_to_intensity_func, reps_in))
         intensities_in = tuple([i / 100 for i in intensities_in])
 
@@ -706,3 +706,45 @@ if __name__ == "__main__":
     # Render the program, then print it
     program.render()
     print(program)
+
+    def rep_scaler_func(week, *args):
+        return 1
+
+    def intensity_scaler_func(week, *args):
+        return 1
+
+    program = Program(
+        # The name of the training program
+        name="Beginner 5x5",
+        # The duration of the training program in weeks.
+        duration=8,
+        # The baseline number of repetitions per dynamic exercise.
+        reps_per_exercise=25,
+        intensity=reps_to_intensity(5),
+        # Units for the weights, typically 'kg', 'lbs' or '' (empty)
+        units="kg",
+        # What the weights are rounded to.
+        round_to=5,
+        rep_scaler_func=rep_scaler_func,
+        intensity_scaler_func=intensity_scaler_func,
+    )
+
+    with program.Day("A"):
+        program.DynamicExercise(name="Squat", start_weight=80, min_reps=5, max_reps=5)
+        program.DynamicExercise(
+            name="Bench Press", start_weight=80, min_reps=5, max_reps=5
+        )
+        program.DynamicExercise(
+            name="Barbell Row", start_weight=80, min_reps=5, max_reps=5
+        )
+
+    with program.Day("B"):
+        program.DynamicExercise(name="Squat", start_weight=80, min_reps=5, max_reps=5)
+        program.DynamicExercise(
+            name="Overhead Press", start_weight=80, min_reps=5, max_reps=5
+        )
+        program.DynamicExercise(
+            name="Deadlift", start_weight=80, min_reps=5, max_reps=5, reps=5
+        )
+
+    program.render()
