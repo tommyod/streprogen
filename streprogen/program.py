@@ -34,7 +34,6 @@ class Program(object):
     """
 
     REP_SET_SEP = " x "
-    TIMES_TO_RENDER = 50
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
     TEMPLATE_NAMES = {
         extension: "program_template." + extension
@@ -474,10 +473,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Prepare for rendering the dynamic exercises
         # --------------------------------
 
-        # Set the minimum repetitions consistency mode,
-        # which is either 'weekly', 'daily' or 'exercise'
-        self._autoset_min_reps_consistency()
-
         # Initialize the structure of the _rendered dictionary
         self._initialize_render_dictionary()
 
@@ -504,14 +499,14 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = total_reps * self._rep_scalers[week - 1]
+            desired_reps = round(total_reps * self._rep_scalers[week - 1])
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired intensity to work up to
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
             scale_factor = self._intensity_scalers[week - 1]
-            desired_intensity = intensity_unscaled * scale_factor
+            desired_intensity = round(intensity_unscaled * scale_factor)
             self._rendered[week][day][dyn_ex]["desired_intensity"] = int(
                 desired_intensity
             )
@@ -670,60 +665,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
         String formatting for readable human output.
         """
         return self.to_txt()
-
-    def _autoset_min_reps_consistency(self):
-        """
-        Sets the program mode to 'weekly', 'daily' or 'exercise'
-        by automatically iterating over all exercises.
-        """
-
-        # -------------------------------------------
-        # Set automatically by investigating program
-        # -------------------------------------------
-
-        # Check whether the mode is WEEKLY
-        min_reps, max_reps = [], []
-        for day in self.days:
-            for dynamic_ex in day.dynamic_exercises:
-                min_reps.append(dynamic_ex.min_reps)
-                max_reps.append(dynamic_ex.max_reps)
-        if all_equal(min_reps) and all_equal(max_reps):
-            self._min_reps_consistency = "weekly"
-            return None
-
-        # Check if mode is DAILY
-        for day in self.days:
-            min_reps, max_reps = [], []
-            for dynamic_ex in day.dynamic_exercises:
-                min_reps.append(dynamic_ex.min_reps)
-                max_reps.append(dynamic_ex.max_reps)
-            if not all_equal(min_reps) or not all_equal(max_reps):
-                self._min_reps_consistency = "exercise"
-                return None
-        self._min_reps_consistency = "daily"
-
-        # -------------------------------------------
-        # Respect user wishes if possible
-        # -------------------------------------------
-
-        # Set the minimum consistency mode of the program
-        if self.min_reps_consistency is not None:
-
-            # Make sure the user defined consistency mode is
-            # never more broad than what is allowed by inputs
-            if (
-                self._min_reps_consistency == "exercise"
-                and self.min_reps_consistency != "exercise"
-            ):
-                raise ProgramError("Error with 'min_reps_consistency'.")
-
-            if (
-                self._min_reps_consistency == "daily"
-                and self.min_reps_consistency == "weekly"
-            ):
-                raise ProgramError("Error with 'min_reps_consistency'.")
-
-            self._min_reps_consistency = self.min_reps_consistency
 
 
 # Patch up the docs
