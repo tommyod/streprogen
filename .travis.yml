@@ -39,7 +39,7 @@ script:
     
   - (for file in `examples/*.ipynb`; do 
       chmod +x $file
-      if ipython nbconvert --to script $file.ipynb ; then
+      if (( $(ipython nbconvert --to script $file.ipynb) != 1 )) ; then
         echo "Command succeeded"
       else
         false; exit;
