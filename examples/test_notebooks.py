@@ -25,7 +25,8 @@ def _exec_notebook(path):
             path,
         ]
         subprocess.check_call(args)
-        
+
+
 here = os.path.abspath(os.path.dirname(__file__))
 notebooks = [os.path.join(here, f) for f in os.listdir(here) if f.endswith(".ipynb")]
 

@@ -15,9 +15,10 @@ class DynamicExercise(object):
         self,
         name,
         start_weight,
-        final_weight,
+        final_weight=None,
         min_reps=3,
         max_reps=8,
+        percent_inc_per_week=1.5,
         reps=None,
         intensity=None,
         round_to=None,
@@ -42,6 +43,9 @@ class DynamicExercise(object):
             
         max_reps
             The maximum number of repetitions for this exercise, e.g. 8.
+            
+        percent_inc_per_week
+            If `final_weight` is not set, this value can be used.
             
         reps
             The number of baseline repetitions for this exercise. If this
@@ -79,6 +83,7 @@ class DynamicExercise(object):
         self.final_weight = final_weight
         self.min_reps = min_reps
         self.max_reps = max_reps
+        self.percent_inc_per_week = percent_inc_per_week
         self.reps = reps
         self.intensity = intensity
 
@@ -87,9 +92,10 @@ class DynamicExercise(object):
         else:
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 
-        if self.start_weight > self.final_weight:
-            msg = "Start weight larger than end weight for exercise '{}'."
-            warnings.warn(msg.format(self.name))
+        if self.final_weight is not None:
+            if self.start_weight > self.final_weight:
+                msg = "Start weight larger than end weight for exercise '{}'."
+                warnings.warn(msg.format(self.name))
 
         if self.min_reps > self.max_reps:
             msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
@@ -111,14 +117,21 @@ class DynamicExercise(object):
         Examples
         -------
         >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
-        >>> bench.weekly_growth(8)
-        2.3
+        >>> bench.weekly_growth(2)
+        10.0
         >>> bench.weekly_growth(4)
-        4.7
+        5.0
+        >>> bench = DynamicExercise('Bench press', 100, None, 3, 8)
+        >>> bench.weekly_growth(4)
+        1.5
         """
-        start, end = self.start_weight, self.final_weight
-        growth_factor = ((end / start) ** (1 / weeks) - 1) * 100
-        return round(growth_factor, 1)
+        if self.final_weight is not None:
+            start, end = self.start_weight, self.final_weight
+
+            growth = ((end / start) - 1) / weeks * 100
+            return round(growth, 1)
+
+        return round(self.percent_inc_per_week, 1)
 
     def __repr__(self):
         """Representation."""

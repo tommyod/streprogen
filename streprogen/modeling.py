@@ -6,7 +6,7 @@ import math
 import random
 
 
-def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
+def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
     """A function mapping from repetitions in the range 1 to 12
     to intensities in the range 0 to 100.
 
@@ -46,60 +46,19 @@ def reps_to_intensity(reps, slope=-4.8, constant=97.5, quadratic=True):
         return intensity
 
 
-def progression_linear(week, start_weight, final_weight, start_week, end_week):
-    """A linear progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
-    in 'week'.
-
-    Parameters
-    ----------
-    week
-        The week to evaluate the linear function at.
-    start_weight
-        The weight at 'start_week'.
-    final_weight
-        The weight at 'end_week'.
-    start_week
-        The number of the first week, typically 1.
-    end_week
-        The number of the final week, e.g. 8.
-
-
-    Returns
-    -------
-    weight
-        The weight at 'week'.
-
-
-    Examples
-    -------
-    >>> progression_linear(week = 2, start_weight = 100, final_weight = 120,
-    ...                    start_week = 1, end_week = 3)
-    110.0
-    
-    >>> progression_linear(3, 100, 140, 1, 5)
-    120.0
-    """
-    # Calculate the slope of the linear function
-    slope = (start_weight - final_weight) / (start_week - end_week)
-
-    # Return the answer y = slope (x - x_0) + y_0
-    return slope * (week - start_week) + start_weight
-
-
 def progression_sinusoidal(
     week,
     start_weight,
     final_weight,
     start_week,
-    end_week,
+    final_week,
     periods=2,
     scale=0.025,
     offset=0,
     k=0,
 ):
     """A sinusoidal progression function going through the points
-    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
+    ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
     in 'week'. This function calls a linear progression function
     and multiplies it by a sinusoid.
 
@@ -110,10 +69,10 @@ def progression_sinusoidal(
     start_weight
         The weight at 'start_week'.
     final_weight
-        The weight at 'end_week'.
+        The weight at 'final_week'.
     start_week
         The number of the first week, typically 1.
-    end_week
+    final_week
         The number of the final week, e.g. 8.
     periods
         Number of sinusoidal periods in the time range.
@@ -133,18 +92,18 @@ def progression_sinusoidal(
 
     Examples
     -------
-    >>> progression_sinusoidal(1, 100, 100, 1, 8, periods=4)
-    100.0
-    >>> progression_sinusoidal(3, 100, 100, 1, 8, periods=4)
-    100.0
-    >>> progression_sinusoidal(5, 100, 100, 1, 8, periods=4)
-    100.0
+    >>> progression_sinusoidal(1, 123, 123, 1, 8, periods=1)
+    123.0
+    >>> progression_sinusoidal(8, 123, 123, 1, 8, periods=1)
+    123.0
     """
     # Get the base model
-    base = progression_diffeq(week, start_weight, final_weight, start_week, end_week, k)
+    base = progression_diffeq(
+        week, start_weight, final_weight, start_week, final_week, k
+    )
 
     # Calculate the time period and the argument to the sine function
-    time_period = end_week - start_week + 1
+    time_period = final_week - start_week + 0
     sine_argument = (
         (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
     )
@@ -153,22 +112,58 @@ def progression_sinusoidal(
     return base_with_sinusoidal
 
 
-def progression_diffeq(week, start_weight, final_weight, start_week, end_week, k):
-    """
-    Returns the current strength level from linearly adjusted differential eq.
+def progression_diffeq(week, start_weight, final_weight, start_week, final_week, k=0):
+    """A linear/exponential progression function going through the points
+    ('start_week', 'start_weight') and ('end_week', 'final_weight'), evaluated
+    in 'week'.
+
+    Parameters
+    ----------
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    final_weight
+        The weight at 'final_week'.
+    start_week
+        The number of the first week, typically 1.
+    final_week
+        The number of the final week, e.g. 8.
+    k
+        How much the function "bends". k=0 is linear, k>0 bends it.
+
+
+    Returns
+    -------
+    weight
+        The weight at 'week'.
+
+
+    Examples
+    -------
+    >>> progression_diffeq(week = 2, start_weight = 100, final_weight = 120,
+    ...                    start_week = 1, final_week = 3)
+    110.0
+    
+    >>> progression_diffeq(3, 100, 140, 1, 5)
+    120.0
     """
     S_i = start_weight
     S_m = final_weight
     t = week
     t_i = start_week
-    t_m = end_week
+    t_m = final_week
+    assert k >= 0
 
+    # Normalize the time
     a = (t_i - t) / (t_m - t_i)
+
+    # Return the answer
     return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
 
 
-reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-4)
-reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-5.6)
+reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.5)
+reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-4.5)
 
 if __name__ == "__main__":
     import doctest

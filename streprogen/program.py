@@ -11,7 +11,11 @@ from jinja2 import Environment, FileSystemLoader
 
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
-from streprogen.modeling import progression_sinusoidal, reps_to_intensity
+from streprogen.modeling import (
+    progression_sinusoidal,
+    reps_to_intensity,
+    progression_diffeq,
+)
 from streprogen.utils import (
     all_equal,
     chunker,
@@ -40,20 +44,48 @@ class Program(object):
         for extension in ["html", "txt", "tex"]
     }
 
+    # Default functions
+    _default_rep_scaler_func = staticmethod(
+        functools.partial(
+            progression_sinusoidal,
+            start_weight=1,
+            final_weight=1,
+            start_week=1,
+            periods=2,
+            scale=0.05,
+            offset=0,
+            k=0,
+        )
+    )
+    _default_intensity_scaler_func = staticmethod(
+        functools.partial(
+            progression_sinusoidal,
+            start_weight=1,
+            final_weight=1,
+            start_week=1,
+            periods=2,
+            scale=0.025,
+            offset=2,
+            k=0,
+        )
+    )
+
+    _default_reps_to_intensity_func = staticmethod(reps_to_intensity)
+    _default_progression_func = staticmethod(functools.partial(progression_diffeq, k=1))
+
     def __init__(
         self,
         name="Untitled",
         duration=8,
         reps_per_exercise=25,
-        rep_scalers=None,
-        intensity=75,
-        intensity_scalers=None,
+        rep_scaler_func=None,
+        intensity=80,
+        intensity_scaler_func=None,
         units="kg",
         round_to=2.5,
-        progress_func=None,
+        progression_func=None,
         reps_to_intensity_func=None,
         verbose=False,
-        random_seed=123,
     ):
 
         """Initialize a new program.
@@ -70,12 +102,11 @@ class Program(object):
             The baseline number of repetitions per dynamic exercise.
             Typically a value in the range [20, ..., 35].
 
-        rep_scalers
-            A list of factors of length 'duration', e.g. [1, 0.9, 1.1, ...].
-            For each week, the baseline number of repetitions is multiplied
-            by the corresponding factor, adding variation to the training
-            program. Each factor is typically in the range [0.7, ..., 1.3].
-            If None, a list of random factors is generated.
+        rep_scaler_func
+            A function mapping from a week in the range [1, `duration`] to a scaling
+            value (factor). The scaling value will be multiplied with the 
+            `reps_per_exercise` parameter for that week. Should typically return factors
+            between 0.7 and 1.3.
 
         intensity
             The baseline intensity for each dynamic exercise. The intensity
@@ -83,12 +114,11 @@ class Program(object):
             repetition is compared to the expected 1RM (max weight one can
             lift) for that given week. Typically a value around 75.
 
-        intensity_scalers
-            A list of factors of length 'duration', e.g. [1, 0.95, 1.05, ...].
-            For each week, the baseline intensity is multiplied by the
-            corresponding factor, adding variation to the training
-            program. Each factor is typically in the range [0.95, ..., 1.05].
-            If None, a list of random factors is generated.
+        intensity_scaler_func
+            A function mapping from a week in the range [1, `duration`] to a scaling
+            value (factor). The scaling value will be multiplied with the 
+            `intensity` parameter for that week. Should typically return factors
+            between 0.9 and 1.1.
 
         units
             The units used for exporting and printing the program, e.g. 'kg'.
@@ -99,28 +129,15 @@ class Program(object):
 
         progress_func
             The function used to model overall 1RM progression in the
-            training program. If None, the program uses
-            :py:meth:`streprogen.progression_sinusoidal`. Custom functions
-            may be used, but they must implement arguments like the
-            :py:meth:`streprogen.progression_sinusoidal` and
-            :py:meth:`streprogen.progression_linear` functions.
+            training program. The function must have a signature like:
+                func(week, start_weight, final_weight, start_week, end_week)
 
         reps_to_intensity_func
             The function used to model the relationship between repetitions
-            and intensity. If None, the program uses
-            :py:meth:`streprogen.reps_to_intensity`.
-            Custom functions may be used,
-            and the functions
-            :py:meth:`streprogen.reps_to_intensity_tight`
-            and
-            :py:meth:`streprogen.reps_to_intensity_relaxed`
-            are available.
+            and intensity. Maps from a repetition to an intensity in the range 0-100.
 
         verbose
             If True, information will be outputted as the program is created.
-            
-        random_seed
-            Random seed used for random generation.
 
     
         Returns
@@ -139,20 +156,34 @@ class Program(object):
         self.duration = duration
         self.reps_per_exercise = reps_per_exercise
         self.intensity = intensity
-        self.rep_scalers = rep_scalers
-        self.intensity_scalers = intensity_scalers
         self.units = units
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.verbose = verbose
-        user, default = progress_func, progression_sinusoidal
-        self.progression_func = prioritized_not_None(user, default)
-        self.random_seed = random_seed
 
-        user, default = reps_to_intensity_func, reps_to_intensity
+        # Set functions to user supplied, or defaults if None was passed
+        user, default = (
+            rep_scaler_func,
+            functools.partial(self._default_rep_scaler_func, final_week=self.duration),
+        )
+        self.rep_scaler_func = prioritized_not_None(user, default)
+
+        user, default = (
+            intensity_scaler_func,
+            functools.partial(
+                self._default_intensity_scaler_func, final_week=self.duration
+            ),
+        )
+        self.intensity_scaler_func = prioritized_not_None(user, default)
+
+        user, default = progression_func, self._default_progression_func
+        self.progression_func = prioritized_not_None(user, default)
+
+        user, default = reps_to_intensity_func, self._default_reps_to_intensity_func
         self.reps_to_intensity_func = prioritized_not_None(user, default)
 
+        # Setup variables that the user has no control over
         self.days = []
-        self.active_day = None
+        self.active_day = None  # Used for Program.Day context manager API
         self._rendered = False
         self._set_jinja2_enviroment()
 
@@ -174,39 +205,6 @@ class Program(object):
         self.active_day.static_exercises.append(ex)
         return ex
 
-    def _set_scalers(self):
-        """
-        Set the variables self._scalers as given by self.scalers,
-        if self.scalers is None, then a default value is used.
-        """
-
-        random_generator = random.Random(self.random_seed)
-
-        # Set default value for rep_scalers if None
-        if self.rep_scalers is None:
-            # Draw self-repellent numbers from domain
-            domain = [0.95, 1, 1.15]
-            self._rep_scalers = random_generator.choices(domain, k=self.duration)
-
-        else:
-            if len(self.rep_scalers) != self.duration:
-                raise ProgramError(
-                    "Length of `rep_scalers` must match program duration."
-                )
-            self._rep_scalers = self.rep_scalers
-
-        # Set default value for intensity_scalers if None
-        if self.intensity_scalers is None:
-            # Draw self-repellent numbers from domain
-            domain = [0.95, 1, 1.05]
-            self._intensity_scalers = random_generator.choices(domain, k=self.duration)
-        else:
-            if len(self.intensity_scalers) != self.duration:
-                raise ProgramError(
-                    "Length of `intensity_scalers` must match program duration."
-                )
-            self._intensity_scalers = self.intensity_scalers
-
     def _validate(self):
         """
         The purpose of this method is to verify that the user has set sensible
@@ -221,18 +219,23 @@ class Program(object):
             
         Apart from these sanity checks, the user is on his own.
         """
+        weeks = list(range(1, self.duration + 1))
+
         # Validate the intensity
-        if max([s * self.intensity for s in self._intensity_scalers]) > 85:
+        intensities = [self.intensity_scaler_func(w) * self.intensity for w in weeks]
+
+        if max(intensities) > 85:
             warnings.warn("\nWARNING: Average intensity is > 85.")
 
-        if min([s * self.intensity for s in self._intensity_scalers]) < 65:
+        if min(intensities) < 65:
             warnings.warn("\nWARNING: Average intensity is < 65.")
 
         # Validate the repetitions
-        if max([s * self.reps_per_exercise for s in self._rep_scalers]) > 45:
+        repetitions = [self.rep_scaler_func(w) * self.reps_per_exercise for w in weeks]
+        if max(repetitions) > 45:
             warnings.warn("\nWARNING: Number of repetitions > 45.")
 
-        if min([s * self.reps_per_exercise for s in self._rep_scalers]) < 15:
+        if min(repetitions) < 15:
             warnings.warn("\nWARNING: Number of repetitions < 15.")
 
         # Validate the 'reps_to_intensity_func'
@@ -251,8 +254,6 @@ class Program(object):
         # Validate the exercises
         for day in self.days:
             for dynamic_ex in day.dynamic_exercises:
-                start, end = dynamic_ex.start_weight, dynamic_ex.final_weight
-                percentage_growth = (end / start) ** (1 / self.duration)
                 percentage_growth = dynamic_ex.weekly_growth(self.duration)
                 if percentage_growth > 4:
                     msg = '\n"{}" grows with {}% each week.'.format(
@@ -480,9 +481,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
         for i, day in enumerate(self.days):
             day.name = prioritized_not_None(day.name, "Day {}".format(i + 1))
 
-        # Set the scalers
-        self._set_scalers()
-
         # Validate the program if the user wishes to validate
         if validate:
             self._validate()
@@ -499,13 +497,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = round(total_reps * self._rep_scalers[week - 1])
+            desired_reps = round(total_reps * self.rep_scaler_func(week))
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired intensity to work up to
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
-            scale_factor = self._intensity_scalers[week - 1]
+            scale_factor = self.intensity_scaler_func(week)
             desired_intensity = round(intensity_unscaled * scale_factor)
             self._rendered[week][day][dyn_ex]["desired_intensity"] = int(
                 desired_intensity
@@ -517,6 +515,11 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Calculate the 1RM at this point in time
             start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
+
+            if final_w is None:
+                factor = 1 + (dyn_ex.percent_inc_per_week / 100) * self.duration
+                final_w = start_w * factor
+
             args = (week, start_w, final_w, 1, self.duration)
             weight = self.progression_func(*args)
 
@@ -686,7 +689,7 @@ if __name__ == "__main__":
     program = Program("My first program!", duration=8)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, 80)
+    bench = DynamicExercise("Bench press", 60, None)
     squats = DynamicExercise("Squats", 80, 95)
     curls = StaticExercise("Curls", curl_func)
     day = Day(exercises=[bench, squats, curls])

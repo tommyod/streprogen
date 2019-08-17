@@ -4,7 +4,7 @@
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
-    progression_linear,
+    progression_diffeq,
     progression_sinusoidal,
     reps_to_intensity,
     reps_to_intensity_relaxed,
@@ -22,6 +22,6 @@ __all__ = [
     "reps_to_intensity",
     "reps_to_intensity_tight",
     "reps_to_intensity_relaxed",
-    "progression_linear",
+    "progression_diffeq",
     "progression_sinusoidal",
 ]
