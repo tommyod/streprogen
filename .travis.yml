@@ -36,6 +36,14 @@ script:
   - for file in `examples/*.ipynb`; do 
       sudo ipython nbconvert --to script $file.ipynb 
     ;done
+    
+  - (for file in `examples/*.ipynb`; do 
+      if ipython nbconvert --to script $file.ipynb ; then
+        echo "Command succeeded"
+      else
+        false; exit;
+      fi
+    ;done);
 
 # -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
 after_script:
