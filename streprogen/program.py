@@ -54,7 +54,7 @@ class Program(object):
         progress_func=None,
         reps_to_intensity_func=None,
         verbose=False,
-        random_seed=123
+        random_seed=123,
     ):
 
         """Initialize a new program.
@@ -180,7 +180,7 @@ class Program(object):
         Set the variables self._scalers as given by self.scalers,
         if self.scalers is None, then a default value is used.
         """
-        
+
         random_generator = random.Random(self.random_seed)
 
         # Set default value for rep_scalers if None
