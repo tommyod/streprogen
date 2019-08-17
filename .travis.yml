@@ -38,6 +38,7 @@ script:
     ;done
     
   - (for file in `examples/*.ipynb`; do 
+      chmod +x $file
       if ipython nbconvert --to script $file.ipynb ; then
         echo "Command succeeded"
       else
