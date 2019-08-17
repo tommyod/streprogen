@@ -186,7 +186,7 @@ class Program(object):
         # Set default value for rep_scalers if None
         if self.rep_scalers is None:
             # Draw self-repellent numbers from domain
-            domain = [0.8, 1, 1.2]
+            domain = [0.95, 1, 1.15]
             self._rep_scalers = random_generator.choices(domain, k=self.duration)
 
         else:
