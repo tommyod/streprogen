@@ -8,11 +8,6 @@ Streprogen - the Python strength program generator.
 .. image:: https://readthedocs.org/projects/streprogen/badge/?version=latest
    :target: http://streprogen.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-   
-   
-.. image:: https://travis-ci.com/tommyod/streprogen.svg?branch=master
-    :target: https://travis-ci.com/tommyod/streprogen
-    :alt: Test Status
     
 To install the Python package locally, run `pip install streprogen`.
 To run the code without installing Python, run these notebooks live:
@@ -56,7 +51,7 @@ strength training programs. The main features are:
   Print it and bring it to the gym.
   
 
-TODO: Image here.
+.. image:: .. image:: https://raw.githubusercontent.com/tommyod/streprogen/master/examples/streprogen_overview.png
 
 
 Installation
@@ -73,8 +68,7 @@ Here's the layman guide to installation.
         ``pip install streprogen``.
 
 (3) Open a Python Editor (such as Spyder, which comes with Anaconda_).
-(4) Write ``from streprogen import *`` to import everything from
-    ``streprogen``.
+(4) Copy the example below and run it to get started.
 
 
 .. _Python: http://www.python.org/
@@ -97,7 +91,7 @@ Sample code
         program.DynamicExercise("Squats", start_weight=100, min_reps=3, max_reps=8)
         
     with program.Day("Day B"):
-        program.DynamicExercise("Deadlifts", start_weight=100, percent_inc_per_week=2, min_reps=2, max_reps=7)
+        program.DynamicExercise("Deadlifts", start_weight=100, min_reps=2, max_reps=7)
         program.StaticExercise("Curls", "3 x 10 @ 18kg")
 
     # Render the program, then print it
@@ -114,8 +108,6 @@ Sample code
       duration: 8
       reps_per_exercise: 25
       intensity: 80
-      reps_scalers: 
-      intensity_scalers: 
       units: kg
     ----------------------------------------------------------------
     Exercise information
