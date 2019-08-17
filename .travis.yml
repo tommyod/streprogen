@@ -34,7 +34,7 @@ script:
   # Install the test package before running the tests
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
   - for file in `examples/*.ipynb`; do 
-      ipython nbconvert --to script $file.ipynb 
+      sudo ipython nbconvert --to script $file.ipynb 
     ;done
 
 # -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
