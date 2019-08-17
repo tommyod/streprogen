@@ -4,6 +4,7 @@
 import functools
 import math
 import random
+import collections.abc
 
 
 def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
@@ -39,6 +40,9 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
     >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = False)
     65
     """
+    if isinstance(reps, collections.abc.Iterable):
+        return list(reps_to_intensity(rep, slope, constant, quadratic) for rep in reps)
+
     intensity = constant + slope * (reps - 1)
     if quadratic:
         return intensity + 0.05 * (reps - 1) ** 2
@@ -97,6 +101,22 @@ def progression_sinusoidal(
     >>> progression_sinusoidal(8, 123, 123, 1, 8, periods=1)
     123.0
     """
+    if isinstance(week, collections.abc.Iterable):
+        return list(
+            progression_sinusoidal(
+                w,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                periods,
+                scale,
+                offset,
+                k,
+            )
+            for w in week
+        )
+
     # Get the base model
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
@@ -148,6 +168,12 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     >>> progression_diffeq(3, 100, 140, 1, 5)
     120.0
     """
+    if isinstance(week, collections.abc.Iterable):
+        return list(
+            progression_diffeq(w, start_weight, final_weight, start_week, final_week, k)
+            for w in week
+        )
+
     S_i = start_weight
     S_m = final_weight
     t = week

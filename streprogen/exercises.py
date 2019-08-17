@@ -161,14 +161,12 @@ class DynamicExercise(object):
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
 
     def __hash__(self):
-
-        dict_sorted = sorted(self.__dict__.items(), key=operator.itemgetter(0))
-        values = [v for (k, v) in dict_sorted]
-
-        return hash(tuple(values))
+        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        return hash(tuple(getattr(self, attr) for attr in attrs))
 
 
 class StaticExercise(object):

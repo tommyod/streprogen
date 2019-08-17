@@ -17,18 +17,12 @@ from streprogen.modeling import (
     progression_diffeq,
 )
 from streprogen.utils import (
-    all_equal,
     chunker,
     escape_string,
-    min_between,
     prioritized_not_None,
     round_to_nearest,
 )
 from streprogen.optimization import optimize_sets
-
-
-class ProgramError(Exception):
-    pass
 
 
 class Program(object):
@@ -51,8 +45,7 @@ class Program(object):
             start_weight=1,
             final_weight=1,
             start_week=1,
-            periods=2,
-            scale=0.05,
+            scale=0.1,
             offset=0,
             k=0,
         )
@@ -63,7 +56,6 @@ class Program(object):
             start_weight=1,
             final_weight=1,
             start_week=1,
-            periods=2,
             scale=0.025,
             offset=2,
             k=0,
@@ -163,14 +155,20 @@ class Program(object):
         # Set functions to user supplied, or defaults if None was passed
         user, default = (
             rep_scaler_func,
-            functools.partial(self._default_rep_scaler_func, final_week=self.duration),
+            functools.partial(
+                self._default_rep_scaler_func,
+                final_week=self.duration,
+                periods=self.duration // 4,
+            ),
         )
         self.rep_scaler_func = prioritized_not_None(user, default)
 
         user, default = (
             intensity_scaler_func,
             functools.partial(
-                self._default_intensity_scaler_func, final_week=self.duration
+                self._default_intensity_scaler_func,
+                final_week=self.duration,
+                periods=self.duration // 4,
             ),
         )
         self.intensity_scaler_func = prioritized_not_None(user, default)
@@ -514,11 +512,11 @@ or (3) ignore this message. The software will do it's best to remedy this.
             out = self._render_dynamic(*render_args)
 
             # Calculate the 1RM at this point in time
-            start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            if final_w is None:
+            if dyn_ex.final_weight is None:
                 factor = 1 + (dyn_ex.percent_inc_per_week / 100) * self.duration
-                final_w = start_w * factor
+                dyn_ex.final_weight = round(dyn_ex.start_weight * factor, 1)
+
+            start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             args = (week, start_w, final_w, 1, self.duration)
             weight = self.progression_func(*args)
@@ -671,9 +669,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
 
 # Patch up the docs
-Program.Day.__doc__ = Day.__doc__
-Program.DynamicExercise.__doc__ = DynamicExercise.__doc__
-Program.StaticExercise.__doc__ = StaticExercise.__doc__
+Program.Day.__doc__ = Day.__doc__ + '\nSee streprogen.Day for accurate signature.'
+Program.DynamicExercise.__doc__ = DynamicExercise.__doc__ + '\nSee streprogen.DynamicExercise for accurate signature.'
+Program.StaticExercise.__doc__ = StaticExercise.__doc__ + '\nSee streprogen.StaticExercise for accurate signature.'
 
 if __name__ == "__main__":
     import pytest
@@ -691,7 +689,7 @@ if __name__ == "__main__":
     program = Program("My first program!", duration=8)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, None)
+    bench = DynamicExercise("Bench press", 60, None, min_reps=1, max_reps=8)
     squats = DynamicExercise("Squats", 80, 95)
     curls = StaticExercise("Curls", curl_func)
     day = Day(exercises=[bench, squats, curls])

@@ -25,24 +25,19 @@ before_install:
   
 # -------------------- script: run the build script ---------------------------
 before_script:
-  - pip install jupyter
+  - pip install jupyter matplotlib
   - pip install . # Install the package
   - pip show streprogen # Show information about the package
-  - black . --check # Check that code is formatted correctly w.r.t. black
 
 script:
-  # Install the test package before running the tests
+  - black . --check # Check that code is formatted correctly w.r.t. black
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
   - pytest examples --verbose --doctest-modules --color=yes # Run the notebooks
 
 
-# -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
-after_script:
-  - python setup.py sdist # Source distribution
-  # report any problems rendering your README. If your markup renders fine, 
-  # the command will output Checking distribution FILENAME: Passed.
-  - twine check dist/*
-  - echo "$TRAVIS_TAG"
-  - if [ -n "$TRAVIS_TAG" ]; then
-    python -m twine upload dist/* --username tommyod --password $TWINE --skip-existing;
-    fi
+# -------------------- deploy: deploy to PyPI --------- 
+deploy:
+  provider: script
+  script: deploy.sh
+  on:
+    branch: master

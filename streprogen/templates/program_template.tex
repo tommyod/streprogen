@@ -1,14 +1,10 @@
 % -----------------------------------------------
 % Package imports
 % -----------------------------------------------
-\documentclass[12pt, a4paper]{article}% 'twoside' for printing
+\documentclass[11pt, a4paper]{article}% 'twoside' for printing
 \usepackage[utf8]{inputenc}% Allow input to be UTF-8
-\usepackage[expansion=false]{microtype}% Fixes to make typography better
-\setlength{\marginparwidth}{2cm}% More space for the todo notes
-\usepackage{tikz-cd}% For diagrams
-\usepackage{listings}% To include source-code
-\usepackage[sc]{mathpazo}% A nice font, alternative to CM
 \usepackage[margin = 2cm]{geometry}% May be used to set margins
+
 % -----------------------------------------------
 % Document start
 % -----------------------------------------------
@@ -29,11 +25,7 @@ The latest version can be found at \\
 	\textbf{Parameter} & \textbf{Value} \\ \hline
 	\verb|duration|             & {{program.duration}} \\
 	\verb|reps_per_exercise|    & {{program.reps_per_exercise}} \\
-	\verb|intensity|        & {{program.intensity}} \\
-	\verb|reps_scalers|         & {{ program._rep_scalers | map
-	('round2digits') | join(', ') }} \\
-	\verb|intensity_scalers|    & {{ program._intensity_scalers | map
-	('round2digits') | join(', ') }} \\
+	\verb|intensity|            & {{program.intensity}} \\
 	\verb|units|                & {{program.units}}
 \end{tabular}
 
@@ -60,7 +52,7 @@ The latest version can be found at \\
 \clearpage
 \section*{Program}
 {% if program._rendered == False %}
-Not rendered. Call Program.render() to render it.
+Not rendered. Call program.render() to render it.
 {% else %}
 {% for week in range(1, program.duration + 1) %}
  \subsection*{\hspace{0.25em} Week {{week}} }
@@ -96,11 +88,5 @@ Not rendered. Call Program.render() to render it.
 {% if clear_pages == True and week != program.duration%}\clearpage{% endif %}
 {% endfor %}
 {% endif %}
-
-
-
-
-
-
 
 \end{document}
