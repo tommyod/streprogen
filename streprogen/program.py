@@ -669,9 +669,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
 
 # Patch up the docs
-Program.Day.__doc__ = Day.__doc__ + '\nSee streprogen.Day for accurate signature.'
-Program.DynamicExercise.__doc__ = DynamicExercise.__doc__ + '\nSee streprogen.DynamicExercise for accurate signature.'
-Program.StaticExercise.__doc__ = StaticExercise.__doc__ + '\nSee streprogen.StaticExercise for accurate signature.'
+Program.Day.__doc__ = Day.__doc__ + "\nSee streprogen.Day for accurate signature."
+Program.DynamicExercise.__doc__ = (
+    DynamicExercise.__doc__ + "\nSee streprogen.DynamicExercise for accurate signature."
+)
+Program.StaticExercise.__doc__ = (
+    StaticExercise.__doc__ + "\nSee streprogen.StaticExercise for accurate signature."
+)
 
 if __name__ == "__main__":
     import pytest
