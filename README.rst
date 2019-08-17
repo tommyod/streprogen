@@ -33,8 +33,8 @@ Example program library
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/examples/3DaySplitWithPeriodization.pdf>`_.
 
 **Instructions for live code:**
-Click "*Runtime*", then "Run all".
-To download a saved file, click on the arrow on the top left, left click the file and "Download".
+Click "*Runtime*", then "*Run all*".
+To download a saved file, click on the arrow on the top left, left click the file and "*Download*".
 A downloaded ``.html`` file can be printed from your local browser.
 
 Project summary
