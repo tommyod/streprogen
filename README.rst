@@ -9,6 +9,11 @@ Streprogen - the Python strength program generator.
    :target: http://streprogen.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
    
+   
+.. image:: https://travis-ci.com/tommyod/streprogen.svg?branch=master	
+    :target: https://travis-ci.com/tommyod/streprogen	
+    :alt: Test Status
+   
 Install locally using ``pip install streprogen``, or run live notebooks online.
 
 Run code in your browser
