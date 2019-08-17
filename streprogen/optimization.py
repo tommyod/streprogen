@@ -132,7 +132,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     INF = solver.infinity()
 
     # Create decision variables. x_j = number of sets with j reptitions
-    x = [solver.IntVar(0, INF, f"x_{r_j}") for r_j in reps]
+    x = [solver.IntVar(0, INF, "x_{}".format(r_j)) for r_j in reps]
     # Must choose at least one set
     solver.Add(sum(x) >= 1)
 
@@ -174,7 +174,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     # Create binary indicator variables z_j
     # z_j = 1 if and only if x_j >= 1, if not then z_j = 0
     M = 2 * reps_goal
-    z = [solver.IntVar(0, 1, f"z_{r_j}") for r_j in reps]
+    z = [solver.IntVar(0, 1, "z_{}".format(r_j)) for r_j in reps]
     for x_j, z_j in zip(x, z):
         solver.Add(z_j <= x_j)
         solver.Add(x_j <= M * z_j)
@@ -238,25 +238,3 @@ if __name__ == "__main__":
     import pytest
 
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
-
-
-if __name__ == "__main__":
-    reps = tuple([8, 7, 6, 5, 4, 3, 2, 1])
-    intensities = tuple([0.7, 0.74, 0.78, 0.82, 0.86, 0.9, 0.94, 0.98])
-
-    for intensities_goal in range(70, 86):
-        intensities_goal = intensities_goal / 100
-
-        import random
-
-        reps_goal = random.randint(20, 30)
-
-        print(f" ------------ {intensities_goal}  {reps_goal} --------------")
-
-        x, data = optimize_sets(reps, intensities, reps_goal, intensities_goal)
-        print(x)
-        print(data)
-
-        for r_j, i_j, x_j in zip(reps, intensities, x):
-            for _ in range(int(x_j)):
-                print(f"{round(r_j)} x {i_j} % RM")
