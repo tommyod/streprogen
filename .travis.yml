@@ -33,7 +33,6 @@ before_script:
 script:
   # Install the test package before running the tests
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
-  - for file in /examples/*
   - for file in examples/*.ipynb; \
       ipython nbconvert --to script "${file}.ipynb" \
     ; done
