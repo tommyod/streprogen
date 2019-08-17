@@ -148,8 +148,27 @@ class Program(object):
         self.reps_to_intensity_func = prioritized_not_None(user, default)
 
         self.days = []
+        self.active_day = None
         self._rendered = False
         self._set_jinja2_enviroment()
+
+    def Day(self, *args, **kwargs):
+        """TODO"""
+        day = Day(*args, **kwargs)
+        day.program = self
+        return day
+
+    def DynamicExercise(self, *args, **kwargs):
+        """TODO"""
+        ex = DynamicExercise(*args, **kwargs)
+        self.active_day.dynamic_exercises.append(ex)
+        return ex
+
+    def StaticExercise(self, *args, **kwargs):
+        """TODO"""
+        ex = StaticExercise(*args, **kwargs)
+        self.active_day.static_exercises.append(ex)
+        return ex
 
     def _set_scalers(self):
         """

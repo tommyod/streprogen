@@ -36,8 +36,17 @@ class Day(object):
         self.dynamic_exercises = []
         self.static_exercises = []
 
+        self.program = None
+
         if exercises is not None:
             self.add_exercises(*tuple(exercises))
+
+    def __enter__(self):
+        self.program.active_day = self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.program.days.append(self)
+        self.program.active_day = None
 
     def add_exercises(self, *exercises):
         """Add the exercises to the day. The method will automatically infer

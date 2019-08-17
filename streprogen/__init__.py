@@ -4,7 +4,6 @@
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
-    RepellentGenerator,
     progression_linear,
     progression_sinusoidal,
     reps_to_intensity,
@@ -20,7 +19,6 @@ __all__ = [
     "DynamicExercise",
     "Day",
     "Program",
-    "RepellentGenerator",
     "reps_to_intensity",
     "reps_to_intensity_tight",
     "reps_to_intensity_relaxed",
