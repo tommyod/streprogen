@@ -684,21 +684,25 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
 
-    from streprogen import StaticExercise
+    from streprogen import Program
 
-    def curl_func(week):
-        return "{} x 10".format(week)
+    # Create a 4-week program, rounding every exercise to nearest unit og 5kg
+    program = Program("My first program!", duration=8, units="kg", round_to=5)
 
-    # Create a 4-week program
-    program = Program("My first program!", duration=8)
+    with program.Day("Day A"):
+        program.DynamicExercise("Bench press", start_weight=80, min_reps=3, max_reps=8)
+        program.DynamicExercise("Squats", start_weight=100, min_reps=3, max_reps=8)
 
-    # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, None, min_reps=1, max_reps=8)
-    squats = DynamicExercise("Squats", 80, 95)
-    curls = StaticExercise("Curls", curl_func)
-    day = Day(exercises=[bench, squats, curls])
+    with program.Day("Day B"):
+        program.DynamicExercise(
+            "Deadlifts",
+            start_weight=100,
+            percent_inc_per_week=2,
+            min_reps=2,
+            max_reps=7,
+        )
+        program.StaticExercise("Curls", "3 x 10 @ 18kg")
 
-    # Add day(s) to program and render it
-    program.add_days(day)
+    # Render the program, then print it
     program.render()
     print(program)

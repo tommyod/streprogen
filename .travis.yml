@@ -5,12 +5,9 @@ notifications:
   
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
   - "3.7"
-  - "3.8-dev"  # 3.8 development branch
-  - "nightly"  # nightly build
 
 # The Travis CI job lifecycle specifies the order of the commands below phases.
 # https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
@@ -28,12 +25,11 @@ before_script:
   - pip show streprogen # Show information about the package
 
 script:
+  # Check that code is formatted correctly w.r.t. black (not avaiable on Py35)
   - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check; fi
-#  - black . --check # Check that code is formatted correctly w.r.t. black
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
   - pytest examples --verbose --doctest-modules --color=yes # Run the notebooks
-
-
+  
 # -------------------- deploy: deploy to PyPI --------- 
 deploy:
   provider: script
