@@ -33,7 +33,7 @@ before_script:
 script:
   # Install the test package before running the tests
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
-  - pytest examples --verbose --doctest-modules --color=yes # Run all tests
+  - pytest examples --verbose --doctest-modules --color=yes # Run the notebooks
 
 
 # -------------------- deploy: deploy to PyPI if it's a tagged commit ---------

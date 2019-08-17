@@ -5,7 +5,7 @@ Created on Sat Aug 17 08:46:26 2019
 
 @author: tommy
 """
-
+import pytest
 import subprocess
 import tempfile
 import os
@@ -25,21 +25,18 @@ def _exec_notebook(path):
             path,
         ]
         subprocess.check_call(args)
+        
+here = os.path.abspath(os.path.dirname(__file__))
+notebooks = [os.path.join(here, f) for f in os.listdir(here) if f.endswith(".ipynb")]
 
 
-def test_example_notebooks():
-    here = os.path.abspath(os.path.dirname(__file__))
+@pytest.mark.parametrize("notebook", notebooks)
+def test_example_notebooks(notebook):
+    """Test a notebook by running it. Smoketest."""
 
-    # Loop over every notebook
-    for file in os.listdir(here):
-
-        if not file.endswith(".ipynb"):
-            continue
-
-        _exec_notebook(os.path.join(here, file))
+    _exec_notebook(notebook)
 
 
 if __name__ == "__main__":
-    import pytest
 
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
