@@ -25,6 +25,7 @@ before_install:
   
 # -------------------- script: run the build script ---------------------------
 before_script:
+  - pip install jupyter
   - pip install . # Install the package
   - pip show streprogen # Show information about the package
   - black . --check # Check that code is formatted correctly w.r.t. black
@@ -32,6 +33,19 @@ before_script:
 script:
   # Install the test package before running the tests
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
+  - for file in /examples/*
+  - for file in examples/*.ipynb; \
+      ipython nbconvert --to script "${file}.ipynb" \
+    ; done
+  
+  
+FILES=/path/to/*
+for f in $FILES
+do
+  echo "Processing $f file..."
+  # take action on each file. $f store current file name
+  cat $f
+done
 
 # -------------------- deploy: deploy to PyPI if it's a tagged commit ---------
 after_script:
