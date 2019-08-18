@@ -3,7 +3,6 @@
 
 import functools
 import math
-import random
 import collections.abc
 
 
@@ -18,7 +17,7 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
     slope
         Slope for the linear function.
     constant
-        Constant for the linear function
+        Constant for the linear function.
     quadratic
         If 'True', add a slight quadratic offset.
 
@@ -33,10 +32,8 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
     -------
     >>> reps_to_intensity(5, slope = -5, constant = 100, quadratic = False)
     80
-    
     >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = True)
     67.45
-    
     >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = False)
     65
     """
@@ -152,7 +149,6 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     k
         How much the function "bends". k=0 is linear, k>0 bends it.
 
-
     Returns
     -------
     weight
@@ -164,7 +160,6 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     >>> progression_diffeq(week = 2, start_weight = 100, final_weight = 120,
     ...                    start_week = 1, final_week = 3)
     110.0
-    
     >>> progression_diffeq(3, 100, 140, 1, 5)
     120.0
     """

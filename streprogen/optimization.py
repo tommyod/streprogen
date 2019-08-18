@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import functools
-import warnings
 from ortools.linear_solver import pywraplp
 
 
-@functools.lru_cache(maxsize=128, typed=False)
+@functools.lru_cache(maxsize=1024, typed=False)
 def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     r"""Get the optimal number of sets.
     
@@ -97,19 +96,23 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     assert all(0 <= i_j <= 1 for i_j in intensities)
 
     if max(intensities) < intensities_goal:
-        msg = (
-            "Cannot reach goal intensity {} with intensities {}. Recasting goal value."
-        )
-        warnings.warn(msg.format(intensities_goal, intensities))
+        # =============================================================================
+        #         msg = (
+        #             "Cannot reach goal intensity {} with intensities {}. Recasting goal value."
+        #         )
+        #         warnings.warn(msg.format(intensities_goal, intensities))
+        # =============================================================================
         return optimize_sets(
             reps, intensities, reps_goal, intensities_goal=max(intensities)
         )
 
     if min(intensities) > intensities_goal:
-        msg = (
-            "Cannot reach goal intensity {} with intensities {}. Recasting goal value."
-        )
-        warnings.warn(msg.format(intensities_goal, intensities))
+        # =============================================================================
+        #         msg = (
+        #             "Cannot reach goal intensity {} with intensities {}. Recasting goal value."
+        #         )
+        #         warnings.warn(msg.format(intensities_goal, intensities))
+        # =============================================================================
         return optimize_sets(
             reps, intensities, reps_goal, intensities_goal=min(intensities)
         )
