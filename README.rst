@@ -27,14 +27,14 @@ Learn how to use streprogen
 
 * Run code live: `Streprogen - Essential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Essential%20features.ipynb>`_
 * Run code live: `Streprogen - Intermediate Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Intermediate%20features.ipynb>`_
-* Run code live: `Streprogen - Advanced Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%Advanced%20features.ipynb>`_
+* Run code live: `Streprogen - Advanced Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Streprogen%20-%20Advanced%20features.ipynb>`_
 
 Example program library
 ***********************
 
 * Run code live: `Example - Beginner 5x5 program <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%20Beginner%205x5%20program.ipynb>`_
 * Run code live: `Example - Beginner 5x5 program modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%20Beginner%205x5%20program%20modified.ipynb>`_
-* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github.com/tommyod/streprogen/blob/master/examples/Example%20-%203%20day%20split%20with%20periodization.ipynb>`_
+* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%203%20day%20split%20with%20periodization.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/examples/3DaySplitWithPeriodization.pdf>`_.
 
