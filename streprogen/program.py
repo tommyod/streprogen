@@ -185,21 +185,39 @@ class Program(object):
         self._rendered = False
         self._set_jinja2_enviroment()
 
-    def Day(self, *args, **kwargs):
-        """TODO"""
-        day = Day(*args, **kwargs)
+    def Day(self, name=None):
+        day = Day(name=name)
         day.program = self
         return day
 
-    def DynamicExercise(self, *args, **kwargs):
-        """TODO"""
-        ex = DynamicExercise(*args, **kwargs)
+    def DynamicExercise(
+        self,
+        name,
+        start_weight,
+        final_weight=None,
+        min_reps=3,
+        max_reps=8,
+        percent_inc_per_week=1.5,
+        reps=None,
+        intensity=None,
+        round_to=None,
+    ):
+        ex = DynamicExercise(
+            name,
+            start_weight,
+            final_weight,
+            min_reps,
+            max_reps,
+            percent_inc_per_week,
+            reps,
+            intensity,
+            round_to,
+        )
         self.active_day.dynamic_exercises.append(ex)
         return ex
 
-    def StaticExercise(self, *args, **kwargs):
-        """TODO"""
-        ex = StaticExercise(*args, **kwargs)
+    def StaticExercise(self, name, sets_reps="4 x 10"):
+        ex = StaticExercise(name, sets_reps)
         self.active_day.static_exercises.append(ex)
         return ex
 
@@ -215,7 +233,7 @@ class Program(object):
             * Validates that 'reps_to_intensity_func' is a decreasing function.
             * Validates that the exercises do not grow more than 2.5% per week.
             
-        Apart from these sanity checks, the user is on his own.
+        Apart from these sanity checks, the user is on their own.
         """
         weeks = list(range(1, self.duration + 1))
 
@@ -279,7 +297,7 @@ class Program(object):
         self.days.extend(days)
 
     def _render_dynamic(
-        self, dynamic_exercise, min_rep, desired_reps, desired_intensity, validate
+        self, dynamic_exercise, desired_reps, desired_intensity, validate
     ):
         """
         Render a single dynamic exercise.
@@ -311,42 +329,26 @@ class Program(object):
                 reps.append(rep)
                 intensities.append(intensity * 100)
 
-        # Perform a sanity check:
         # If repetitions are too high, a low average intensity cannot be attained
-        if desired_intensity > self.reps_to_intensity_func(min_rep) and validate:
-            msg = """
-WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}],
-but the desired average intensity for this week is {}. Reaching this intensity
-is not attainable since it corresponds to repetitions lower than {}.
-SOLUTION: Either (1) allow lower repetitions, (2) change the desired intensity
-or (3) ignore this message. The software will do it's best to remedy this.
-""".format(
-                dynamic_exercise.name,
-                dynamic_exercise.max_reps,
-                min_rep,
-                desired_intensity,
-                min_rep,
-            )
-            warnings.warn(msg)
+        int_highest = self.reps_to_intensity_func(dynamic_exercise.min_reps)
+        int_lowest = self.reps_to_intensity_func(dynamic_exercise.max_reps)
 
-        # Perform a sanity check:
-        # If repetitions are too low, a high average intensity cannot be attained
         if (
-            desired_intensity < self.reps_to_intensity_func(dynamic_exercise.max_reps)
-            and validate
-        ):
+            not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)
+        ) and validate:
             msg = """
-WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}],
-but the desired average intensity for this week is {}. Reaching this intensity
-is not attainable since it corresponds to repetitions higher than {}.
-SOLUTION: Either (1) allow higher repetitions, (2) change the desired intensity
+WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
+This maps to intensities in the range [{}, {}], but the goal average intensity is {},
+which is not achievable with this rep range.
+SOLUTION: Either (1) change the repetition range, (2) change the desired intensity
 or (3) ignore this message. The software will do it's best to remedy this.
 """.format(
                 dynamic_exercise.name,
                 dynamic_exercise.max_reps,
-                min_rep,
-                desired_intensity,
-                dynamic_exercise.max_reps,
+                dynamic_exercise.min_reps,
+                round(int_lowest, 1),
+                round(int_lowest, 1),
+                round(desired_intensity, 1),
             )
             warnings.warn(msg)
 
@@ -489,16 +491,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
-            # The minimum repeition to work up to
-            min_rep = dyn_ex.min_reps  # self._rendered[week][day][dyn_ex]["minimum"]
-
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
             desired_reps = round(total_reps * self.rep_scaler_func(week))
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
-            # The desired intensity to work up to
+            # The desired average intensity
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
             scale_factor = self.intensity_scaler_func(week)
@@ -508,7 +507,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             )
 
             # A dictionary is returned with keys 'reps' and 'intensities'
-            render_args = dyn_ex, min_rep, desired_reps, desired_intensity, validate
+            render_args = dyn_ex, desired_reps, desired_intensity, validate
             out = self._render_dynamic(*render_args)
 
             # Calculate the 1RM at this point in time

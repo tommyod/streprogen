@@ -37,6 +37,7 @@ class DynamicExercise(object):
         final_weight
             The goal weight to work towards during the program. This should be
             set in relation to the duration of the training program, e.g. 90.
+            If set, this overrides the optional `percent_inc_per_week` parameter.
             
         min_reps
             The minimum number of repetitions for this exercise, e.g. 3.
@@ -45,29 +46,27 @@ class DynamicExercise(object):
             The maximum number of repetitions for this exercise, e.g. 8.
             
         percent_inc_per_week
-            If `final_weight` is not set, this value can be used.
+            If `final_weight` is not set, this value will be used. The increase is 
+            additive, not multipliactive. For instance, if the increase is set to 
+            `percent_inc_per_week=2`, then after 2 weeks the increase is 4, not 
+            (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter must be
+            set to `None` for this parameter to have effect.
             
         reps
             The number of baseline repetitions for this exercise. If this
             parameter is set, it will override the global 'reps_per_exercise'
             parameter for the training program. The repetitions will still
-            be scaled by the 'reps_scalers' parameter in the training program.
+            be scaled by the `rep_scaler_func` parameter in the training program.
             
         intensity
             The average intensity for this exercise. If set, this will
-            override the 'intensity' parameter in the training program.
-            The intensity will still be scaled by the 'intensity_scalers'
+            override the `intensity` parameter in the training program.
+            The intensity will still be scaled by the `intensity_scaler_func`
             parameter.
             
         round_to
             Round the output to the closest multiple of this number, e.g. 2.5.
             
-    
-        Returns
-        -------
-        DynamicExercise
-            A DynamicExercise object.
-    
     
         Examples
         -------
@@ -102,7 +101,7 @@ class DynamicExercise(object):
             raise ValueError(msg.format(self.name))
 
     def weekly_growth(self, weeks):
-        """Calculate the weekly growth in percentage, and round to one digit.
+        """Calculate the weekly growth in percentage, and rounded to a single digit.
     
         Parameters
         ----------
@@ -125,13 +124,13 @@ class DynamicExercise(object):
         >>> bench.weekly_growth(4)
         1.5
         """
-        if self.final_weight is not None:
-            start, end = self.start_weight, self.final_weight
+        if self.final_weight is None:
+            return self.percent_inc_per_week
 
-            growth = ((end / start) - 1) / weeks * 100
-            return round(growth, 1)
-
-        return round(self.percent_inc_per_week, 1)
+        # If the final weight is set, compute the weekly growth
+        start, end = self.start_weight, self.final_weight
+        growth = ((end / start) - 1) / weeks * 100
+        return round(growth, 1)
 
     def __repr__(self):
         """Representation."""
@@ -146,6 +145,7 @@ class DynamicExercise(object):
             "final_weight",
             "min_reps",
             "max_reps",
+            "percent_inc_per_week",
             "reps",
             "intensity",
         ]
