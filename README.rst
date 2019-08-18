@@ -9,11 +9,14 @@ Streprogen - the Python strength program generator.
    :target: http://streprogen.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
    
+<<<<<<< HEAD
    
 .. image:: https://travis-ci.com/tommyod/streprogen.svg?branch=master	
     :target: https://travis-ci.com/tommyod/streprogen	
     :alt: Test Status
    
+=======
+>>>>>>> origin
 Install locally using ``pip install streprogen``, or run live notebooks online.
 
 Run code in your browser
@@ -33,7 +36,7 @@ Example program library
 
 * Run code live: `Example - Beginner 5x5 program <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%20Beginner%205x5%20program.ipynb>`_
 * Run code live: `Example - Beginner 5x5 program modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%20Beginner%205x5%20program%20modified.ipynb>`_
-* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/examples/Example%20-%203%20Day%20split%20with%20periodization.ipynb>`_
+* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github.com/tommyod/streprogen/blob/master/examples/Example%20-%203%20day%20split%20with%20periodization.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/examples/3DaySplitWithPeriodization.pdf>`_.
 
