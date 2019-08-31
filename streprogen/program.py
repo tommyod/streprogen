@@ -3,7 +3,6 @@
 
 import functools
 import statistics
-import random
 import warnings
 from os import path
 

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import functools
+import statistics
 from ortools.linear_solver import pywraplp
 
 
@@ -237,7 +238,10 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     )
 
 
-def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None, params=None):
+def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None,
+                      num_days=1, num_meals=4, time_limit_secs=10, epsilon=1e-3,
+                      weight_price=0.1, weight_nutrients=2.0, weight_range=0.75,
+                      params=None):
     """Optimize the quantitiy of each meal in a day, given constraints."""
 
     # =============================================================================
@@ -246,7 +250,7 @@ def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None, params=N
 
     assert isinstance(meals, (list, tuple))
     assert isinstance(dietary_constraints, (dict,))
-    assert isinstance(params, (dict,))
+    assert isinstance(params, (dict,)) or params is None
     assert (meals_limits is None) or isinstance(meals_limits, (list, tuple))
 
     meals = meals.copy()
@@ -258,25 +262,13 @@ def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None, params=N
     if params is None:
         params = dict()
 
-    # Get parameters
-    num_days = params.get("num_days", 1)
-    num_meals = params.get("num_meals", 4)
-    time_limit_secs = params.get("time_limit_secs", 10)
-
     # A small number such as 0.001. x_ij >= EPSILON <=> z_ij = 1
-    EPSILON = params.get("epsilon", 1e-3)
+    EPSILON = epsilon
 
-    # These weights found to be good by in experiments
-    weight_price = params.get("weight_price", 0.1)
-    weight_nutrients = params.get("weight_nutrients", 2.0)
-    weight_range = params.get("weight_range", 0.75)
-
-    # Used for normalization of the cost associated with price
     expected_daily_price = params.get("expected_daily_price", 75)
-
-    M1 = params.get("M1", 20)  # Upper bound on x_ij
+    M1 = params.get("M1", 50)  # Upper bound on x_ij
     M2 = params.get(
-        "M2", 20
+        "M2", 50
     )  # Upper bound on x[i][j] * meal.kcal, i.e. calories in a meal
 
     # A strange bug is that sometime the optimizer will return INFEASIBLE on attempt #1,
