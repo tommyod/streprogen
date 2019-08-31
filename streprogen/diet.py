@@ -13,7 +13,6 @@ import typing
 # =============================================================================
 
 
-@dataclasses.dataclass(frozen=True)
 class Food:
     """
     A food consists of a name and nutritional data given in units of 100 grams.
@@ -26,33 +25,50 @@ class Food:
     4.768115942028985
     >>> eggs.name
     'eggs'
+    >>> eggs.kcal
+    149
+    >>> eggs
+    Food(name=eggs, protein=13.0, fat=10.6, carbs=0.3, kcal=149, price_per_product=32.9, grams_per_product=690)
     """
+    
+    def __init__(self, name, protein, fat, carbs, kcal, price_per_product, grams_per_product):
+        """TODO"""
+        self.name = name
+        self.protein = protein
+        self.fat = fat
+        self.carbs = carbs
+        self.kcal = kcal
+        self.price_per_product = price_per_product
+        self.grams_per_product = grams_per_product
+        
+        self._verify()
 
-    name: str
 
-    # Values are per 100 grams of food
-    protein: float
-    fat: float
-    carbs: float
-    kcal: float
-
-    # Used to infer the price per 100 grams
-    price_per_product: float
-    grams_per_product: float
 
     @property
     def price(self):
         return self.price_per_product / self.grams_per_product * 100
 
-    def __post_init__(self):
+    def _verify(self):
         """Verify the relationship between macros and kcal."""
         computed_kcal = 4 * self.protein + 4 * self.carbs + 9 * self.fat
         relative_error = abs((self.kcal - computed_kcal) / computed_kcal)
         if relative_error > 0.1:
             warnings.warn(f"Got a {relative_error:.2f} error on kcal: '{self.name}'.")
+            
+    def __repr__(self):
+        name = type(self).__name__
+        args = ("{}={}".format(arg, value) for (arg, value) in self.__dict__.items())
+        args = ', '.join(args)
+        
+        return name + "({})".format(args)
+    
+    def __hash__(self):
+        return hash((self.name, self.protein, self.fat, self.carbs, self.kcal))
+        
 
 
-@dataclasses.dataclass(frozen=True)
+
 class Meal:
     """
     A meal consists of several foods given at some "base" unit of grams. In the example
@@ -70,10 +86,14 @@ class Meal:
 
     # Foods are added as: foods={all_foods["lettmelk"]:100, all_foods["musli"]:100}
     # This means that a baseline
-    name: str
-    foods: typing.Dict[Food, float] = dataclasses.field(default_factory=dict)
-    discrete: bool = True
-    type: str = None
+    
+    def __init__(self, name, foods, discrete=True):
+        
+        self.name= name
+        self.foods = foods
+        self.discrete = discrete
+        if self.kcal < 10:
+            warnings.warn("Food only has {} calories.".format(self.kcal))
 
     def __getattr__(self, key):
         """Allow accessing attributes of foods, summing over them."""
