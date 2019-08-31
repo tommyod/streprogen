@@ -238,10 +238,20 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     )
 
 
-def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None,
-                      num_days=1, num_meals=4, time_limit_secs=10, epsilon=1e-3,
-                      weight_price=0.1, weight_nutrients=2.0, weight_range=0.75,
-                      params=None):
+def optimize_mealplan(
+    meals,
+    dietary_constraints,
+    *,
+    meals_limits=None,
+    num_days=1,
+    num_meals=4,
+    time_limit_secs=10,
+    epsilon=1e-3,
+    weight_price=0.1,
+    weight_nutrients=2.0,
+    weight_range=0.75,
+    params=None,
+):
     """Optimize the quantitiy of each meal in a day, given constraints."""
 
     # =============================================================================

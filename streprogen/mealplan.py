@@ -20,6 +20,12 @@ from streprogen.utils import (
 )
 
 
+class Bunch(dict):
+    def __init__(self, *args, **kwds):
+        super(Bunch, self).__init__(*args, **kwds)
+        self.__dict__ = self
+
+
 from streprogen.optimization import optimize_mealplan
 
 # =============================================================================
@@ -63,24 +69,30 @@ from streprogen.optimization import optimize_mealplan
 
 
 class Mealplan:
-    
+
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
     TEMPLATE_NAMES = {
-        extension: "mealplan_template." + extension
-        for extension in ["txt"]
+        extension: "mealplan_template." + extension for extension in ["txt"]
     }
-    
-    
-    def __init__(self, meals, dietary_constraints, num_meals=4, num_days=1, 
-                 meal_limits=None, weight_price=0.1, weight_nutrients=2.0, 
-                 weight_range=0.75):
+
+    def __init__(
+        self,
+        meals,
+        dietary_constraints,
+        num_meals=4,
+        num_days=1,
+        meal_limits=None,
+        weight_price=0.1,
+        weight_nutrients=2.0,
+        weight_range=0.75,
+    ):
         """TODO"""
 
         self.meals = meals
         self.dietary_constraints = dietary_constraints
         self.num_meals = num_meals
         self.num_days = num_days
-        
+
         self.weight_price = weight_price
         self.weight_nutrients = weight_nutrients
         self.weight_range = weight_range
@@ -89,72 +101,68 @@ class Mealplan:
             self.meal_limits = dict()
             for meal in self.meals:
                 self.meal_limits[meal.name] = (None, None)
-                
+
         self._rendered = False
         self._set_jinja2_enviroment()
 
     def render(self, time_limit_secs=5, epsilon=1e-3, params=None):
 
         limits = [self.meal_limits[meal.name] for meal in self.meals]
-        
 
         x, optimization_results = optimize_mealplan(
-            self.meals, self.dietary_constraints, meals_limits=limits,
-                      num_days=self.num_days, num_meals=self.num_meals,
-                      time_limit_secs=time_limit_secs, epsilon=epsilon,
-                      weight_price=self.weight_price, 
-                      weight_nutrients=self.weight_nutrients, 
-                      weight_range=self.weight_range, params=params)
-        
+            self.meals,
+            self.dietary_constraints,
+            meals_limits=limits,
+            num_days=self.num_days,
+            num_meals=self.num_meals,
+            time_limit_secs=time_limit_secs,
+            epsilon=epsilon,
+            weight_price=self.weight_price,
+            weight_nutrients=self.weight_nutrients,
+            weight_range=self.weight_range,
+            params=params,
+        )
+
         self.x = x
         self.optimization_results = optimization_results
         self._rendered = True
-        
-        
+
         # Parse the results
-        self.results = []
+        self.results = Bunch()
+        for attr in ["price", "protein", "fat", "carbs", "kcal"]:
+            self.results[attr] = []
+        self.results["pretty"] = []
+
         num_meals = len(x)
         num_days = len(x[0])
-        
+
         def format_qntity(qnty):
             qnty = round(qnty, 1)
             if qnty % 1 == 0:
                 qnty = int(qnty)
-            return (qnty)
+            return qnty
 
         for day_num in range(num_days):
-    
+
             x_day = [x[i][day_num] for i in range(num_meals)]
-    
-            result = [(meal, format_qntity(qnty)) for (meal, qnty) in zip(meals, x_day) if qnty > 0]
-    
+
+            result = [
+                (meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0
+            ]
+
+            self.results[day_num] = dict()
+            for attr in ["price", "protein", "fat", "carbs", "kcal"]:
+                self.results[day_num][attr] = [
+                    getattr(m, attr) * q for (m, q) in result
+                ]
+                self.results[attr].append(sum(self.results[day_num][attr]))
+
             # Heuristics to get more carbohydrates earlier in the day
             result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
+            result = [(meal, format_qntity(qnty)) for (meal, qnty) in result]
             result = [(meal, str(qnty).ljust(3)) for (meal, qnty) in result]
-            self.results.append(result)
-            
-            continue
-            
-            price = int(sum(meal.price * qnty for (meal, qnty) in result))
-            print(f"\n## Day {day_num + 1} (price: {price} NOK)")
-    
-            print(f"\n### Meals\n")
-            for meal, qnty in result:
-                qnty = round(qnty, 1)
-                if qnty % 1 == 0:
-                    qnty = int(qnty)
-    
-                print(f"- {round(qnty, 1)} x {str(meal)}")
-    
-            if not verbose:
-                continue
-    
-            print(f"\n### Statistics\n")
-            for macro in ["kcal", "protein", "fat", "carbs"]:
-                macro_distr = [getattr(meal, macro) * qnty for (meal, qnty) in result]
-                macro_distr_r = [int(round(m)) for m in macro_distr]
-                print(f"- Total {macro}: {int(round(sum(macro_distr)))} {macro_distr_r}")
-        
+            self.results["pretty"].append(result)
+
     def _set_jinja2_enviroment(self):
         """
         Set up the jinja2 environment.
@@ -171,7 +179,7 @@ class Mealplan:
         env.filters["mean"] = statistics.mean
 
         self.jinja2_environment = env
-        
+
     def to_txt(self, verbose=False):
         """Write the program information to text,
         which can be printed in a terminal.
@@ -186,62 +194,18 @@ class Mealplan:
         string
             Program as text.
         """
-        
-        
-# =============================================================================
-#         def print_results(x, meals, results_data, *, verbose=True):
-#     """Print the results in Markdown."""
-# 
-#     num_meals = len(x)
-#     num_days = len(x[0])
-# 
-#     print(f"# Meal plan")
-#     for day_num in range(num_days):
-# 
-#         x_day = [x[i][day_num] for i in range(num_meals)]
-# 
-#         result = list((m, qnty) for (m, qnty) in zip(meals, x_day) if qnty > 0)
-# 
-#         # Heuristics to get more carbohydrates earlier in the day
-#         result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
-#         price = int(sum(meal.price * qnty for (meal, qnty) in result))
-#         print(f"\n## Day {day_num + 1} (price: {price} NOK)")
-# 
-#         print(f"\n### Meals\n")
-#         for meal, qnty in result:
-#             qnty = round(qnty, 1)
-#             if qnty % 1 == 0:
-#                 qnty = int(qnty)
-# 
-#             print(f"- {round(qnty, 1)} x {str(meal)}")
-# 
-#         if not verbose:
-#             continue
-# 
-#         print(f"\n### Statistics\n")
-#         for macro in ["kcal", "protein", "fat", "carbs"]:
-#             macro_distr = [getattr(meal, macro) * qnty for (meal, qnty) in result]
-#             macro_distr_r = [int(round(m)) for m in macro_distr]
-#             print(f"- Total {macro}: {int(round(sum(macro_distr)))} {macro_distr_r}")
-#             
-#             
-# =============================================================================
 
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["txt"])
-        return template.render(
-            mealplan=self,
-            results=self.results
-        )
-        
+        return template.render(mealplan=self, results=self.results, verbose=verbose)
+
     def __str__(self):
         """
         String formatting for readable human output.
         """
         return self.to_txt()
-        
-        
-        
+
+
 # =============================================================================
 #                 x,
 #         {
@@ -251,11 +215,10 @@ class Mealplan:
 #             "total_price": round(total_price, 1),
 #         },
 # =============================================================================
-                
-                
-                
+
+
 if __name__ == "__main__":
-    
+
     from streprogen.diet import Food, Meal
 
     all_foods = [
@@ -295,8 +258,6 @@ if __name__ == "__main__":
             price_per_product=24.4,
             grams_per_product=400,
         ),
-                
-                
         Food(
             name="egg",
             protein=13.0,
@@ -306,8 +267,6 @@ if __name__ == "__main__":
             price_per_product=32.9,
             grams_per_product=690,
         ),
-                
-                
         Food(
             name="frossen kyllingfilet",
             protein=19.0,
@@ -353,8 +312,6 @@ if __name__ == "__main__":
             price_per_product=32.5,
             grams_per_product=400,
         ),
-                
-                
         Food(
             name="lettmelk",
             protein=3.5,
@@ -482,7 +439,7 @@ if __name__ == "__main__":
             grams_per_product=600,
         ),
     ]
-    
+
     foods = {food.name: food for food in all_foods}
 
     meals = [
@@ -518,13 +475,12 @@ if __name__ == "__main__":
             discrete=True,
         ),
     ]
-    
-    
+
     dietary_constraints = {"kcal": (1800, 1800)}
     meal_plan = Mealplan(meals, dietary_constraints, num_days=2)
-    
+
     meal_plan.render()
-    
+
     print(meal_plan)
-    
-    
+
+    print(meal_plan.to_txt(verbose=True))

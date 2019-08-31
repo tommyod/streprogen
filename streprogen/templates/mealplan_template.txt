@@ -18,17 +18,31 @@ Meal information
     - {{grams}} grams of '{{food.name}}'
   {% endfor %}
 {% endfor %}
+
+----------------------------------------------------------------
+Statistics
+{% for attr in ["price", "protein", "fat", "carbs", "kcal"] %}
+ - {{attr}}: {{results[attr]|sum|round|int}} [{{results[attr]|map('round')|map('int')|join(', ')}}]
+{% endfor %}
+
 ----------------------------------------------------------------
 Program
 
 {% if mealplan._rendered == False %}
 Not rendered. Call Program.render() to render it.
 {% else %}
-{% for day in range(results|length) %}
+{% for day in range(results["pretty"]|length) %}
  Day {{day + 1}}
- {% for meal, quantity in results[day] %}
+ {% for meal, quantity in results["pretty"][day] %}
    - {{quantity}} x '{{meal.name}}' (base meal of {{meal.grams}} grams)
  {% endfor %}
+ {% if verbose %}
+ 
+   Statistics
+ {% for attr in ["price", "protein", "fat", "carbs", "kcal"] %}
+     - {{attr}}: {{results[day][attr]|sum|round|int}} [{{results[day][attr]|map('round')|map('int')|join(', ')}}]
+ {% endfor %}
+ {% endif %}
  
 {% endfor %}
 {% endif %}

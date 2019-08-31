@@ -11,6 +11,8 @@ from streprogen.modeling import (
     reps_to_intensity_tight,
 )
 from streprogen.program import Program
+from streprogen.diet import Food, Meal
+from streprogen.mealplan import Mealplan
 
 __version__ = "2.1.0"
 
@@ -24,4 +26,7 @@ __all__ = [
     "reps_to_intensity_relaxed",
     "progression_diffeq",
     "progression_sinusoidal",
+    "Food",
+    "Meal",
+    "Mealplan",
 ]
