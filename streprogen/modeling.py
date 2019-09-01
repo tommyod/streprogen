@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import collections.abc
 import functools
 import math
-import collections.abc
 
 
 def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):

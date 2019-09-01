@@ -7,7 +7,8 @@ for the API.
 """
 
 import pytest
-from streprogen import Program, Day, DynamicExercise, StaticExercise
+
+from streprogen import Day, DynamicExercise, Program, StaticExercise
 
 
 def test_verbose_api():

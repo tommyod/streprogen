@@ -3,7 +3,6 @@
 
 import functools
 import warnings
-import operator
 
 from streprogen.utils import compose, escape_string, round_to_nearest
 
