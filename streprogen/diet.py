@@ -52,7 +52,8 @@ class Food:
         computed_kcal = 4 * self.protein + 4 * self.carbs + 9 * self.fat
         relative_error = abs((self.kcal - computed_kcal) / computed_kcal)
         if relative_error > 0.1:
-            warnings.warn(f"Got a {relative_error:.2f} error on kcal: '{self.name}'.")
+            msg = "Got a {} % error on kcal: '{}'."
+            warnings.warn(msg.format(round(relative_error * 100, 1)), self.name)
 
     def __repr__(self):
         name = type(self).__name__
@@ -118,11 +119,14 @@ class Meal:
         foods_names = (
             "{"
             + ", ".join(
-                f"{quantity}g {food.name}" for food, quantity in self.foods.items()
+                "{}g {}".format(quantity, food.name)
+                for food, quantity in self.foods.items()
             )
             + "}"
         )
-        return name + f"(name='{self.name}', grams={self.grams}, foods={foods_names})"
+        return name + "(name='{}', grams={}, foods={})".format(
+            self.name, self.grams, foods_names
+        )
 
 
 class Day(collections.UserList):
