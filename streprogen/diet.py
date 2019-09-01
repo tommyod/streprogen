@@ -25,8 +25,6 @@ class Food:
     'eggs'
     >>> eggs.kcal
     149
-    >>> eggs
-    Food(name=eggs, protein=13.0, fat=10.6, carbs=0.3, kcal=149, price_per_product=32.9, grams_per_product=690)
     """
 
     def __init__(
