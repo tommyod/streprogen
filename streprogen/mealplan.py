@@ -8,6 +8,7 @@ Created on Sat Aug 31 18:28:06 2019
 from jinja2 import Environment, FileSystemLoader
 import functools
 import statistics
+import operator
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -136,6 +137,17 @@ class Mealplan:
         num_meals = len(x)
         num_days = len(x[0])
 
+        # Store used meals
+        self.results["meals"] = set()
+        for i in range(len(x)):
+            for j in range(len(x[i])):
+                if x[i][j] > 0:
+                    self.results["meals"].add(self.meals[i])
+
+        self.results["meals"] = list(
+            sorted(self.results["meals"], key=operator.attrgetter("name"))
+        )
+
         def format_qntity(qnty):
             qnty = round(qnty, 1)
             if qnty % 1 == 0:
@@ -149,6 +161,7 @@ class Mealplan:
             result = [
                 (meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0
             ]
+            result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
 
             self.results[day_num] = dict()
             for attr in ["price", "protein", "fat", "carbs", "kcal"]:
@@ -158,7 +171,6 @@ class Mealplan:
                 self.results[attr].append(sum(self.results[day_num][attr]))
 
             # Heuristics to get more carbohydrates earlier in the day
-            result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
             result = [(meal, format_qntity(qnty)) for (meal, qnty) in result]
             result = [(meal, str(qnty).ljust(3)) for (meal, qnty) in result]
             self.results["pretty"].append(result)
@@ -197,7 +209,9 @@ class Mealplan:
 
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["txt"])
-        return template.render(mealplan=self, results=self.results, verbose=verbose)
+        return template.render(
+            mealplan=self, results=self.results, verbose=verbose, zip=zip
+        )
 
     def __str__(self):
         """

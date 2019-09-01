@@ -2,6 +2,7 @@
 Meal plan
 
 Program parameters
+
   dietary_constraints: {{mealplan.dietary_constraints}}
   num_meals: {{mealplan.num_meals}}
   num_days: {{mealplan.num_days}}
@@ -11,8 +12,9 @@ Program parameters
   weight_range: {{mealplan.weight_range}}
   
 ----------------------------------------------------------------
-Meal information
-{% for meal in mealplan.meals %}
+Meal information (used meals only)
+
+{% for meal in results["meals"] %}
   '{{meal.name}}' ({{meal.grams}} grams)
   {% for food, grams in meal.foods.items() %}
     - {{grams}} grams of '{{food.name}}'
@@ -20,7 +22,8 @@ Meal information
 {% endfor %}
 
 ----------------------------------------------------------------
-Statistics
+Daily meal plan statistics
+
 {% for attr in ["price", "protein", "fat", "carbs", "kcal"] %}
  - {{attr}}: {{results[attr]|sum|round|int}} [{{results[attr]|map('round')|map('int')|join(', ')}}]
 {% endfor %}
@@ -29,16 +32,18 @@ Statistics
 Program
 
 {% if mealplan._rendered == False %}
-Not rendered. Call Program.render() to render it.
+Not rendered. Call Mealplan.render() to render it.
 {% else %}
 {% for day in range(results["pretty"]|length) %}
  Day {{day + 1}}
+ 
  {% for meal, quantity in results["pretty"][day] %}
    - {{quantity}} x '{{meal.name}}' (base meal of {{meal.grams}} grams)
  {% endfor %}
  {% if verbose %}
  
    Statistics
+   
  {% for attr in ["price", "protein", "fat", "carbs", "kcal"] %}
      - {{attr}}: {{results[day][attr]|sum|round|int}} [{{results[day][attr]|map('round')|map('int')|join(', ')}}]
  {% endfor %}
