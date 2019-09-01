@@ -241,7 +241,6 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
 def optimize_mealplan(
     meals,
     dietary_constraints,
-    *,
     meals_limits=None,
     num_days=1,
     num_meals=4,
