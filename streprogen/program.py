@@ -11,17 +11,17 @@ from jinja2 import Environment, FileSystemLoader
 from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
+    progression_diffeq,
     progression_sinusoidal,
     reps_to_intensity,
-    progression_diffeq,
 )
+from streprogen.optimization import optimize_sets
 from streprogen.utils import (
     chunker,
     escape_string,
     prioritized_not_None,
     round_to_nearest,
 )
-from streprogen.optimization import optimize_sets
 
 
 class Program(object):

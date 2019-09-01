@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from streprogen.day import Day
+from streprogen.diet import Food, Meal
 from streprogen.exercises import DynamicExercise, StaticExercise
+from streprogen.mealplan import Mealplan
 from streprogen.modeling import (
     progression_diffeq,
     progression_sinusoidal,
@@ -11,8 +13,6 @@ from streprogen.modeling import (
     reps_to_intensity_tight,
 )
 from streprogen.program import Program
-from streprogen.diet import Food, Meal
-from streprogen.mealplan import Mealplan
 
 __version__ = "2.1.0"
 

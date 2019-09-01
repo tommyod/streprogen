@@ -5,29 +5,18 @@ Created on Sat Aug 31 18:28:06 2019
 
 @author: tommy
 """
-from jinja2 import Environment, FileSystemLoader
-import functools
-import statistics
 import operator
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
 
-from streprogen.utils import (
-    chunker,
-    escape_string,
-    prioritized_not_None,
-    round_to_nearest,
-)
+from streprogen.optimization import optimize_mealplan
 
 
 class Bunch(dict):
     def __init__(self, *args, **kwds):
         super(Bunch, self).__init__(*args, **kwds)
         self.__dict__ = self
-
-
-from streprogen.optimization import optimize_mealplan
 
 
 class Mealplan:
