@@ -109,7 +109,7 @@ class Mealplan:
     def render(self, time_limit_secs=5, epsilon=1e-3, params=None):
 
         limits = [self.meal_limits[meal.name] for meal in self.meals]
-
+        
         x, optimization_results = optimize_mealplan(
             self.meals,
             self.dietary_constraints,

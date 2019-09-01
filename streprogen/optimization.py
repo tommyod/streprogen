@@ -288,7 +288,8 @@ def optimize_mealplan(
     first_call = params.get("first_call", True)
 
     # Create a solver and an objective function
-    solver = pywraplp.Solver("meals", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+    solver_name = str(hash(tuple(meals)) + hash((num_days, num_meals)))
+    solver = pywraplp.Solver(solver_name, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
     solver.set_time_limit(time_limit_secs * 1000)
     objective_function = 0
     INF = solver.infinity()
@@ -426,12 +427,20 @@ def optimize_mealplan(
 
         if first_call:
             params["first_call"] = False
+            
             return optimize_mealplan(
-                meals=meals,
-                dietary_constraints=dietary_constraints,
-                meals_limits=meals_limits,
-                params=params,
-            )
+    meals=meals,
+    dietary_constraints=dietary_constraints,
+    meals_limits=meals_limits,
+    num_days=num_days,
+    num_meals=num_meals,
+    time_limit_secs=time_limit_secs,
+    epsilon=epsilon,
+    weight_price=weight_price,
+    weight_nutrients=weight_nutrients,
+    weight_range=weight_range,
+    params=params,
+)
 
         else:
             raise RuntimeError("Infeasible problem.")

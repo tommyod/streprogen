@@ -11,6 +11,9 @@ Program parameters
   weight_nutrients: {{mealplan.weight_nutrients}}
   weight_range: {{mealplan.weight_range}}
   
+  optimization_time: {{mealplan.optimization_results["wall_time"]}} s
+  optimization_iterations: {{mealplan.optimization_results["iterations"]}}
+  
 ----------------------------------------------------------------
 Meal information (used meals only)
 

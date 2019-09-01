@@ -3,10 +3,8 @@
 """
 Data classes for optimizing meals.
 """
-import dataclasses
 import collections
 import warnings
-import typing
 
 # =============================================================================
 # CLASSES - Used to store data and ease computations in hierarchical data
