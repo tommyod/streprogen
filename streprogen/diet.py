@@ -127,12 +127,6 @@ class Meal:
         )
 
 
-class Day(collections.UserList):
-    def __getattr__(self, key):
-        """Allow accessing attributes of meals"""
-        return sum(getattr(meal, key) for meal in self.data)
-
-
 if __name__ == "__main__":
     import pytest
 
