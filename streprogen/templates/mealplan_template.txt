@@ -9,7 +9,7 @@ Program parameters
   
   weight_price: {{mealplan.weight_price}}
   weight_nutrients: {{mealplan.weight_nutrients}}
-  weight_range: {{mealplan.weight_range}}
+  weight_meal_sizes: {{mealplan.weight_meal_sizes}}
   
   optimization_time: {{mealplan.optimization_results["wall_time"]}} s
   optimization_iterations: {{mealplan.optimization_results["iterations"]}}
