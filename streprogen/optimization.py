@@ -427,20 +427,20 @@ def optimize_mealplan(
 
         if first_call:
             params["first_call"] = False
-            
+
             return optimize_mealplan(
-    meals=meals,
-    dietary_constraints=dietary_constraints,
-    meals_limits=meals_limits,
-    num_days=num_days,
-    num_meals=num_meals,
-    time_limit_secs=time_limit_secs,
-    epsilon=epsilon,
-    weight_price=weight_price,
-    weight_nutrients=weight_nutrients,
-    weight_range=weight_range,
-    params=params,
-)
+                meals=meals,
+                dietary_constraints=dietary_constraints,
+                meals_limits=meals_limits,
+                num_days=num_days,
+                num_meals=num_meals,
+                time_limit_secs=time_limit_secs,
+                epsilon=epsilon,
+                weight_price=weight_price,
+                weight_nutrients=weight_nutrients,
+                weight_range=weight_range,
+                params=params,
+            )
 
         else:
             raise RuntimeError("Infeasible problem.")

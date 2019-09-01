@@ -29,45 +29,6 @@ class Bunch(dict):
 
 from streprogen.optimization import optimize_mealplan
 
-# =============================================================================
-#
-# def optimize_mealplan(meals, dietary_constraints, *, meals_limits=None, params=None):
-#     """Optimize the quantitiy of each meal in a day, given constraints."""
-#
-#     # =============================================================================
-#     #     PARSE INPUT ARGUMENTS
-#     # =============================================================================
-#
-#     assert isinstance(meals, (list, tuple))
-#     assert isinstance(dietary_constraints, (dict,))
-#     assert isinstance(params, (dict,))
-#     assert (meals_limits is None) or isinstance(meals_limits, (list, tuple))
-#
-#     meals = meals.copy()
-#     dietary_constraints = dietary_constraints.copy()
-#
-#     if meals_limits is None:
-#         meals_limits = [(None, None) for meal in meals]
-#
-#     if params is None:
-#         params = dict()
-#
-#     # Get parameters
-#     num_days = params.get("num_days", 1)
-#     num_meals = params.get("num_meals", 4)
-#     time_limit_secs = params.get("time_limit_secs", 10)
-#
-#     # A small number such as 0.001. x_ij >= EPSILON <=> z_ij = 1
-#     EPSILON = params.get("epsilon", 1e-3)
-#
-#     # These weights found to be good by in experiments
-#     weight_price = params.get("weight_price", 0.1)
-#     weight_nutrients = params.get("weight_nutrients", 2.0)
-#     weight_range = params.get("weight_range", 0.75)
-#
-#
-# =============================================================================
-
 
 class Mealplan:
 
@@ -85,9 +46,48 @@ class Mealplan:
         meal_limits=None,
         weight_price=0.1,
         weight_nutrients=2.0,
-        weight_range=0.75,
+        weight_meal_sizes=0.75,
     ):
-        """TODO"""
+        """Initialize a new program.
+    
+        Parameters
+        ----------
+        meals
+            A list of Meal instances.
+
+        dietary_constraints
+            A dict of dietary constraints. The keys can be 'kcal', 'protein', 'fat' or
+            'carbs'. The values must be (low, high) limits of the macronutrients, or
+            (None, high) to only set an upper limit. Example: {'kcal' : (1600, 1800)}
+            
+        num_meals
+            The number of meals per day. 
+            
+        num_days
+            The number of days in the meal plan.
+            
+        meal_limits
+            A dictionary with keys equal to meal names. The values must be (low, high) 
+            and limit the number of times a food can be used. Use (None, high) to only 
+            set an upper limit. Example: To have the meal 'bread' at most twice in a
+            multi-day meal plan, use {'bread' : (None, 2)}.
+            
+        weight_price
+            Positive number weighting the overall price of the meal plan. 
+            A higher value weights this objective higher. 
+            This value must be set in relation to the other weights.
+            
+        weight_nutrients
+            Positive number weighting the objective of getting as close as possible to
+            satisfying the dietary constraints. A higher value weights this objective 
+            higher.  This value must be set in relation to the other weights.
+            
+        weight_meal_sizes
+            Positive number weighting the goal of having equal meal sizes.
+            A higher value weights this objective higher. 
+            This value must be set in relation to the other weights.
+            
+        """
 
         self.meals = meals
         self.dietary_constraints = dietary_constraints
@@ -96,7 +96,7 @@ class Mealplan:
 
         self.weight_price = weight_price
         self.weight_nutrients = weight_nutrients
-        self.weight_range = weight_range
+        self.weight_meal_sizes = weight_meal_sizes
 
         if meal_limits is None:
             self.meal_limits = dict()
@@ -109,7 +109,7 @@ class Mealplan:
     def render(self, time_limit_secs=5, epsilon=1e-3, params=None):
 
         limits = [self.meal_limits[meal.name] for meal in self.meals]
-        
+
         x, optimization_results = optimize_mealplan(
             self.meals,
             self.dietary_constraints,
@@ -120,7 +120,7 @@ class Mealplan:
             epsilon=epsilon,
             weight_price=self.weight_price,
             weight_nutrients=self.weight_nutrients,
-            weight_range=self.weight_range,
+            weight_range=self.weight_meal_sizes,
             params=params,
         )
 
@@ -218,17 +218,6 @@ class Mealplan:
         String formatting for readable human output.
         """
         return self.to_txt()
-
-
-# =============================================================================
-#                 x,
-#         {
-#             "obj_func_value": round(solver.Objective().Value(), 6),
-#             "wall_time": round(solver.wall_time() / 1000, 3),
-#             "iterations": solver.iterations(),
-#             "total_price": round(total_price, 1),
-#         },
-# =============================================================================
 
 
 if __name__ == "__main__":
