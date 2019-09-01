@@ -301,8 +301,8 @@ def optimize_mealplan(
     meals_total = num_days * num_meals
     maximum_limit = sum(9999 if high is None else high for (low, high) in meals_limits)
     if maximum_limit < meals_total:
-        msg = f"Cannot achieve {meals_total} totals meals with a total of {maximum_limit} meals."
-        raise RuntimeError(msg)
+        msg = "Cannot achieve {} totals meals with a total of {} meals."
+        raise RuntimeError(msg.format(meals_total, maximum_limit))
 
     allowed_macros = ("kcal", "protein", "fat", "carbs")
     assert all(key in allowed_macros for key in dietary_constraints.keys())
@@ -319,12 +319,12 @@ def optimize_mealplan(
     # Loop over every combination of meal and days, create variables
     for i, meal in enumerate(meals):
         for j in range(num_days):
-            z[i][j] = solver.IntVar(0, 1, f"z_{i}{j}")
+            z[i][j] = solver.IntVar(0, 1, "z_{}{}".format(i, j))
 
             if meal.discrete:
-                x[i][j] = solver.IntVar(0, INF, f"x_{i}{j}")
+                x[i][j] = solver.IntVar(0, INF, "x_{}{}".format(i, j))
             else:
-                x[i][j] = solver.NumVar(0, INF, f"x_{i}{j}")
+                x[i][j] = solver.NumVar(0, INF, "x_{}{}".format(i, j))
 
             # These constraints ensure that z_ij = 1 iff x_ij >= EPSILON
             solver.Add(EPSILON * z[i][j] <= x[i][j])
@@ -378,8 +378,8 @@ def optimize_mealplan(
 
     # OBJECTIVE FUNCTION TERM 3: Minimal range on calories (on a daily basis)
     for j in range(num_days):
-        lower = solver.NumVar(0, INF, f"lower_kcal_{j}")
-        upper = solver.NumVar(0, INF, f"upper_kcal_{j}")
+        lower = solver.NumVar(0, INF, "lower_kcal_{}".format(j))
+        upper = solver.NumVar(0, INF, "upper_kcal_{}".format(j))
 
         for i, meal in enumerate(meals):
 
@@ -407,8 +407,8 @@ def optimize_mealplan(
         # Add lower limit
         if low is not None:
             if low > num_days:
-                msg = f"Lower limit on '{meal.name}' is {low}, but there are {num_days} days."
-                raise RuntimeError(msg)
+                msg = "Lower limit on '{}' is {}, but there are {} days."
+                raise RuntimeError(msg.format(meal.name, low, num_days))
             solver.Add(times_used >= low)
 
         # Add upper limit
