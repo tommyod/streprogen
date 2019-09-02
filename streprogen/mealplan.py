@@ -11,6 +11,7 @@ from os import path
 from jinja2 import Environment, FileSystemLoader
 
 from streprogen.optimization import optimize_mealplan
+import warnings
 
 
 class Bunch(dict):
@@ -89,8 +90,19 @@ class Mealplan:
 
         if meal_limits is None:
             self.meal_limits = dict()
-            for meal in self.meals:
+        else:
+            self.meal_limits = meal_limits
+
+        # Add None keys if no keys are present
+        for meal in self.meals:
+            if meal.name not in set(self.meal_limits.keys()):
                 self.meal_limits[meal.name] = (None, None)
+
+        meal_names = set([meal.name for meal in self.meals])
+        for key in self.meal_limits.keys():
+            if key not in meal_names:
+                msg = "`meal_limits` has a key `{}` which is not a meal name."
+                warnings.warn(msg.format(key))
 
         self._rendered = False
         self._set_jinja2_enviroment()
