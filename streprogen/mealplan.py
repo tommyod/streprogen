@@ -78,6 +78,8 @@ class Mealplan:
             This value must be set in relation to the other weights.
             
         """
+        assert num_meals >= 1
+        assert num_days >= 1
 
         self.meals = meals
         self.dietary_constraints = dietary_constraints
@@ -97,6 +99,8 @@ class Mealplan:
         for meal in self.meals:
             if meal.name not in set(self.meal_limits.keys()):
                 self.meal_limits[meal.name] = (None, None)
+
+        assert len(self.meals) == len(self.meal_limits)
 
         meal_names = set([meal.name for meal in self.meals])
         for key in self.meal_limits.keys():
