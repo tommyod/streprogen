@@ -50,7 +50,7 @@ class Food:
         relative_error = abs((self.kcal - computed_kcal) / computed_kcal)
         if relative_error > 0.1:
             msg = "Got a {} % error on kcal: '{}'."
-            warnings.warn(msg.format(round(relative_error * 100, 1)), self.name)
+            warnings.warn(msg.format(round(relative_error * 100, 1), self.name))
 
     def __repr__(self):
         name = type(self).__name__
