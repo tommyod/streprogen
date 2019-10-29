@@ -122,7 +122,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     # The loss measure are normalized in the code, so the ratio of these values
     # will prioritize the goals relatively to each other.
     # If a value is set to 0, the solver will not care about it
-    penalty_reps = 1.0
+    penalty_reps = 2.0
     penalty_intensity = 1.0
     reward_density = 1.0
     penality_spread = 0.9
