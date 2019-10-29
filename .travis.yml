@@ -8,6 +8,7 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 
 # The Travis CI job lifecycle specifies the order of the commands below phases.
 # https://docs.travis-ci.com/user/job-lifecycle/#the-job-lifecycle
