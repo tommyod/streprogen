@@ -343,10 +343,10 @@ SOLUTION: Either (1) change the repetition range, (2) change the desired intensi
 or (3) ignore this message. The software will do it's best to remedy this.
 """.format(
                 dynamic_exercise.name,
-                dynamic_exercise.max_reps,
                 dynamic_exercise.min_reps,
+                dynamic_exercise.max_reps,
                 round(int_lowest, 1),
-                round(int_lowest, 1),
+                round(int_highest, 1),
                 round(desired_intensity, 1),
             )
             warnings.warn(msg)

@@ -122,7 +122,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     # The loss measure are normalized in the code, so the ratio of these values
     # will prioritize the goals relatively to each other.
     # If a value is set to 0, the solver will not care about it
-    penalty_reps = 1.0
+    penalty_reps = 2.0
     penalty_intensity = 1.0
     reward_density = 1.0
     penality_spread = 0.9
@@ -146,31 +146,28 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     # =============================================================================
 
     # Set repetition goals
-    delta_pos = solver.NumVar(0, INF, "slack_reps_+")
-    delta_neg = solver.NumVar(0, INF, "slack_reps_-")
     total_reps = sum(x_j * r_j for (x_j, r_j) in zip(x, reps))
 
-    solver.Add(total_reps + delta_pos - delta_neg == reps_goal)
-    objective_function += penalty_reps * (delta_pos + delta_neg) / reps_goal
+    # Add many linear penalities with increasing 'diff' to create a convex penalty
+    for diff in range(10):
+        delta = solver.NumVar(0, INF, "slack_reps_{}".format(diff))
+        solver.Add(total_reps - reps_goal <= delta + diff)
+        solver.Add(reps_goal - total_reps <= delta + diff)
+        objective_function += penalty_reps * (delta) / reps_goal
 
     # =============================================================================
     #     GOAL 2 : INTENSITY AS CLOSE AS POSSIBLE TO DESIRED
     # =============================================================================
 
-    # Set intensity
-    delta_pos = solver.NumVar(0, INF, "slack_intensity_+")
-    delta_neg = solver.NumVar(0, INF, "slack_intensity_-")
-
     numerator = sum(r_j * x_j * i_j for (r_j, x_j, i_j) in zip(reps, x, intensities))
     denominator = sum(r_j * x_j for (r_j, x_j) in zip(reps, x))
 
-    solver.Add(numerator + delta_pos - delta_neg == intensities_goal * denominator)
-
-    denom = max(intensities_goal - min(intensities), 0.0001)
-    objective_function += penalty_intensity * delta_pos / denom
-
-    denom = max(max(intensities) - intensities_goal, 0.0001)
-    objective_function += penalty_intensity * delta_neg / denom
+    # Add many linear penalities with increasing 'diff' to create a convex penalty
+    for diff in range(10):
+        delta = solver.NumVar(0, INF, "slack_intensity_{}".format(diff))
+        solver.Add(numerator - intensities_goal * denominator <= delta + diff)
+        solver.Add(intensities_goal * denominator - numerator <= delta + diff)
+        objective_function += penalty_intensity * (delta) / intensities_goal
 
     # =============================================================================
     #     GOAL 3: AS DENSE SOLUTION AS POSSIBLE
