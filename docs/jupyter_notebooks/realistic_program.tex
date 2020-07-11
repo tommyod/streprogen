@@ -3,12 +3,8 @@
 % -----------------------------------------------
 \documentclass[12pt, a4paper]{article}% 'twoside' for printing
 \usepackage[utf8]{inputenc}% Allow input to be UTF-8
-\usepackage[expansion=false]{microtype}% Fixes to make typography better
-\setlength{\marginparwidth}{2cm}% More space for the todo notes
-\usepackage{tikz-cd}% For diagrams
-\usepackage{listings}% To include source-code
-\usepackage[sc]{mathpazo}% A nice font, alternative to CM
 \usepackage[margin = 2cm]{geometry}% May be used to set margins
+
 % -----------------------------------------------
 % Document start
 % -----------------------------------------------
@@ -29,9 +25,7 @@ The latest version can be found at \\
 	\textbf{Parameter} & \textbf{Value} \\ \hline
 	\verb|duration|             & 8 \\
 	\verb|reps_per_exercise|    & 25 \\
-	\verb|intensity|        & 75 \\
-	\verb|reps_scalers|         & 1, 0.8, 1.2, 0.8, 1, 1.2, 1.2, 0.8 \\
-	\verb|intensity_scalers|    & 1, 0.9, 1, 1, 0.9, 1, 0.9, 1 \\
+	\verb|intensity|            & 80 \\
 	\verb|units|                & 
 \end{tabular}
 
@@ -46,31 +40,31 @@ The latest version can be found at \\
           1.4\%\\
         \hspace{0.5em}Chins (light) & 100  &
          112  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
         \hspace{0.5em}Military press & 50  &
          56  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
       \textbf{ Wednesday } & & & & & \\ \hline
         \hspace{0.5em}Deadlifts & 120  &
          134  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
         \hspace{0.5em}Bench & 70  &
          78  & 3 & 8 &
           1.4\%\\
         \hspace{0.5em}Chin ups & 100  &
          112  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
        \hspace{0.5em}Dips & \multicolumn{ 5 }{l}{ 4 x 10 @ bodyweight } \\
       \textbf{ Friday } & & & & & \\ \hline
         \hspace{0.5em}Squats & 85  &
          95  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
         \hspace{0.5em}Chins (light) & 100  &
          112  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
         \hspace{0.5em}Military press & 50  &
          56  & 3 & 8 &
-          1.4\%\\
+          1.5\%\\
 \end{tabular}
 
 
@@ -84,33 +78,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 67.5
-            & 6 x 70
-            & 6 x 70
-            & 5 x 75
-            & 
+            & 7 x 72.5
+            & 7 x 72.5
+            & 5 x 77.5
+            & 4 x 82.5
+            & 3 x 85
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 70
-            & 6 x 75
-            & 6 x 75
-            & 5 x 80
-            & 
+            & 7 x 75
+            & 7 x 75
+            & 5 x 82.5
+            & 4 x 85
+            & 3 x 90
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 7 x 35
-            & 7 x 35
-            & 6 x 37.5
+            & 7 x 37.5
+            & 7 x 37.5
             & 5 x 40
-            & 
+            & 4 x 42.5
+            & 3 x 45
             & 
             & 
             \\
@@ -125,33 +119,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 85
-            & 7 x 85
-            & 6 x 90
-            & 5 x 95
-            & 
+            & 7 x 90
+            & 7 x 90
+            & 5 x 100
+            & 4 x 102.5
+            & 3 x 107.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 7 x 50
-            & 7 x 50
-            & 6 x 52.5
-            & 5 x 55
-            & 
+            & 7 x 52.5
+            & 7 x 52.5
+            & 5 x 57.5
+            & 4 x 60
+            & 3 x 62.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 8 x 67.5
-            & 7 x 70
-            & 5 x 80
-            & 4 x 82.5
-            & 
+            & 7 x 75
+            & 7 x 75
+            & 5 x 82.5
+            & 4 x 85
+            & 3 x 90
             & 
             & 
             \\
@@ -167,33 +161,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 8 x 57.5
-            & 7 x 60
-            & 5 x 67.5
-            & 4 x 70
-            & 
+            & 7 x 65
+            & 7 x 65
+            & 5 x 70
+            & 4 x 72.5
+            & 3 x 75
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 70
-            & 7 x 70
-            & 6 x 75
-            & 5 x 80
-            & 
+            & 7 x 75
+            & 7 x 75
+            & 5 x 82.5
+            & 4 x 85
+            & 3 x 90
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 8 x 32.5
-            & 6 x 37.5
+            & 7 x 37.5
+            & 7 x 37.5
             & 5 x 40
-            & 5 x 40
-            & 
+            & 4 x 42.5
+            & 3 x 45
             & 
             & 
             \\
@@ -210,33 +204,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 70
-            & 7 x 70
-            & 6 x 75
-            & 
-            & 
+            & 8 x 70
+            & 7 x 72.5
+            & 6 x 77.5
+            & 4 x 82.5
+            & 3 x 87.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 72.5
-            & 7 x 72.5
-            & 6 x 77.5
-            & 
-            & 
+            & 8 x 72.5
+            & 7 x 77.5
+            & 6 x 80
+            & 4 x 87.5
+            & 3 x 92.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
+            & 8 x 37.5
             & 7 x 37.5
-            & 7 x 37.5
-            & 7 x 37.5
-            & 
-            & 
+            & 6 x 40
+            & 4 x 45
+            & 3 x 45
             & 
             & 
             \\
@@ -251,33 +245,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 87.5
-            & 7 x 87.5
-            & 6 x 92.5
-            & 
-            & 
+            & 8 x 87.5
+            & 7 x 92.5
+            & 6 x 97.5
+            & 4 x 105
+            & 3 x 110
             & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 7 x 52.5
-            & 7 x 52.5
-            & 7 x 52.5
-            & 
-            & 
+            & 8 x 52.5
+            & 7 x 55
+            & 6 x 57.5
+            & 4 x 62.5
+            & 3 x 65
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 7 x 72.5
-            & 7 x 72.5
-            & 6 x 77.5
-            & 
-            & 
+            & 8 x 72.5
+            & 7 x 77.5
+            & 6 x 80
+            & 4 x 87.5
+            & 3 x 92.5
             & 
             & 
             \\
@@ -293,33 +287,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 62.5
-            & 7 x 62.5
-            & 6 x 65
-            & 
-            & 
+            & 8 x 62.5
+            & 7 x 65
+            & 6 x 67.5
+            & 4 x 75
+            & 3 x 77.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 72.5
-            & 7 x 72.5
-            & 6 x 77.5
-            & 
-            & 
+            & 8 x 72.5
+            & 7 x 77.5
+            & 6 x 80
+            & 4 x 87.5
+            & 3 x 92.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
+            & 8 x 37.5
             & 7 x 37.5
-            & 7 x 37.5
-            & 7 x 37.5
-            & 
-            & 
+            & 6 x 40
+            & 4 x 45
+            & 3 x 45
             & 
             & 
             \\
@@ -336,34 +330,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 6 x 72.5
-            & 6 x 72.5
-            & 5 x 77.5
-            & 5 x 77.5
-            & 4 x 80
-            & 4 x 80
+            & 7 x 75
+            & 7 x 75
+            & 5 x 82.5
+            & 4 x 85
+            & 3 x 87.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 72.5
-            & 6 x 77.5
-            & 5 x 80
-            & 4 x 85
-            & 4 x 85
-            & 4 x 85
+            & 7 x 77.5
+            & 7 x 77.5
+            & 5 x 85
+            & 4 x 90
+            & 3 x 92.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 7 x 35
-            & 6 x 37.5
-            & 5 x 40
-            & 4 x 42.5
-            & 4 x 42.5
-            & 4 x 42.5
+            & 7 x 40
+            & 7 x 40
+            & 5 x 42.5
+            & 4 x 45
+            & 3 x 47.5
+            & 
             & 
             \\
 
@@ -377,34 +371,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 87.5
-            & 6 x 92.5
-            & 5 x 97.5
-            & 5 x 97.5
-            & 5 x 97.5
-            & 4 x 102.5
+            & 7 x 95
+            & 7 x 95
+            & 5 x 102.5
+            & 4 x 107.5
+            & 3 x 112.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 6 x 52.5
-            & 5 x 57.5
-            & 5 x 57.5
-            & 5 x 57.5
-            & 5 x 57.5
-            & 4 x 60
+            & 7 x 55
+            & 7 x 55
+            & 5 x 60
+            & 4 x 62.5
+            & 3 x 65
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 7 x 72.5
-            & 6 x 77.5
-            & 5 x 80
-            & 4 x 85
-            & 4 x 85
-            & 4 x 85
+            & 7 x 77.5
+            & 7 x 77.5
+            & 5 x 85
+            & 4 x 90
+            & 3 x 92.5
+            & 
             & 
             \\
 
@@ -419,34 +413,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 62.5
-            & 6 x 65
-            & 5 x 67.5
-            & 5 x 67.5
-            & 4 x 72.5
+            & 7 x 67.5
+            & 7 x 67.5
+            & 5 x 72.5
+            & 4 x 75
+            & 3 x 80
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 6 x 77.5
-            & 6 x 77.5
-            & 5 x 80
-            & 5 x 80
-            & 4 x 85
-            & 4 x 85
+            & 7 x 77.5
+            & 7 x 77.5
+            & 5 x 85
+            & 4 x 90
+            & 3 x 92.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 6 x 37.5
-            & 5 x 40
-            & 5 x 40
-            & 5 x 40
-            & 5 x 40
-            & 4 x 42.5
+            & 7 x 40
+            & 7 x 40
+            & 5 x 42.5
+            & 4 x 45
+            & 3 x 47.5
+            & 
             & 
             \\
 
@@ -462,10 +456,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 70
-            & 6 x 72.5
-            & 5 x 77.5
-            & 
+            & 6 x 80
+            & 5 x 82.5
+            & 5 x 82.5
+            & 5 x 82.5
             & 
             & 
             & 
@@ -473,10 +467,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 72.5
-            & 6 x 77.5
-            & 5 x 82.5
-            & 
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 5 x 87.5
             & 
             & 
             & 
@@ -484,10 +478,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Military press
-            & 7 x 37.5
-            & 6 x 37.5
-            & 5 x 40
-            & 
+            & 6 x 42.5
+            & 5 x 42.5
+            & 5 x 42.5
+            & 5 x 42.5
             & 
             & 
             & 
@@ -503,10 +497,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 87.5
-            & 6 x 92.5
-            & 5 x 97.5
-            & 
+            & 6 x 100
+            & 5 x 105
+            & 5 x 105
+            & 5 x 105
             & 
             & 
             & 
@@ -514,10 +508,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Bench
-            & 7 x 50
-            & 6 x 55
-            & 5 x 57.5
-            & 
+            & 6 x 57.5
+            & 5 x 60
+            & 5 x 60
+            & 5 x 60
             & 
             & 
             & 
@@ -525,10 +519,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chin ups
-            & 8 x 67.5
-            & 6 x 77.5
-            & 4 x 85
-            & 
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 5 x 87.5
             & 
             & 
             & 
@@ -545,10 +539,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 6 x 65
-            & 6 x 65
-            & 6 x 65
-            & 
+            & 6 x 70
+            & 5 x 75
+            & 5 x 75
+            & 5 x 75
             & 
             & 
             & 
@@ -556,10 +550,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chins (light)
-            & 6 x 77.5
-            & 6 x 77.5
-            & 6 x 77.5
-            & 
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 5 x 87.5
             & 
             & 
             & 
@@ -567,10 +561,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Military press
-            & 8 x 35
-            & 6 x 37.5
-            & 4 x 42.5
-            & 
+            & 6 x 42.5
+            & 5 x 42.5
+            & 5 x 42.5
+            & 5 x 42.5
             & 
             & 
             & 
@@ -588,33 +582,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 8 x 67.5
-            & 7 x 72.5
-            & 6 x 77.5
-            & 5 x 82.5
-            & 
+            & 7 x 77.5
+            & 7 x 77.5
+            & 5 x 85
+            & 4 x 87.5
+            & 3 x 92.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 8 x 72.5
-            & 8 x 72.5
-            & 6 x 82.5
-            & 4 x 90
-            & 
+            & 7 x 80
+            & 7 x 80
+            & 5 x 87.5
+            & 4 x 92.5
+            & 3 x 97.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 8 x 35
-            & 8 x 35
-            & 6 x 40
-            & 5 x 42.5
-            & 
+            & 7 x 40
+            & 7 x 40
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 47.5
             & 
             & 
             \\
@@ -629,33 +623,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 92.5
-            & 7 x 92.5
-            & 6 x 97.5
-            & 5 x 102.5
-            & 
+            & 7 x 97.5
+            & 7 x 97.5
+            & 5 x 105
+            & 4 x 110
+            & 3 x 115
             & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 8 x 50
-            & 7 x 52.5
-            & 6 x 57.5
-            & 5 x 60
-            & 
+            & 7 x 57.5
+            & 7 x 57.5
+            & 5 x 62.5
+            & 4 x 65
+            & 3 x 67.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 8 x 72.5
-            & 7 x 77.5
-            & 6 x 82.5
-            & 6 x 82.5
-            & 
+            & 7 x 80
+            & 7 x 80
+            & 5 x 87.5
+            & 4 x 92.5
+            & 3 x 97.5
             & 
             & 
             \\
@@ -671,33 +665,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 8 x 62.5
-            & 7 x 65
-            & 6 x 70
-            & 5 x 72.5
-            & 
+            & 7 x 70
+            & 7 x 70
+            & 5 x 75
+            & 4 x 77.5
+            & 3 x 82.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 8 x 72.5
-            & 7 x 77.5
-            & 6 x 82.5
-            & 6 x 82.5
-            & 
+            & 7 x 80
+            & 7 x 80
+            & 5 x 87.5
+            & 4 x 92.5
+            & 3 x 97.5
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 8 x 35
-            & 7 x 37.5
-            & 6 x 40
-            & 5 x 42.5
-            & 
+            & 7 x 40
+            & 7 x 40
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 47.5
             & 
             & 
             \\
@@ -714,34 +708,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 72.5
-            & 6 x 77.5
-            & 5 x 82.5
-            & 5 x 82.5
-            & 4 x 87.5
+            & 8 x 75
+            & 7 x 77.5
+            & 6 x 82.5
+            & 4 x 90
             & 3 x 92.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 6 x 82.5
-            & 6 x 82.5
-            & 6 x 82.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 8 x 77.5
+            & 7 x 82.5
+            & 6 x 85
+            & 4 x 95
             & 3 x 97.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 6 x 40
-            & 6 x 40
-            & 5 x 42.5
-            & 5 x 42.5
-            & 4 x 45
-            & 4 x 45
+            & 8 x 40
+            & 7 x 40
+            & 6 x 42.5
+            & 4 x 47.5
+            & 3 x 50
+            & 
             & 
             \\
 
@@ -755,34 +749,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 8 x 87.5
-            & 7 x 92.5
-            & 6 x 97.5
-            & 4 x 110
-            & 3 x 115
-            & 3 x 115
+            & 8 x 95
+            & 7 x 97.5
+            & 6 x 102.5
+            & 4 x 112.5
+            & 3 x 117.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 7 x 55
-            & 6 x 57.5
-            & 5 x 60
+            & 8 x 55
+            & 7 x 57.5
+            & 6 x 60
             & 4 x 65
-            & 4 x 65
-            & 4 x 65
+            & 3 x 67.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 6 x 82.5
-            & 6 x 82.5
-            & 6 x 82.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 8 x 77.5
+            & 7 x 82.5
+            & 6 x 85
+            & 4 x 95
             & 3 x 97.5
+            & 
             & 
             \\
 
@@ -797,34 +791,34 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 7 x 65
-            & 6 x 70
-            & 5 x 72.5
-            & 5 x 72.5
-            & 4 x 77.5
+            & 8 x 67.5
+            & 7 x 70
+            & 6 x 72.5
+            & 4 x 80
             & 3 x 82.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 7 x 77.5
-            & 6 x 82.5
-            & 5 x 87.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 8 x 77.5
+            & 7 x 82.5
+            & 6 x 85
+            & 4 x 95
             & 3 x 97.5
+            & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 7 x 37.5
-            & 6 x 40
-            & 5 x 42.5
-            & 5 x 42.5
-            & 4 x 45
-            & 3 x 47.5
+            & 8 x 40
+            & 7 x 40
+            & 6 x 42.5
+            & 4 x 47.5
+            & 3 x 50
+            & 
             & 
             \\
 
@@ -840,33 +834,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 8 x 67.5
-            & 8 x 67.5
-            & 7 x 72.5
-            & 6 x 75
-            & 
+            & 7 x 80
+            & 7 x 80
+            & 5 x 87.5
+            & 4 x 90
+            & 3 x 95
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 8 x 72.5
-            & 7 x 75
-            & 6 x 80
-            & 5 x 85
-            & 4 x 90
+            & 7 x 82.5
+            & 7 x 82.5
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 7 x 37.5
-            & 7 x 37.5
-            & 6 x 40
-            & 6 x 40
-            & 5 x 42.5
+            & 7 x 42.5
+            & 7 x 42.5
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 50
             & 
             & 
             \\
@@ -881,33 +875,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 7 x 90
-            & 7 x 90
-            & 7 x 90
-            & 6 x 97.5
-            & 
+            & 7 x 100
+            & 7 x 100
+            & 5 x 110
+            & 4 x 115
+            & 3 x 120
             & 
             & 
             \\
 
 
             \hspace{0.75em} Bench
-            & 8 x 50
-            & 8 x 50
-            & 7 x 52.5
-            & 6 x 55
-            & 
+            & 7 x 57.5
+            & 7 x 57.5
+            & 5 x 62.5
+            & 4 x 67.5
+            & 3 x 70
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chin ups
-            & 7 x 75
-            & 7 x 75
-            & 7 x 75
-            & 7 x 75
-            & 
+            & 7 x 82.5
+            & 7 x 82.5
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
             & 
             & 
             \\
@@ -923,33 +917,33 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 8 x 60
-            & 7 x 65
-            & 6 x 67.5
-            & 6 x 67.5
-            & 5 x 72.5
+            & 7 x 70
+            & 7 x 70
+            & 5 x 77.5
+            & 4 x 80
+            & 3 x 85
             & 
             & 
             \\
 
 
             \hspace{0.75em} Chins (light)
-            & 8 x 72.5
-            & 8 x 72.5
-            & 7 x 75
-            & 6 x 80
-            & 
+            & 7 x 82.5
+            & 7 x 82.5
+            & 5 x 90
+            & 4 x 95
+            & 3 x 100
             & 
             & 
             \\
 
 
             \hspace{0.75em} Military press
-            & 8 x 35
-            & 7 x 37.5
-            & 6 x 40
-            & 5 x 42.5
-            & 4 x 45
+            & 7 x 42.5
+            & 7 x 42.5
+            & 5 x 45
+            & 4 x 47.5
+            & 3 x 50
             & 
             & 
             \\
@@ -966,10 +960,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 6 x 80
-            & 5 x 85
-            & 5 x 85
-            & 4 x 87.5
+            & 6 x 82.5
+            & 5 x 87.5
+            & 5 x 87.5
+            & 5 x 87.5
             & 
             & 
             & 
@@ -977,10 +971,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chins (light)
-            & 6 x 82.5
-            & 5 x 87.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 6 x 87.5
+            & 5 x 92.5
+            & 5 x 92.5
+            & 5 x 92.5
             & 
             & 
             & 
@@ -988,10 +982,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Military press
-            & 6 x 42.5
+            & 6 x 45
             & 5 x 45
             & 5 x 45
-            & 4 x 47.5
+            & 5 x 45
             & 
             & 
             & 
@@ -1007,10 +1001,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Deadlifts
-            & 5 x 105
-            & 5 x 105
-            & 5 x 105
-            & 5 x 105
+            & 6 x 105
+            & 5 x 110
+            & 5 x 110
+            & 5 x 110
             & 
             & 
             & 
@@ -1018,10 +1012,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Bench
-            & 6 x 57.5
-            & 5 x 62.5
-            & 5 x 62.5
-            & 4 x 65
+            & 6 x 62.5
+            & 5 x 65
+            & 5 x 65
+            & 5 x 65
             & 
             & 
             & 
@@ -1029,10 +1023,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chin ups
-            & 6 x 82.5
-            & 6 x 82.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 6 x 87.5
+            & 5 x 92.5
+            & 5 x 92.5
+            & 5 x 92.5
             & 
             & 
             & 
@@ -1049,10 +1043,10 @@ The latest version can be found at \\
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ 7 }{l}{ \textbf{Sets / reps} } \\ \hline
 
             \hspace{0.75em} Squats
-            & 6 x 70
-            & 5 x 75
-            & 5 x 75
-            & 4 x 80
+            & 6 x 75
+            & 5 x 77.5
+            & 5 x 77.5
+            & 5 x 77.5
             & 
             & 
             & 
@@ -1060,10 +1054,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Chins (light)
-            & 6 x 82.5
-            & 5 x 87.5
-            & 5 x 87.5
-            & 4 x 92.5
+            & 6 x 87.5
+            & 5 x 92.5
+            & 5 x 92.5
+            & 5 x 92.5
             & 
             & 
             & 
@@ -1071,10 +1065,10 @@ The latest version can be found at \\
 
 
             \hspace{0.75em} Military press
-            & 6 x 42.5
+            & 6 x 45
             & 5 x 45
             & 5 x 45
-            & 4 x 47.5
+            & 5 x 45
             & 
             & 
             & 
@@ -1082,12 +1076,6 @@ The latest version can be found at \\
 
 
   \end{tabular}
-
-
-
-
-
-
 
 
 

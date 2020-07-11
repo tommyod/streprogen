@@ -53,7 +53,7 @@ def progression_sinusoidal(
     final_weight,
     start_week,
     final_week,
-    periods=2,
+    period=4,
     scale=0.025,
     offset=0,
     k=0,
@@ -75,8 +75,8 @@ def progression_sinusoidal(
         The number of the first week, typically 1.
     final_week
         The number of the final week, e.g. 8.
-    periods
-        Number of sinusoidal periods in the time range.
+    period
+        The length of a period (cycle) in weeks.
     scale
         The scale (amplitude) of the sinusoidal term.
     offset
@@ -93,9 +93,9 @@ def progression_sinusoidal(
 
     Examples
     -------
-    >>> progression_sinusoidal(1, 123, 123, 1, 8, periods=1)
+    >>> progression_sinusoidal(1, 123, 123, 1, 8, period=4)
     123.0
-    >>> progression_sinusoidal(8, 123, 123, 1, 8, periods=1)
+    >>> progression_sinusoidal(8, 123, 123, 1, 8, period=4)
     123.0
     """
     if isinstance(week, collections.abc.Iterable):
@@ -106,23 +106,24 @@ def progression_sinusoidal(
                 final_weight,
                 start_week,
                 final_week,
-                periods,
+                period,
                 scale,
                 offset,
                 k,
             )
             for w in week
         )
+    
+    assert week <= final_week
+    assert week >= start_week
 
     # Get the base model
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
     )
 
-    # Calculate the time period and the argument to the sine function
-    time_period = final_week - start_week + 0
     sine_argument = (
-        (week - offset - start_week) * (math.pi * 2) / (time_period / periods)
+        (week - offset - start_week) * (math.pi * 2) / period
     )
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))

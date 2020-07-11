@@ -11,14 +11,19 @@ import pytest
 from streprogen import Day, DynamicExercise, Program, StaticExercise
 
 
-def test_verbose_api():
+
+
+@pytest.mark.parametrize(
+    "duration", list(range(2, 9))
+)
+def test_verbose_api(duration):
     """The oldest, most verbose API."""
 
     def curl_func(week):
         return "{} x 10".format(week)
 
     # Create a 4-week program
-    program = Program("My first program!", duration=8)
+    program = Program("My first program!", duration=duration)
 
     # Create some dynamic and static exercises
     bench = DynamicExercise("Bench press", 60, 80)
