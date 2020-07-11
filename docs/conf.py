@@ -131,7 +131,7 @@ html_theme_options = {
     "description": "The Python strength program generator.",
     "show_powered_by": False,
     "font_size": "16px",
-    "page_width": "1200px",
+    "page_width": "1400px",
     "code_font_size": "0.9em",
     "font_family": "Georgia, 'Hiragino Mincho Pro', serif",
 }
