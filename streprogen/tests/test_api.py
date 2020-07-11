@@ -11,11 +11,7 @@ import pytest
 from streprogen import Day, DynamicExercise, Program, StaticExercise
 
 
-
-
-@pytest.mark.parametrize(
-    "duration", list(range(2, 9))
-)
+@pytest.mark.parametrize("duration", list(range(2, 9)))
 def test_verbose_api(duration):
     """The oldest, most verbose API."""
 

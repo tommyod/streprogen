@@ -155,9 +155,7 @@ class Program(object):
         user, default = (
             rep_scaler_func,
             functools.partial(
-                self._default_rep_scaler_func,
-                final_week=self.duration,
-                period=4,
+                self._default_rep_scaler_func, final_week=self.duration, period=4,
             ),
         )
         self.rep_scaler_func = prioritized_not_None(user, default)
@@ -165,9 +163,7 @@ class Program(object):
         user, default = (
             intensity_scaler_func,
             functools.partial(
-                self._default_intensity_scaler_func,
-                final_week=self.duration,
-                period=4,
+                self._default_intensity_scaler_func, final_week=self.duration, period=4,
             ),
         )
         self.intensity_scaler_func = prioritized_not_None(user, default)

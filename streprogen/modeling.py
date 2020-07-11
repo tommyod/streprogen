@@ -113,7 +113,7 @@ def progression_sinusoidal(
             )
             for w in week
         )
-    
+
     assert week <= final_week
     assert week >= start_week
 
@@ -122,9 +122,7 @@ def progression_sinusoidal(
         week, start_weight, final_weight, start_week, final_week, k
     )
 
-    sine_argument = (
-        (week - offset - start_week) * (math.pi * 2) / period
-    )
+    sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
     return base_with_sinusoidal
