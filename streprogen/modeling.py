@@ -53,6 +53,7 @@ def progression_sinusoidal(
     final_weight,
     start_week,
     final_week,
+    periods=None,
     period=4,
     scale=0.025,
     offset=0,
@@ -106,6 +107,7 @@ def progression_sinusoidal(
                 final_weight,
                 start_week,
                 final_week,
+                periods,
                 period,
                 scale,
                 offset,
@@ -114,15 +116,18 @@ def progression_sinusoidal(
             for w in week
         )
 
-    assert week <= final_week
-    assert week >= start_week
-
     # Get the base model
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
     )
 
-    sine_argument = (week - offset - start_week) * (math.pi * 2) / period
+    # If the deprecated, old `periods` is given
+    if periods is not None:
+        time_period = final_week - start_week
+        x = week - offset - start_week
+        sine_argument = x * (math.pi * 2) / (time_period / periods)
+    else:
+        sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
     return base_with_sinusoidal
@@ -197,9 +202,6 @@ def progression_sawtooth(
             for w in week
         )
 
-    assert week <= final_week
-    assert week >= start_week
-
     # Get the base model
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
@@ -257,6 +259,9 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
             progression_diffeq(w, start_weight, final_weight, start_week, final_week, k)
             for w in week
         )
+
+    assert week <= final_week
+    assert week >= start_week
 
     S_i = start_weight
     S_m = final_weight

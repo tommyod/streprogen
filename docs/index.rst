@@ -132,6 +132,8 @@ Contents
    :maxdepth: 2
 
    examples/Streprogen - Essential features.ipynb
+   examples/Streprogen - Intermediate features.ipynb
+   examples/Streprogen - Advanced features.ipynb
    classes
    functions
  
