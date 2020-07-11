@@ -22,8 +22,8 @@ def test_verbose_api(duration):
     program = Program("My first program!", duration=duration)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, 80)
-    squats = DynamicExercise("Squats", 80, 95)
+    bench = DynamicExercise("Bench press", 60, 60 * (1 + 0.01 * duration))
+    squats = DynamicExercise("Squats", 80, 80 * (1 + 0.01 * duration))
     curls = StaticExercise("Curls", curl_func)
 
     day = Day()
@@ -51,8 +51,8 @@ def test_general_api():
     program = Program("My first program!", duration=8)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise("Bench press", 60, 80)
-    squats = DynamicExercise("Squats", 80, 95)
+    bench = DynamicExercise("Bench press", 60, 70)
+    squats = DynamicExercise("Squats", 80, 90)
     curls = StaticExercise("Curls", curl_func)
     day = Day(exercises=[bench, squats, curls])
 

@@ -174,10 +174,12 @@ def progression_sawtooth(
 
     Examples
     -------
-    >>> progression_sawtooth(1, 123, 123, 1, 8, period=4)
-    123.0
-    >>> progression_sawtooth(7, 123, 123, 1, 8, period=4)
-    123.0
+    >>> # 100 - 10
+    >>> progression_sawtooth(1, 100, 100, 1, 8, period=8, scale=0.1)
+    90.0
+    >>> # 90 + (7 / 8) * 2 * 10
+    >>> progression_sawtooth(8, 100, 100, 1, 8, period=8, scale=0.1)
+    107.5
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
@@ -203,7 +205,14 @@ def progression_sawtooth(
         week, start_weight, final_weight, start_week, final_week, k
     )
 
-    saw = scale * (math.fmod((week - offset) / period, 1) - 0.5)
+    x = (week - offset - start_week) / period
+
+    # https://en.wikipedia.org/wiki/Sawtooth_wave
+    x = x - math.floor(x)
+
+    # Change the output to be in range: scale * [-1, 1]. The scaling ensures
+    # that `scale` means the same thing in sinusoidal and triangle waveforms.
+    saw = scale * (2 * x - 1)
 
     base_with_sinusoidal = base * (1 + saw)
     return base_with_sinusoidal
