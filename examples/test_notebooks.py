@@ -27,8 +27,13 @@ def _exec_notebook(path):
         subprocess.check_call(args)
 
 
+# Run examples
 here = os.path.abspath(os.path.dirname(__file__))
 notebooks = [os.path.join(here, f) for f in os.listdir(here) if f.endswith(".ipynb")]
+
+# Run notebooks from docs
+here = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "docs", "jupyter_notebooks")
+notebooks += [os.path.join(here, f) for f in os.listdir(here) if f.endswith(".ipynb")]
 
 
 @pytest.mark.parametrize("notebook", notebooks)

@@ -22,21 +22,9 @@ Functions modeling progression
 progression_linear
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: progression_linear
+.. autofunction:: progression_diffeq
 
 progression_sinusoidal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: progression_sinusoidal
-
-
-The RepellentGenerator
---------------------------------------------
-
-RepellentGenerator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: RepellentGenerator
-   :members:
-
-   .. automethod:: __init__

@@ -131,6 +131,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   ../examples/Streprogen - Essential features.ipynb
    jupyter_notebooks/getting_started.ipynb
    jupyter_notebooks/advanced.ipynb
    classes
