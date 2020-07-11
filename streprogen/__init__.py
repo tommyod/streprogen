@@ -8,6 +8,7 @@ from streprogen.mealplan import Mealplan
 from streprogen.modeling import (
     progression_diffeq,
     progression_sinusoidal,
+    progression_sawtooth,
     reps_to_intensity,
     reps_to_intensity_relaxed,
     reps_to_intensity_tight,
@@ -26,6 +27,7 @@ __all__ = [
     "reps_to_intensity_relaxed",
     "progression_diffeq",
     "progression_sinusoidal",
+    "progression_sawtooth",
     "Food",
     "Meal",
     "Mealplan",

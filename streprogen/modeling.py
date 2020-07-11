@@ -95,7 +95,7 @@ def progression_sinusoidal(
     -------
     >>> progression_sinusoidal(1, 123, 123, 1, 8, period=4)
     123.0
-    >>> progression_sinusoidal(8, 123, 123, 1, 8, period=4)
+    >>> progression_sinusoidal(7, 123, 123, 1, 8, period=4)
     123.0
     """
     if isinstance(week, collections.abc.Iterable):
@@ -125,6 +125,87 @@ def progression_sinusoidal(
     sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
+    return base_with_sinusoidal
+
+
+def progression_sawtooth(
+    week,
+    start_weight,
+    final_weight,
+    start_week,
+    final_week,
+    period=4,
+    scale=0.025,
+    offset=0,
+    k=0,
+):
+    """A sawtooth progression function going through the points
+    ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
+    in 'week'. This function calls a linear progression function
+    and multiplies it by a sawtooth.
+
+    Parameters
+    ----------
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    final_weight
+        The weight at 'final_week'.
+    start_week
+        The number of the first week, typically 1.
+    final_week
+        The number of the final week, e.g. 8.
+    period
+        The length of a period (cycle) in weeks.
+    scale
+        The scale (amplitude) of the sawtooth term.
+    offset
+        The offset (shift) of the sawtooth.
+    k
+        Exponential growth. Higher results in more exponential growth.
+
+
+    Returns
+    -------
+    weight
+        The weight at 'week'.
+
+
+    Examples
+    -------
+    >>> progression_sawtooth(1, 123, 123, 1, 8, period=4)
+    123.0
+    >>> progression_sawtooth(7, 123, 123, 1, 8, period=4)
+    123.0
+    """
+    if isinstance(week, collections.abc.Iterable):
+        return list(
+            progression_sawtooth(
+                w,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                period,
+                scale,
+                offset,
+                k,
+            )
+            for w in week
+        )
+
+    assert week <= final_week
+    assert week >= start_week
+
+    # Get the base model
+    base = progression_diffeq(
+        week, start_weight, final_weight, start_week, final_week, k
+    )
+
+    saw = scale * (math.fmod((week - offset) / period, 1) - 0.5)
+
+    base_with_sinusoidal = base * (1 + saw)
     return base_with_sinusoidal
 
 
