@@ -25,10 +25,8 @@ from streprogen.utils import (
 
 
 class Program(object):
-    """
-    The program class is a container for days and exercises,
-    along with the methods and functions used to create training programs.
-    """
+    """The program class is a container for days and exercises, along with 
+    the methods and functions used to create training programs."""
 
     REP_SET_SEP = " x "
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
@@ -81,7 +79,7 @@ class Program(object):
     ):
 
         """Initialize a new program.
-    
+
         Parameters
         ----------
         name
@@ -118,7 +116,7 @@ class Program(object):
         round_to
             Round the dynamic exercise to the nearest multiple of this
             parameter. Typically 2.5, 5 or 10.
-            
+
         percent_inc_per_week
             If `final_weight` is not set, this value will be used. Percentage
             increase per week can be set globally for the program, or for each
@@ -141,7 +139,7 @@ class Program(object):
         verbose
             If True, information will be outputted as the program is created.
 
-    
+
         Returns
         -------
         Program
