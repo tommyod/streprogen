@@ -120,6 +120,8 @@ def progression_sinusoidal(
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
     )
+    if period <= 1:
+        period = 1
 
     # If the deprecated, old `periods` is given
     if periods is not None:
@@ -179,12 +181,11 @@ def progression_sawtooth(
 
     Examples
     -------
-    >>> # 100 - 10
     >>> progression_sawtooth(1, 100, 100, 1, 8, period=8, scale=0.1)
     90.0
-    >>> # 90 + (7 / 8) * 2 * 10
-    >>> progression_sawtooth(8, 100, 100, 1, 8, period=8, scale=0.1)
-    107.5
+    >>> x = progression_sawtooth(8, 100, 100, 1, 8, period=8, scale=0.1)
+    >>> int(x)
+    110
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
@@ -206,6 +207,8 @@ def progression_sawtooth(
     base = progression_diffeq(
         week, start_weight, final_weight, start_week, final_week, k
     )
+    if period <= 1:
+        period = 1
 
     if period > 1:
         x = (week - offset - start_week) / period
