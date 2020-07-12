@@ -17,7 +17,7 @@ class DynamicExercise(object):
         final_weight=None,
         min_reps=3,
         max_reps=8,
-        percent_inc_per_week=1.5,
+        percent_inc_per_week=None,
         reps=None,
         intensity=None,
         round_to=None,
@@ -99,7 +99,7 @@ class DynamicExercise(object):
             msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
             raise ValueError(msg.format(self.name))
 
-    def weekly_growth(self, weeks):
+    def weekly_growth(self, weeks, percent_inc_per_week_program=None):
         """Calculate the weekly growth in percentage, and rounded to a single digit.
     
         Parameters
@@ -114,17 +114,20 @@ class DynamicExercise(object):
     
         Examples
         -------
-        >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
+        >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8, percent_inc_per_week=1.5)
         >>> bench.weekly_growth(2)
         10.0
         >>> bench.weekly_growth(4)
         5.0
-        >>> bench = DynamicExercise('Bench press', 100, None, 3, 8)
+        >>> bench = DynamicExercise('Bench press', 100, None, 3, 8, percent_inc_per_week=1.5)
         >>> bench.weekly_growth(4)
         1.5
         """
         if self.final_weight is None:
-            return self.percent_inc_per_week
+            if self.percent_inc_per_week is not None:
+                return self.percent_inc_per_week
+            else:
+                return percent_inc_per_week_program
 
         # If the final weight is set, compute the weekly growth
         start, end = self.start_weight, self.final_weight

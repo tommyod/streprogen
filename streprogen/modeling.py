@@ -207,16 +207,20 @@ def progression_sawtooth(
         week, start_weight, final_weight, start_week, final_week, k
     )
 
-    x = (week - offset - start_week) / period
+    if period > 1:
+        x = (week - offset - start_week) / period
+        # https://en.wikipedia.org/wiki/Sawtooth_wave
+        x = x - math.floor(x)
 
-    # https://en.wikipedia.org/wiki/Sawtooth_wave
-    x = x - math.floor(x)
+        # Due to the discrete nature of the sawtooth, the max is p-1 / p, not 1
+        wave_amplitude = (period - 1) / period
+        # Change the output to be in range: scale * [-1, 1]. The scaling ensures
+        # that `scale` means the same thing in sinusoidal and triangle waveforms.
+        saw = (2 / wave_amplitude) * x - 1
+    else:
+        saw = 0
 
-    # Change the output to be in range: scale * [-1, 1]. The scaling ensures
-    # that `scale` means the same thing in sinusoidal and triangle waveforms.
-    saw = scale * (2 * x - 1)
-
-    base_with_sinusoidal = base * (1 + saw)
+    base_with_sinusoidal = base * (1 + scale * saw)
     return base_with_sinusoidal
 
 

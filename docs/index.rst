@@ -134,6 +134,9 @@ Contents
    examples/Streprogen - Essential features.ipynb
    examples/Streprogen - Intermediate features.ipynb
    examples/Streprogen - Advanced features.ipynb
+   examples/Program - Beginner 5x5.ipynb
+   examples/Program - Beginner 5x5 modified.ipynb
+   examples/Program - 3 day split.ipynb
    classes
    functions
  

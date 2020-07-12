@@ -74,6 +74,7 @@ class Program(object):
         intensity_scaler_func=None,
         units="kg",
         round_to=2.5,
+        percent_inc_per_week=1.5,
         progression_func=None,
         reps_to_intensity_func=None,
         verbose=False,
@@ -117,6 +118,16 @@ class Program(object):
         round_to
             Round the dynamic exercise to the nearest multiple of this
             parameter. Typically 2.5, 5 or 10.
+            
+        percent_inc_per_week
+            If `final_weight` is not set, this value will be used. Percentage
+            increase per week can be set globally for the program, or for each
+            dynamic exercise. If set at the dynamic exercise level, it will
+            override the global program value. The increase is  additive, not 
+            multipliactive. For instance, if the increase is set to 
+            `percent_inc_per_week=2`, then after 2 weeks the increase is 4, 
+            not (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter 
+            must be set to `None` for this parameter to have effect.
 
         progress_func
             The function used to model overall 1RM progression in the
@@ -179,6 +190,7 @@ class Program(object):
         self.active_day = None  # Used for Program.Day context manager API
         self._rendered = False
         self._set_jinja2_enviroment()
+        self.percent_inc_per_week = percent_inc_per_week
 
     def Day(self, name=None):
         day = Day(name=name)
@@ -192,7 +204,7 @@ class Program(object):
         final_weight=None,
         min_reps=3,
         max_reps=8,
-        percent_inc_per_week=1.5,
+        percent_inc_per_week=None,
         reps=None,
         intensity=None,
         round_to=None,
@@ -265,7 +277,9 @@ class Program(object):
         # Validate the exercises
         for day in self.days:
             for dynamic_ex in day.dynamic_exercises:
-                percentage_growth = dynamic_ex.weekly_growth(self.duration)
+                percentage_growth = dynamic_ex.weekly_growth(
+                    self.duration, self.percent_inc_per_week
+                )
                 if percentage_growth > 4:
                     msg = '\n"{}" grows with {}% each week.'.format(
                         dynamic_ex.name, percentage_growth
@@ -507,7 +521,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Calculate the 1RM at this point in time
             if dyn_ex.final_weight is None:
-                factor = 1 + (dyn_ex.percent_inc_per_week / 100) * self.duration
+                inc_week = prioritized_not_None(
+                    dyn_ex.percent_inc_per_week, self.percent_inc_per_week
+                )
+                factor = 1 + (inc_week / 100) * self.duration
                 dyn_ex.final_weight = round(dyn_ex.start_weight * factor, 1)
 
             start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
