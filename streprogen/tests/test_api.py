@@ -7,6 +7,8 @@ for the API.
 """
 
 import pytest
+import itertools
+import statistics
 
 from streprogen import Day, DynamicExercise, Program, StaticExercise
 from streprogen import progression_sawtooth, progression_sinusoidal
@@ -121,6 +123,37 @@ def test_progression_periods(period):
             k=0,  # Does not matter
         )
         assert abs(ans - 1.0) < 1e-6
+
+
+@pytest.mark.parametrize(
+    "func, period",
+    list(
+        itertools.product(
+            [progression_sawtooth, progression_sinusoidal], [1, 2, 3, 4, 5]
+        )
+    ),
+)
+def test_progression_means(func, period):
+
+    weeks = list(range(1, period + 1))
+    target = 42
+
+    values = [
+        func(
+            w,
+            start_weight=target,
+            final_weight=target,
+            start_week=1,
+            final_week=8,
+            period=period,
+            scale=1.0,  # Does not matter
+            offset=1.0,  # Does not matter
+            k=0,  # Does not matter
+        )
+        for w in weeks
+    ]
+
+    assert abs(statistics.mean(values) - target) <= 1e-6
 
 
 if __name__ == "__main__":
