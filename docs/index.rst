@@ -63,13 +63,11 @@ Sample code
     from streprogen import Program, Day, DynamicExercise, StaticExercise
 
     # Create a 4-week program
-    program = Program('My first program!', duration = 4)
+    program = Program('My first program!', duration=4)
 
     # Create some dynamic and static exercises
-    bench = DynamicExercise('Bench press',
-                            start_weight = 60, final_weight = 80)
-    squats = DynamicExercise('Squats',
-                            start_weight = 80, final_weight = 95)
+    bench = DynamicExercise('Bench press', start_weight=60, final_weight=80)
+    squats = DynamicExercise('Squats', start_weight=80, final_weight=95)
     curls = StaticExercise('Curls', '3 x 12')
     day = Day(exercises = [bench, squats, curls])
 
@@ -83,46 +81,46 @@ Sample code
 
     ----------------------------------------------------------------
     Program: My first program!
-
+    
     Program parameters
       duration: 4
       reps_per_exercise: 25
-      avg_intensity: 75
-      reps_scalers: 1.2, 1, 0.8, 1
-      intensity_scalers: 0.9, 1, 1, 1
+      intensity: 80
       units: kg
     ----------------------------------------------------------------
     Exercise information
       Day 1
-       Bench press   60kg -> 80kg     reps: [3, 8]   weekly inc.: 7.5%
-       Squats        80kg -> 95kg     reps: [3, 8]   weekly inc.: 4.4%
+       Bench press    60kg ->  80kg  
+        reps: [3, 8]   weekly inc.: 8.3%
+       Squats         80kg ->  95kg  
+        reps: [3, 8]   weekly inc.: 4.7%
        Curls         3 x 12
     ----------------------------------------------------------------
     Program
      Week 1
       Day 1
-       Bench press   6 x 45kg    7 x 42.5kg  7 x 42.5kg  7 x 42.5kg
-       Squats        6 x 60kg    7 x 57.5kg  8 x 52.5kg  8 x 52.5kg
+       Bench press   7 x 45kg    7 x 45kg    5 x 50kg    4 x 52.5kg  3 x 55kg    
+       Squats        7 x 60kg    7 x 60kg    5 x 65kg    4 x 70kg    3 x 72.5kg  
        Curls         3 x 12
-
+    
      Week 2
       Day 1
-       Bench press   4 x 55kg    5 x 52.5kg  5 x 52.5kg  5 x 52.5kg  6 x 50kg
-       Squats        4 x 70kg    4 x 70kg    5 x 65kg    6 x 62.5kg  7 x 57.5kg
+       Bench press   8 x 50kg    7 x 52.5kg  6 x 52.5kg  4 x 57.5kg  3 x 60kg    
+       Squats        8 x 62.5kg  7 x 65kg    6 x 67.5kg  4 x 75kg    3 x 77.5kg  
        Curls         3 x 12
-
+    
      Week 3
       Day 1
-       Bench press   6 x 55kg    6 x 55kg    6 x 55kg
-       Squats        6 x 67.5kg  6 x 67.5kg  6 x 67.5kg
+       Bench press   7 x 55kg    7 x 55kg    5 x 62.5kg  4 x 65kg    3 x 67.5kg  
+       Squats        7 x 67.5kg  7 x 67.5kg  5 x 75kg    4 x 77.5kg  3 x 82.5kg  
        Curls         3 x 12
-
+    
      Week 4
       Day 1
-       Bench press   5 x 62.5kg  6 x 60kg    6 x 60kg    7 x 57.5kg
-       Squats        5 x 75kg    6 x 70kg    6 x 70kg    7 x 67.5kg
+       Bench press   6 x 62.5kg  5 x 65kg    5 x 65kg    5 x 65kg    
+       Squats        6 x 75kg    5 x 77.5kg  5 x 77.5kg  5 x 77.5kg  
        Curls         3 x 12
-
+    
     ----------------------------------------------------------------
 
 Contents
