@@ -259,8 +259,8 @@ def wilks(lifted_kg, bodyweight_kg, gender="male"):
 
     Returns
     -------
-    TYPE
-        DESCRIPTION.
+    float
+        The wilks score.
         
     Examples
     --------
