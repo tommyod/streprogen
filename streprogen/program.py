@@ -179,7 +179,7 @@ class Program(object):
     def DynamicExercise(
         self,
         name,
-        start_weight,
+        start_weight=None,
         final_weight=None,
         min_reps=3,
         max_reps=8,
@@ -659,7 +659,7 @@ if __name__ == "__main__":
 
     with program.Day("Day B"):
         program.DynamicExercise(
-            "Deadlifts", start_weight=100, percent_inc_per_week=2, min_reps=2, max_reps=7,
+            "Deadlifts", start_weight=100, percent_inc_per_week=1, min_reps=2, max_reps=7,
         )
         program.StaticExercise("Curls", "3 x 10 @ 18kg")
 
