@@ -244,6 +244,61 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
 reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.5)
 reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-4.5)
 
+
+def wilks(lifted_kg, bodyweight_kg, gender="male"):
+    """Compute Wilks points in kilograms. 
+    
+    Parameters
+    ----------
+    lifted_kg : float
+        Weight lifted.
+    bodyweight_kg : float
+        Bodyweight.
+    gender : string, optional
+        Gender of the lifter, either "male" or "female". The default is "male".
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+        
+    Examples
+    --------
+    >>> round(wilks(500, 100, gender="male"), 2)
+    304.29
+    >>> round(wilks(400, 70, gender="female"), 2)
+    397.94
+
+    """
+    if gender not in ("male", "female"):
+        raise ValueError("`gender` must be 'male' or 'female'")
+
+    # https://en.wikipedia.org/wiki/Wilks_Coefficient
+
+    # Validated against https://wilkscalculator.com/kg
+    # The result is not perfect. There might be a difference in coefficients
+    # between the calculator and the wikipedia article. Correct to one decimal.
+    if gender == "male":
+        a = -216.0475144
+        b = 16.2606339
+        c = -0.002388645
+        d = -0.00113732
+        e = 7.01863e-6
+        f = -1.291e-8
+    if gender == "female":
+        a = 594.31747775582
+        b = -27.23842536447
+        c = 0.82112226871
+        d = -0.00930733913
+        e = 4.731582e-5
+        f = -9.054e-8
+
+    x = bodyweight_kg
+    coeff = 500 / (a + b * x + c * x ** 2 + d * x ** 3 + e * x ** 4 + f * x ** 5)
+
+    return round(coeff * lifted_kg, 2)
+
+
 if __name__ == "__main__":
     import pytest
 
