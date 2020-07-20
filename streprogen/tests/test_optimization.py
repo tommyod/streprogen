@@ -28,9 +28,7 @@ def test_optimize_sets(reps_to_intensity_func, reps_goal, intensities_goal):
     reps = list(range(1, 12 + 1))
     intensities = [reps_to_intensity_func(r) / 100 for r in reps]
 
-    x, data = optimize_sets(
-        tuple(reps), tuple(intensities), reps_goal, intensities_goal
-    )
+    x, data = optimize_sets(tuple(reps), tuple(intensities), reps_goal, intensities_goal)
     assert abs(data["reps"] - reps_goal) <= 2
     assert abs(data["intensity"] - intensities_goal) < 0.01
 

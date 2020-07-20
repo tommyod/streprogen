@@ -26,7 +26,7 @@ before_script:
 
 script:
   # Check that code is formatted correctly w.r.t. black (not avaiable on Py35)
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check -l 120; fi
   - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
   - pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
   

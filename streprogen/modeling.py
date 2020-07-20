@@ -48,16 +48,7 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
 
 
 def progression_sinusoidal(
-    week,
-    start_weight,
-    final_weight,
-    start_week,
-    final_week,
-    periods=None,
-    period=4,
-    scale=0.025,
-    offset=0,
-    k=0,
+    week, start_weight, final_weight, start_week, final_week, periods=None, period=4, scale=0.025, offset=0, k=0,
 ):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -102,24 +93,13 @@ def progression_sinusoidal(
     if isinstance(week, collections.abc.Iterable):
         return list(
             progression_sinusoidal(
-                w,
-                start_weight,
-                final_weight,
-                start_week,
-                final_week,
-                periods,
-                period,
-                scale,
-                offset,
-                k,
+                w, start_weight, final_weight, start_week, final_week, periods, period, scale, offset, k,
             )
             for w in week
         )
 
     # Get the base model
-    base = progression_diffeq(
-        week, start_weight, final_weight, start_week, final_week, k
-    )
+    base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
     if period <= 1:
         period = 1
 
@@ -136,15 +116,7 @@ def progression_sinusoidal(
 
 
 def progression_sawtooth(
-    week,
-    start_weight,
-    final_weight,
-    start_week,
-    final_week,
-    period=4,
-    scale=0.025,
-    offset=0,
-    k=0,
+    week, start_weight, final_weight, start_week, final_week, period=4, scale=0.025, offset=0, k=0,
 ):
     """A sawtooth progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -189,24 +161,12 @@ def progression_sawtooth(
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
-            progression_sawtooth(
-                w,
-                start_weight,
-                final_weight,
-                start_week,
-                final_week,
-                period,
-                scale,
-                offset,
-                k,
-            )
+            progression_sawtooth(w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,)
             for w in week
         )
 
     # Get the base model
-    base = progression_diffeq(
-        week, start_weight, final_weight, start_week, final_week, k
-    )
+    base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
     if period <= 1:
         period = 1
 
@@ -262,10 +222,7 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     120.0
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(
-            progression_diffeq(w, start_weight, final_weight, start_week, final_week, k)
-            for w in week
-        )
+        return list(progression_diffeq(w, start_weight, final_weight, start_week, final_week, k) for w in week)
 
     assert week <= final_week
     assert week >= start_week

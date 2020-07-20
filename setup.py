@@ -59,8 +59,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     # What does your project relate to?
-    keywords="strength training program health fitness generator "
-    "weightlifting powerlifting exercise",
+    keywords="strength training program health fitness generator " "weightlifting powerlifting exercise",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(".", exclude=["contrib", "docs", "tests"]),

@@ -104,9 +104,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
         #         )
         #         warnings.warn(msg.format(intensities_goal, intensities))
         # =============================================================================
-        return optimize_sets(
-            reps, intensities, reps_goal, intensities_goal=max(intensities)
-        )
+        return optimize_sets(reps, intensities, reps_goal, intensities_goal=max(intensities))
 
     if min(intensities) > intensities_goal:
         # =============================================================================
@@ -115,9 +113,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
         #         )
         #         warnings.warn(msg.format(intensities_goal, intensities))
         # =============================================================================
-        return optimize_sets(
-            reps, intensities, reps_goal, intensities_goal=min(intensities)
-        )
+        return optimize_sets(reps, intensities, reps_goal, intensities_goal=min(intensities))
 
     # The loss measure are normalized in the code, so the ratio of these values
     # will prioritize the goals relatively to each other.
@@ -274,9 +270,7 @@ def optimize_mealplan(
 
     expected_daily_price = params.get("expected_daily_price", 75)
     M1 = params.get("M1", 50)  # Upper bound on x_ij
-    M2 = params.get(
-        "M2", 50
-    )  # Upper bound on x[i][j] * meal.kcal, i.e. calories in a meal
+    M2 = params.get("M2", 50)  # Upper bound on x[i][j] * meal.kcal, i.e. calories in a meal
 
     # A strange bug is that sometime the optimizer will return INFEASIBLE on attempt #1,
     # but calling this function again with the same inputs works. So we allow calling it
@@ -355,9 +349,7 @@ def optimize_mealplan(
 
             # The maximal deviation in a day is approx mean([low, high]) * nutrients
             # The maximal deviation is the above times the number of days
-            denom = statistics.mean(
-                [value for value in [low, high] if value is not None]
-            )
+            denom = statistics.mean([value for value in [low, high] if value is not None])
             denom = denom * num_days  # * len(dietary_constraints)
 
             # Slack variables related to the lower limit. Only "undershooting" is penalized.
@@ -386,9 +378,7 @@ def optimize_mealplan(
 
         # The maximal spread per day is approximately mean([kcal_low, kcal_high]) / meals
         # The maximal spread is the above times the number of days. Normalize w.r.t this
-        denom = statistics.mean(
-            [value for value in dietary_constraints["kcal"] if value is not None]
-        )
+        denom = statistics.mean([value for value in dietary_constraints["kcal"] if value is not None])
         denom = denom * num_days / num_meals
         objective_function += (weight_range / denom) * (upper - lower)
 

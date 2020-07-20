@@ -13,7 +13,7 @@ class DynamicExercise(object):
     def __init__(
         self,
         name,
-        start_weight,
+        start_weight=None,
         final_weight=None,
         min_reps=3,
         max_reps=8,
@@ -85,6 +85,11 @@ class DynamicExercise(object):
         self.reps = reps
         self.intensity = intensity
 
+        var_names = ["start_weight", "final_weight", "percent_inc_per_week"]
+        num_specified = sum(1 if (getattr(self, var) is not None) else 0 for var in var_names)
+        if num_specified == 3:
+            raise ValueError(f"At most 2 out of 3 variables may be set: {var_names}")
+
         if round_to is None:
             self.round = None
         else:
@@ -100,7 +105,7 @@ class DynamicExercise(object):
             raise ValueError(msg.format(self.name))
 
     def weekly_growth(self, weeks, percent_inc_per_week_program=None):
-        """Calculate the weekly growth in percentage, and rounded to a single digit.
+        """Calculate the weekly growth in percentage, rounded to one digit.
     
         Parameters
         ----------
@@ -114,12 +119,12 @@ class DynamicExercise(object):
     
         Examples
         -------
-        >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8, percent_inc_per_week=1.5)
+        >>> bench = DynamicExercise('Bench press', start_weight=100, final_weight=120)
         >>> bench.weekly_growth(2)
         10.0
         >>> bench.weekly_growth(4)
         5.0
-        >>> bench = DynamicExercise('Bench press', 100, None, 3, 8, percent_inc_per_week=1.5)
+        >>> bench = DynamicExercise('Bench press', start_weight=100, percent_inc_per_week=1.5)
         >>> bench.weekly_growth(4)
         1.5
         """
@@ -152,13 +157,7 @@ class DynamicExercise(object):
             "intensity",
         ]
 
-        arg_str = ", ".join(
-            [
-                "{}={}".format(k, self.__dict__[k])
-                for k in strvar
-                if self.__dict__[k] is not None
-            ]
-        )
+        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
 
         return "{}({})".format(type(self).__name__, arg_str)
 
@@ -237,13 +236,7 @@ class StaticExercise(object):
 
         strvar = ["name", "sets_reps"]
 
-        arg_str = ", ".join(
-            [
-                "{}={}".format(k, self.__dict__[k])
-                for k in strvar
-                if self.__dict__[k] is not None
-            ]
-        )
+        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
 
         return "{}({})".format(type(self).__name__, arg_str)
 
