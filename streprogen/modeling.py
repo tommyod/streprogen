@@ -7,8 +7,7 @@ import math
 
 
 def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
-    """A function mapping from repetitions in the range 1 to 12
-    to intensities in the range 0 to 100.
+    """A mapping from repetitions in range [1, 12] to intensities in range [0, 100].
 
     Parameters
     ----------
@@ -30,11 +29,11 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
 
     Examples
     -------
-    >>> reps_to_intensity(5, slope = -5, constant = 100, quadratic = False)
+    >>> reps_to_intensity(5, slope=-5, constant=100, quadratic=False)
     80
-    >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = True)
+    >>> reps_to_intensity(8, slope=-5, constant=100, quadratic=True)
     67.45
-    >>> reps_to_intensity(8, slope = -5, constant = 100, quadratic = False)
+    >>> reps_to_intensity(8, slope=-5, constant=100, quadratic=False)
     65
     """
     if isinstance(reps, collections.abc.Iterable):
