@@ -91,9 +91,7 @@ def progression_sinusoidal(
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
-            progression_sinusoidal(
-                w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,
-            )
+            progression_sinusoidal(w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,)
             for w in week
         )
 
@@ -101,7 +99,6 @@ def progression_sinusoidal(
     base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
     if period <= 1:
         period = 1
-
 
     sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
