@@ -47,7 +47,7 @@ def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
 
 
 def progression_sinusoidal(
-    week, start_weight, final_weight, start_week, final_week, periods=None, period=4, scale=0.025, offset=0, k=0,
+    week, start_weight, final_weight, start_week, final_week, period=4, scale=0.025, offset=0, k=0,
 ):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -92,7 +92,7 @@ def progression_sinusoidal(
     if isinstance(week, collections.abc.Iterable):
         return list(
             progression_sinusoidal(
-                w, start_weight, final_weight, start_week, final_week, periods, period, scale, offset, k,
+                w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,
             )
             for w in week
         )
@@ -102,13 +102,8 @@ def progression_sinusoidal(
     if period <= 1:
         period = 1
 
-    # If the deprecated, old `periods` is given
-    if periods is not None:
-        time_period = final_week - start_week
-        x = week - offset - start_week
-        sine_argument = x * (math.pi * 2) / (time_period / periods)
-    else:
-        sine_argument = (week - offset - start_week) * (math.pi * 2) / period
+
+    sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
     return base_with_sinusoidal
