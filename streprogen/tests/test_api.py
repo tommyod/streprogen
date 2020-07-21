@@ -151,7 +151,57 @@ def test_progression_means(func, period):
     assert abs(statistics.mean(values) - target) <= 1e-6
 
 
+class TestWaysOfGivingProgress:
+    def test_inc_week_program_vs_exercise(self):
+        """Test that giving progress in program or exercise is the same."""
+
+        program1 = Program("My first program!", duration=8, round_to=1)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, percent_inc_per_week=2)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert program1.to_txt() == program2.to_txt()
+
+    def test_inc_per_week_vs_endpoints(self):
+        """Test that giving progress in program or exercise is the same."""
+
+        program1 = Program("My first program!", duration=3, units="kg", round_to=1)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
+        program1.render()
+
+        program2 = Program("My first program!", duration=3, units="kg", round_to=1)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100, final_weight=104)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert program1.to_txt() == program2.to_txt()
+
+    def test_start_weight_vs_final_weight(self):
+        """Test that giving progress in program or exercise is the same."""
+
+        program1 = Program("My first program!", duration=3, units="kg", round_to=1)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
+        program1.render()
+
+        program2 = Program("My first program!", duration=3, units="kg", round_to=1)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", percent_inc_per_week=2, final_weight=104)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert program1.to_txt() == program2.to_txt()
+
+
 if __name__ == "__main__":
     if True:
         # --durations=10  <- May be used to show potentially slow tests
-        pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+        pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys", "-vv"])

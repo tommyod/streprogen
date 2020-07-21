@@ -209,7 +209,7 @@ class Program(object):
             * Validates that the number of repetitions is in the range [15, 45].
             * Validates that 'reps_to_intensity_func' maps to [0, 100].
             * Validates that 'reps_to_intensity_func' is a decreasing function.
-            * Validates that the exercises do not grow more than 2.5% per week.
+            * Validates that the exercises do not grow too much.
             
         Apart from these sanity checks, the user is on their own.
         """
@@ -247,7 +247,16 @@ class Program(object):
 
         # Validate the exercises
         for day in self.days:
+
+            ex_names = set()
+
             for dynamic_ex in day.dynamic_exercises:
+
+                if dynamic_ex.name in ex_names:
+                    raise ValueError(f"Exercise name not unique: {dynamic_ex.name}")
+                else:
+                    ex_names.add(dynamic_ex.name)
+
                 percentage_growth = dynamic_ex.weekly_growth(self.duration, self.percent_inc_per_week)
                 if percentage_growth > 4:
                     msg = '\n"{}" grows with {}% each week.'.format(dynamic_ex.name, percentage_growth)
@@ -463,6 +472,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
+            # Use the local rounding function if available,
+            # if not use the global rounding function
+            round_func = prioritized_not_None(dyn_ex.round, self.round)
+
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
@@ -489,20 +502,24 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Case 2: Start weight and increase is given
             elif (dyn_ex.start_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.final_weight = round(dyn_ex.start_weight * factor, 1)
+                factor = 1 + (inc_week / 100) * (self.duration - 1)
+                dyn_ex.final_weight = round_func(dyn_ex.start_weight * factor)
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             # Case 3: Final weight and increase is given
             elif (dyn_ex.final_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.start_weight = round(dyn_ex.final_weight / factor, 1)
+                factor = 1 + (inc_week / 100) * (self.duration - 1)
+                dyn_ex.start_weight = round_func(dyn_ex.final_weight / factor)
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             else:
                 raise Exception(f"Exercise {dyn_ex} is overspecified.")
 
             weight = self.progression_func(week, start_w, final_w, 1, self.duration)
+            if weight > max(start_w, final_w) or weight < min(start_w, final_w):
+                msg = "Weight for '{dyn_ex}' was {round(weight, 1)} in week {week}. "
+                msg += "This is out of bounds. Start weight is {round(start_w, 1)}. "
+                msg += "Final weight is {round(start_w, 1)}."
 
             # Define a function to prettify the weights
             def pretty_weight(weight, i, round_function):
@@ -510,10 +527,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 if weight % 1 == 0:
                     return int(weight)
                 return weight
-
-            # Use the local rounding function if available,
-            # if not use the global rounding function
-            round_func = prioritized_not_None(dyn_ex.round, self.round)
 
             # Create pretty strings
             tuple_generator = zip(out["intensities"], out["reps"])

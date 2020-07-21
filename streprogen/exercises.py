@@ -95,7 +95,7 @@ class DynamicExercise(object):
         else:
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 
-        if self.final_weight is not None:
+        if self.final_weight and self.start_weight:
             if self.start_weight > self.final_weight:
                 msg = "Start weight larger than end weight for exercise '{}'."
                 warnings.warn(msg.format(self.name))
@@ -128,16 +128,16 @@ class DynamicExercise(object):
         >>> bench.weekly_growth(4)
         1.5
         """
-        if self.final_weight is None:
-            if self.percent_inc_per_week is not None:
-                return self.percent_inc_per_week
-            else:
-                return percent_inc_per_week_program
-
         # If the final weight is set, compute the weekly growth
-        start, end = self.start_weight, self.final_weight
-        growth = ((end / start) - 1) / weeks * 100
-        return round(growth, 1)
+        if self.final_weight and self.start_weight:
+            start, end = self.start_weight, self.final_weight
+            growth = ((end / start) - 1) / weeks * 100
+            return round(growth, 1)
+
+        if self.percent_inc_per_week is not None:
+            return self.percent_inc_per_week
+        else:
+            return percent_inc_per_week_program
 
     def __repr__(self):
         """Representation."""
@@ -162,11 +162,11 @@ class DynamicExercise(object):
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        attrs = ("name", "min_reps", "max_reps")
         return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
 
     def __hash__(self):
-        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        attrs = ("name", "min_reps", "max_reps")
         return hash(tuple(getattr(self, attr) for attr in attrs))
 
 
