@@ -503,13 +503,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Case 2: Start weight and increase is given
             elif (dyn_ex.start_weight is not None) and (inc_week is not None):
                 factor = 1 + (inc_week / 100) * (self.duration - 1)
-                dyn_ex.final_weight = round_func(dyn_ex.start_weight * factor)
+                dyn_ex.final_weight = int(round(dyn_ex.start_weight * factor, 1))
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             # Case 3: Final weight and increase is given
             elif (dyn_ex.final_weight is not None) and (inc_week is not None):
                 factor = 1 + (inc_week / 100) * (self.duration - 1)
-                dyn_ex.start_weight = round_func(dyn_ex.final_weight / factor)
+                dyn_ex.start_weight = int(round(dyn_ex.final_weight / factor, 1))
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             else:
