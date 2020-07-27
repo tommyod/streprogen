@@ -9,7 +9,7 @@ from ortools.linear_solver import pywraplp
 
 
 class RepSchemeGenerator:
-    def __init__(self, reps_slack: int = 1, max_diff: int = 2):
+    def __init__(self, reps_slack: int = 1, max_diff: int = 2, max_unique: int = 4):
         """Initialize the generator.
         
 
@@ -19,6 +19,8 @@ class RepSchemeGenerator:
             Maximum deviation from the repetition goal. The default is 1.
         max_diff : int, optional
             Maximum difference between two consecutive sets. The default is 2.
+        max_unique : int, optional
+            Maximum unique sets in the solution. The default is 4.
             
         Examples
         --------
@@ -43,9 +45,12 @@ class RepSchemeGenerator:
         assert reps_slack >= 0
         assert isinstance(max_diff, numbers.Integral)
         assert max_diff >= 0
+        assert isinstance(max_unique, numbers.Integral)
+        assert max_unique >= 1
 
         self.reps_slack = reps_slack
         self.max_diff = max_diff
+        self.max_unique = max_unique
 
     def generate(self, sets: list, reps_goal: int):
         """
@@ -69,13 +74,20 @@ class RepSchemeGenerator:
 
         self.sets = list(sorted(set(sets)))
         self.reps_goal = reps_goal
-        yield from self._generate_sets(stack=[])
+        for scheme in self._generate_sets(stack=[]):
+
+            # Prune solutions with too many unique repetitions
+            if len(set(scheme)) <= self.max_unique:
+                yield scheme
 
     def _generate_sets(self, i=0, stack=None):
+        """Only to be called internally."""
 
+        # Yield the result if it's within the allowed range
         if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
             yield tuple(stack)
 
+        # Stop the recursion if the sum is too high
         if sum(stack) > self.reps_goal + self.reps_slack:
             return
 
@@ -84,8 +96,46 @@ class RepSchemeGenerator:
                 yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
             else:
                 assert self.sets[j] - stack[-1] >= 0
+                # Prune solutions with too large differences
                 if self.sets[j] - stack[-1] <= self.max_diff:
                     yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
+
+
+class RepSchemeOptimizer:
+    def __init__(self, generator=None):
+        if generator is None:
+            self.generator = RepSchemeGenerator()
+        else:
+            self.generator = generator
+
+    def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+
+        assert isinstance(sets, tuple)
+        assert isinstance(intensities, tuple)
+        assert reps_goal > 0
+        assert intensity_goal > 1
+        assert list(sets) == sorted(sets)
+
+        sets = list(sets)
+        intensities = list(intensities)
+
+        # Create a mapping
+        reps_to_intensity_dict = {r_j: i_j for (r_j, i_j) in zip(sets, intensities)}
+
+        def reps_to_intensity(reps):
+            return reps_to_intensity_dict[reps]
+
+        schemes = self.generator.generate(sets=sets, reps_goal=reps_goal)
+
+        def loss(scheme: list):
+            """Loss function - smaller is better."""
+            scheme = sorted(scheme)
+            reps = sum(scheme)
+            intensities = map(reps_to_intensity, scheme)
+            intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
+            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2 * 100 ** 2
+
+        return list(reversed(min(schemes, key=loss)))
 
 
 @functools.lru_cache(maxsize=1024, typed=False)

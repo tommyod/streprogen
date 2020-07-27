@@ -15,7 +15,7 @@ from streprogen.modeling import (
     progression_sinusoidal,
     reps_to_intensity,
 )
-from streprogen.optimization import optimize_sets
+from streprogen.optimization import optimize_sets, RepSchemeOptimizer
 from streprogen.utils import (
     chunker,
     escape_string,
@@ -171,6 +171,9 @@ class Program(object):
         self._set_jinja2_enviroment()
         self.percent_inc_per_week = percent_inc_per_week
 
+        # TODO: make explicit
+        self.optimizer = RepSchemeOptimizer()
+
     def Day(self, name=None):
         day = Day(name=name)
         day.program = self
@@ -287,30 +290,14 @@ class Program(object):
         This is done for each exercise every week.
         """
 
-        # Prepare input for the optimization routine
-        reps_in = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
-        intensities_in = tuple(map(self.reps_to_intensity_func, reps_in))
-        intensities_in = tuple([i / 100 for i in intensities_in])
+        sets = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
+        intensities = tuple(map(self.reps_to_intensity_func, sets))
 
-        # Optimize
-        # x is a vector with entries saying how many sets of each reps to do
-        x, data = optimize_sets(
-            reps=reps_in,
-            intensities=intensities_in,
-            reps_goal=int(desired_reps),
-            intensities_goal=desired_intensity / 100,
+        reps = self.optimizer(
+            sets=sets, intensities=intensities, reps_goal=desired_reps, intensity_goal=desired_intensity
         )
 
-        # Collect the results
-        reps = []
-        intensities = []
-
-        for rep, intensity, x_j in reversed(list(zip(reps_in, intensities_in, x))):
-            if x_j == 0:
-                continue
-            for _ in range(int(x_j)):
-                reps.append(rep)
-                intensities.append(intensity * 100)
+        intensities = list(map(self.reps_to_intensity_func, reps))
 
         # If repetitions are too high, a low average intensity cannot be attained
         int_highest = self.reps_to_intensity_func(dynamic_exercise.min_reps)
@@ -333,6 +320,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             )
             warnings.warn(msg)
 
+        print({"reps": reps, "intensities": intensities})
         return {"reps": reps, "intensities": intensities}
 
     def _initialize_render_dictionary(self):
@@ -657,7 +645,7 @@ Program.StaticExercise.__doc__ = StaticExercise.__doc__ + "\nSee streprogen.Stat
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+    # pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
 
 if __name__ == "__main__":
 
