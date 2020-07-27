@@ -9,7 +9,7 @@ from ortools.linear_solver import pywraplp
 
 
 class RepSchemeGenerator:
-    def __init__(self, reps_slack: int = 1, max_diff: int = 2, max_unique: int = 4):
+    def __init__(self, reps_slack: int = 3, max_diff: int = 1, max_unique: int = 3):
         """Initialize the generator.
         
 
@@ -109,7 +109,6 @@ class RepSchemeOptimizer:
             self.generator = generator
 
     def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
-
         assert isinstance(sets, tuple)
         assert isinstance(intensities, tuple)
         assert reps_goal > 0
@@ -133,7 +132,10 @@ class RepSchemeOptimizer:
             reps = sum(scheme)
             intensities = map(reps_to_intensity, scheme)
             intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
-            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2 * 100 ** 2
+
+            reps_diff = max(scheme) - min(scheme)
+
+            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2  # + reps_diff**2 / 4
 
         return list(reversed(min(schemes, key=loss)))
 

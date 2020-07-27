@@ -34,14 +34,10 @@ class Program(object):
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
-        functools.partial(
-            progression_sinusoidal, start_weight=1, final_weight=1, start_week=1, scale=0.1, offset=0, k=0,
-        )
+        functools.partial(progression_diffeq, start_weight=1 + 0.3, final_weight=1 - 0.3, start_week=1, k=0,)
     )
     _default_intensity_scaler_func = staticmethod(
-        functools.partial(
-            progression_sinusoidal, start_weight=1, final_weight=1, start_week=1, scale=0.025, offset=2, k=0,
-        )
+        functools.partial(progression_diffeq, start_weight=1 - 0.1, final_weight=1 + 0.1, start_week=1, k=0,)
     )
 
     _default_reps_to_intensity_func = staticmethod(reps_to_intensity)
@@ -148,13 +144,13 @@ class Program(object):
         # Set functions to user supplied, or defaults if None was passed
         user, default = (
             rep_scaler_func,
-            functools.partial(self._default_rep_scaler_func, final_week=self.duration, period=4,),
+            functools.partial(self._default_rep_scaler_func, final_week=self.duration),
         )
         self.rep_scaler_func = prioritized_not_None(user, default)
 
         user, default = (
             intensity_scaler_func,
-            functools.partial(self._default_intensity_scaler_func, final_week=self.duration, period=4,),
+            functools.partial(self._default_intensity_scaler_func, final_week=self.duration),
         )
         self.intensity_scaler_func = prioritized_not_None(user, default)
 
@@ -221,8 +217,8 @@ class Program(object):
         # Validate the intensity
         intensities = [self.intensity_scaler_func(w) * self.intensity for w in weeks]
 
-        if max(intensities) > 85:
-            warnings.warn("\nWARNING: Average intensity is > 85.")
+        if max(intensities) > 90:
+            warnings.warn("\nWARNING: Average intensity is > 90.")
 
         if min(intensities) < 65:
             warnings.warn("\nWARNING: Average intensity is < 65.")
@@ -320,7 +316,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             )
             warnings.warn(msg)
 
-        print({"reps": reps, "intensities": intensities})
+        # print({"reps": reps, "intensities": intensities})
         return {"reps": reps, "intensities": intensities}
 
     def _initialize_render_dictionary(self):
@@ -655,14 +651,7 @@ if __name__ == "__main__":
     program = Program("My first program!", duration=8, units="kg", round_to=5)
 
     with program.Day("Day A"):
-        program.DynamicExercise("Bench press", start_weight=80, min_reps=3, max_reps=8)
-        program.DynamicExercise("Squats", start_weight=100, min_reps=3, max_reps=8)
-
-    with program.Day("Day B"):
-        program.DynamicExercise(
-            "Deadlifts", start_weight=100, percent_inc_per_week=1, min_reps=2, max_reps=7,
-        )
-        program.StaticExercise("Curls", "3 x 10 @ 18kg")
+        program.DynamicExercise("Bench press", start_weight=100, min_reps=3, max_reps=8)
 
     # Render the program, then print it
     program.render()
@@ -691,13 +680,8 @@ if __name__ == "__main__":
     )
 
     with program.Day("A"):
-        program.DynamicExercise(name="Squat", start_weight=80, min_reps=5, max_reps=5)
-        program.DynamicExercise(name="Bench Press", start_weight=80, min_reps=5, max_reps=5)
-        program.DynamicExercise(name="Barbell Row", start_weight=80, min_reps=5, max_reps=5)
-
-    with program.Day("B"):
-        program.DynamicExercise(name="Squat", start_weight=80, min_reps=5, max_reps=5)
-        program.DynamicExercise(name="Overhead Press", start_weight=80, min_reps=5, max_reps=5)
-        program.DynamicExercise(name="Deadlift", start_weight=80, min_reps=5, max_reps=5, reps=5)
+        program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
 
     program.render()
+
+    print(program)
