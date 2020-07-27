@@ -12,10 +12,9 @@ from streprogen.day import Day
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.modeling import (
     progression_diffeq,
-    progression_sinusoidal,
     reps_to_intensity,
 )
-from streprogen.optimization import optimize_sets, RepSchemeOptimizer
+from streprogen.optimization import RepSchemeOptimizer
 from streprogen.utils import (
     chunker,
     escape_string,

@@ -95,7 +95,6 @@ class RepSchemeGenerator:
             if not stack:
                 yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
             else:
-                assert self.sets[j] - stack[-1] >= 0
                 # Prune solutions with too large differences
                 if self.sets[j] - stack[-1] <= self.max_diff:
                     yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
@@ -132,10 +131,7 @@ class RepSchemeOptimizer:
             reps = sum(scheme)
             intensities = map(reps_to_intensity, scheme)
             intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
-
-            reps_diff = max(scheme) - min(scheme)
-
-            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2  # + reps_diff**2 / 4
+            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2
 
         return list(reversed(min(schemes, key=loss)))
 
