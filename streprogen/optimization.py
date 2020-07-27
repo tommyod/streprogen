@@ -3,8 +3,89 @@
 
 import functools
 import statistics
+import numbers
 
 from ortools.linear_solver import pywraplp
+
+
+class RepSchemeGenerator:
+    def __init__(self, reps_slack: int = 1, max_diff: int = 2):
+        """Initialize the generator.
+        
+
+        Parameters
+        ----------
+        reps_slack : int, optional
+            Maximum deviation from the repetition goal. The default is 1.
+        max_diff : int, optional
+            Maximum difference between two consecutive sets. The default is 2.
+            
+        Examples
+        --------
+        >>> generator = RepSchemeGenerator(reps_slack=0, max_diff=2)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=6):
+        ...     print(result)
+        (2, 2, 2)
+        (2, 4)
+        (3, 3)
+        >>> generator = RepSchemeGenerator(reps_slack=1, max_diff=2)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=6):
+        ...     print(result)
+        (2, 2, 2)
+        (2, 2, 3)
+        (2, 3)
+        (2, 4)
+        (3, 3)
+        (3, 4)
+
+        """
+        assert isinstance(reps_slack, numbers.Integral)
+        assert reps_slack >= 0
+        assert isinstance(max_diff, numbers.Integral)
+        assert max_diff >= 0
+
+        self.reps_slack = reps_slack
+        self.max_diff = max_diff
+
+    def generate(self, sets: list, reps_goal: int):
+        """
+        Generate repetition schemes.
+
+        Parameters
+        ----------
+        sets : list
+            A list of allowed repetitions. Unique and sorted.
+        reps_goal : int
+            The repetition goal.
+
+        Yields
+        ------
+        Tuples with repetition schemes.
+
+        """
+        assert isinstance(reps_goal, numbers.Integral)
+        assert reps_goal >= 0
+        assert all(s > 0 for s in sets)
+
+        self.sets = list(sorted(set(sets)))
+        self.reps_goal = reps_goal
+        yield from self._generate_sets(stack=[])
+
+    def _generate_sets(self, i=0, stack=None):
+
+        if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
+            yield tuple(stack)
+
+        if sum(stack) > self.reps_goal + self.reps_slack:
+            return
+
+        for j in range(i, len(self.sets)):
+            if not stack:
+                yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
+            else:
+                assert self.sets[j] - stack[-1] >= 0
+                if self.sets[j] - stack[-1] <= self.max_diff:
+                    yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
 
 
 @functools.lru_cache(maxsize=1024, typed=False)
