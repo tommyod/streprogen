@@ -10,17 +10,16 @@ from ortools.linear_solver import pywraplp
 
 class RepSchemeGenerator:
     def __init__(self, reps_slack: int = 3, max_diff: int = 1, max_unique: int = 3):
-        """Initialize the generator.
-        
+        """Initialize the generator by supplying hard constraints.
 
         Parameters
         ----------
         reps_slack : int, optional
-            Maximum deviation from the repetition goal. The default is 1.
+            Maximum deviation from the repetition goal.
         max_diff : int, optional
-            Maximum difference between two consecutive sets. The default is 2.
+            Maximum difference between two consecutive sets.
         max_unique : int, optional
-            Maximum unique sets in the solution. The default is 4.
+            Maximum unique sets in the solution.
             
         Examples
         --------
@@ -39,6 +38,11 @@ class RepSchemeGenerator:
         (2, 4)
         (3, 3)
         (3, 4)
+        >>> generator = RepSchemeGenerator(reps_slack=0, max_diff=1, max_unique=1)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=8):
+        ...     print(result)
+        (2, 2, 2, 2)
+        (4, 4)
 
         """
         assert isinstance(reps_slack, numbers.Integral)
@@ -72,22 +76,27 @@ class RepSchemeGenerator:
         assert reps_goal >= 0
         assert all(s > 0 for s in sets)
 
+        # Store parameters in instance to avoid passing to _generate_sets()
         self.sets = list(sorted(set(sets)))
         self.reps_goal = reps_goal
-        for scheme in self._generate_sets(stack=[]):
 
+        # Generate sets and yield them out
+        for scheme in self._generate_sets(stack=[]):
             # Prune solutions with too many unique repetitions
             if len(set(scheme)) <= self.max_unique:
                 yield scheme
 
-    def _generate_sets(self, i=0, stack=None):
+    def _generate_sets(self, i: int = 0, stack=None):
         """Only to be called internally."""
+        assert stack is not None, "'stack' should be set to [] by caller."
+        assert i >= 0
+        assert isinstance(i, numbers.Integral)
 
         # Yield the result if it's within the allowed range
         if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
             yield tuple(stack)
 
-        # Stop the recursion if the sum is too high
+        # Stop the recursion if the sum is too high. This prunes the search.
         if sum(stack) > self.reps_goal + self.reps_slack:
             return
 
@@ -96,12 +105,23 @@ class RepSchemeGenerator:
                 yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
             else:
                 # Prune solutions with too large differences
+                # This avoids jumps like e.g. [8, 8, 3, 3]
                 if self.sets[j] - stack[-1] <= self.max_diff:
                     yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
 
 
 class RepSchemeOptimizer:
     def __init__(self, generator=None):
+        """Initialize the optimizer.
+
+        Parameters
+        ----------
+        generator : callable, optional
+            A rep scheme generator with a 'generate' method with signature
+            generate(self, sets: list, reps_goal: int). 
+            The default when `None` is the RepSchemeGenerator.
+
+        """
         if generator is None:
             self.generator = RepSchemeGenerator()
         else:
@@ -110,7 +130,9 @@ class RepSchemeOptimizer:
         self._cache = dict()
 
     def _optimize(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+        """Core optimization. Moved to its own method for caching."""
 
+        # Convert data to lists (tuples are used for caching)
         sets = list(sets)
         intensities = list(intensities)
 
@@ -118,29 +140,38 @@ class RepSchemeOptimizer:
         reps_to_intensity_dict = {r_j: i_j for (r_j, i_j) in zip(sets, intensities)}
 
         def reps_to_intensity(reps):
+            """Map repetitions to intensity, e.g. 8 -> 70."""
             return reps_to_intensity_dict[reps]
 
         schemes = self.generator.generate(sets=sets, reps_goal=reps_goal)
 
         def loss(scheme: list):
-            """Loss function - smaller is better."""
-            scheme = sorted(scheme)
+            """Loss function - smaller is better. Uses 2-norm."""
             reps = sum(scheme)
             intensities = map(reps_to_intensity, scheme)
             intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
+            # No weighting is used here, since the units are about the same
             return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2
 
+        # Optimization here is simply going through every feasible solution
+        # and choosing the best one. The feasible solution search space is so
+        # small that this is fast and efficient, provided that the generator
+        # is efficient.
         return list(reversed(min(schemes, key=loss)))
 
     def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+        """Use the generator to generate feasible solutions, then optimize."""
         assert isinstance(sets, tuple)
         assert isinstance(intensities, tuple)
         assert reps_goal > 0
         assert intensity_goal > 1
+        assert all(i_j > 1 for i_j in intensities)
         assert list(sets) == sorted(sets)
 
+        # Pack the arguments into a tuple for caching
         args = (sets, intensities, reps_goal, intensity_goal)
 
+        # Try to hit the cache. If it fails: compute, store and return.
         try:
             return self._cache[args]
         except KeyError:
