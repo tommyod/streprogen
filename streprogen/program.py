@@ -469,8 +469,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
             scale_factor = self.intensity_scaler_func(week)
-            desired_intensity = round(intensity_unscaled * scale_factor)
-            self._rendered[week][day][dyn_ex]["desired_intensity"] = int(desired_intensity)
+            desired_intensity = round(intensity_unscaled * scale_factor, 2)
+            self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
             # A dictionary is returned with keys 'reps' and 'intensities'
             render_args = dyn_ex, desired_reps, desired_intensity, validate
@@ -593,7 +593,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         return template.render(program=self, max_ex_name=max_ex_name, max_ex_scheme=max_ex_scheme, verbose=verbose,)
 
     def to_tex(self, text_size="large", table_width=5, clear_pages=False):
-        """
+        r"""
         Write the program information to a .tex file, which can be
         rendered to .pdf running pdflatex. The program can then be
         printed and brought to the gym.
