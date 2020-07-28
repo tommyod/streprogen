@@ -107,12 +107,9 @@ class RepSchemeOptimizer:
         else:
             self.generator = generator
 
-    def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
-        assert isinstance(sets, tuple)
-        assert isinstance(intensities, tuple)
-        assert reps_goal > 0
-        assert intensity_goal > 1
-        assert list(sets) == sorted(sets)
+        self._cache = dict()
+
+    def _optimize(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
 
         sets = list(sets)
         intensities = list(intensities)
@@ -134,6 +131,21 @@ class RepSchemeOptimizer:
             return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2
 
         return list(reversed(min(schemes, key=loss)))
+
+    def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+        assert isinstance(sets, tuple)
+        assert isinstance(intensities, tuple)
+        assert reps_goal > 0
+        assert intensity_goal > 1
+        assert list(sets) == sorted(sets)
+
+        args = (sets, intensities, reps_goal, intensity_goal)
+
+        try:
+            return self._cache[args]
+        except KeyError:
+            self._cache[args] = self._optimize(sets, intensities, reps_goal, intensity_goal)
+            return self._cache[args]
 
 
 @functools.lru_cache(maxsize=1024, typed=False)

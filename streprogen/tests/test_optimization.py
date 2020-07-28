@@ -17,8 +17,8 @@ import pytest
     list(
         itertools.product(
             [reps_to_intensity, reps_to_intensity_relaxed, reps_to_intensity_tight],
-            list(range(15, 35 + 1, 1)),
-            list(range(70, 90 + 1, 1)),
+            list(range(10, 35 + 1, 1)),
+            list(range(70, 95 + 1, 1)),
         )
     ),
 )
@@ -34,6 +34,7 @@ def test_repscheme_optimizer(reps_to_intensity_func, reps_goal, intensities_goal
 
     scheme = optimizer(sets=reps, intensities=intensities, reps_goal=reps_goal, intensity_goal=intensities_goal)
     assert scheme == sorted(scheme, reverse=True)
+    assert scheme
 
     intensities = list(map(reps_to_intensity_func, scheme))
 
