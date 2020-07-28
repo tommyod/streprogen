@@ -4,6 +4,7 @@
 import functools
 import statistics
 import warnings
+import time
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -45,17 +46,17 @@ class Program(object):
     def __init__(
         self,
         name="Untitled",
-        duration=8,
-        reps_per_exercise=25,
+        duration: int = 8,
+        reps_per_exercise: int = 25,
         rep_scaler_func=None,
-        intensity=80,
+        intensity: float = 80,
         intensity_scaler_func=None,
-        units="kg",
-        round_to=2.5,
-        percent_inc_per_week=1.5,
+        units: str = "kg",
+        round_to: float = 2.5,
+        percent_inc_per_week: float = 1.5,
         progression_func=None,
         reps_to_intensity_func=None,
-        verbose=False,
+        verbose: bool = False,
     ):
 
         """Initialize a new program.
@@ -70,7 +71,7 @@ class Program(object):
 
         reps_per_exercise
             The baseline number of repetitions per dynamic exercise.
-            Typically a value in the range [20, ..., 35].
+            Typically a value in the range [15, 30].
 
         rep_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
@@ -82,7 +83,7 @@ class Program(object):
             The baseline intensity for each dynamic exercise. The intensity
             of an exercise for a given week is how heavy the average
             repetition is compared to the expected 1RM (max weight one can
-            lift) for that given week. Typically a value around 75.
+            lift) for that given week. Typically a value around 80.
 
         intensity_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
@@ -107,7 +108,7 @@ class Program(object):
             not (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter 
             must be set to `None` for this parameter to have effect.
 
-        progress_func
+        progression_func
             The function used to model overall 1RM progression in the
             training program. The function must have a signature like:
                 func(week, start_weight, final_weight, start_week, end_week)
@@ -433,6 +434,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             will warn the user if inputs seem unreasonable.
 
         """
+        start_time = time.time()
 
         # --------------------------------
         # Prepare for rendering the dynamic exercises
@@ -525,6 +527,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Update with the ['intensities', 'reps', 'strings'] keys
             self._rendered[week][day][dyn_ex].update(out)
 
+        if self.verbose:
+            delta_time = round(time.time() - start_time, 3)
+            print(f"Rendered program in {delta_time} seconds.")
+
     def _set_jinja2_enviroment(self):
         """
         Set up the jinja2 environment.
@@ -606,6 +612,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         table_width
             The table with of the .tex code.
+        
+        clear_pages
+            If True, the page will be cleared after each week is printed.
 
         Returns
         -------
@@ -647,7 +656,7 @@ if __name__ == "__main__":
     from streprogen import Program
 
     # Create a 4-week program, rounding every exercise to nearest unit og 5kg
-    program = Program("My first program!", duration=8, units="kg", round_to=5)
+    program = Program("My first program!", duration=8, units="kg", verbose=True)
 
     with program.Day("Day A"):
         program.DynamicExercise("Bench press", start_weight=100, min_reps=3, max_reps=8)
@@ -666,14 +675,14 @@ if __name__ == "__main__":
         # The name of the training program
         name="Beginner 5x5",
         # The duration of the training program in weeks.
-        duration=8,
+        # duration=8,
         # The baseline number of repetitions per dynamic exercise.
-        reps_per_exercise=25,
+        # reps_per_exercise=25,
         intensity=reps_to_intensity(5),
         # Units for the weights, typically 'kg', 'lbs' or '' (empty)
         units="kg",
         # What the weights are rounded to.
-        round_to=5,
+        round_to=2.5,
         rep_scaler_func=rep_scaler_func,
         intensity_scaler_func=intensity_scaler_func,
     )
