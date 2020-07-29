@@ -178,7 +178,7 @@ class TestWaysOfGivingProgress:
 
         program2 = Program("My first program!", duration=3, units="kg", round_to=1)
         with program2.Day():
-            program2.DynamicExercise("Bench press", start_weight=100, final_weight=104)
+            program2.DynamicExercise("Bench press", start_weight=100, final_weight=106)
         program2.render()
 
         # Use .txt format to compare programs
@@ -194,7 +194,7 @@ class TestWaysOfGivingProgress:
 
         program2 = Program("My first program!", duration=3, units="kg", round_to=1)
         with program2.Day():
-            program2.DynamicExercise("Bench press", percent_inc_per_week=2, final_weight=104)
+            program2.DynamicExercise("Bench press", percent_inc_per_week=2, final_weight=106)
         program2.render()
 
         # Use .txt format to compare programs

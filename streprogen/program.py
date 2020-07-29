@@ -471,7 +471,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
             scale_factor = self.intensity_scaler_func(week)
-            desired_intensity = round(intensity_unscaled * scale_factor, 2)
+            desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
             # A dictionary is returned with keys 'reps' and 'intensities'
@@ -487,14 +487,14 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Case 2: Start weight and increase is given
             elif (dyn_ex.start_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * (self.duration - 1)
-                dyn_ex.final_weight = int(round(dyn_ex.start_weight * factor, 1))
+                factor = 1 + (inc_week / 100) * self.duration
+                dyn_ex.final_weight = dyn_ex.start_weight * factor
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             # Case 3: Final weight and increase is given
             elif (dyn_ex.final_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * (self.duration - 1)
-                dyn_ex.start_weight = int(round(dyn_ex.final_weight / factor, 1))
+                factor = 1 + (inc_week / 100) * self.duration
+                dyn_ex.start_weight = dyn_ex.final_weight / factor
                 start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
 
             else:

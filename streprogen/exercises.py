@@ -115,7 +115,7 @@ class DynamicExercise(object):
         Returns
         -------
         growth_factor
-            A real number such that start * growth_factor** weeks = end.
+            A real number such that start * (1 + growth_factor * (weeks - 1) / 100) = final.
     
         Examples
         -------

@@ -17,12 +17,12 @@ import pytest
     list(
         itertools.product(
             [reps_to_intensity, reps_to_intensity_relaxed, reps_to_intensity_tight],
-            list(range(10, 35 + 1, 1)),
-            list(range(70, 95 + 1, 1)),
+            list(range(10, 35 + 1, 2)),
+            list(range(70, 95 + 1, 2)),
         )
     ),
 )
-def test_repscheme_optimizer_soft_constraints(reps_to_intensity_func, reps_goal, intensities_goal):
+def test_repscheme_optimizer(reps_to_intensity_func, reps_goal, intensities_goal):
     """For common settings, check that the optimization returns good results."""
 
     # Prepare data
