@@ -152,7 +152,7 @@ def test_progression_means(func, period):
 
 
 class TestWaysOfGivingProgress:
-    @pytest.mark.parametrize("format", ["tex", "txt"])
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_inc_week_program_vs_exercise(self, format):
         """Test that giving progress in program or exercise is the same."""
 
@@ -169,7 +169,7 @@ class TestWaysOfGivingProgress:
         # Use .txt format to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
-    @pytest.mark.parametrize("format", ["tex", "txt"])
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_inc_per_week_vs_endpoints(self, format):
         """Test that giving progress in program or exercise is the same."""
 
@@ -186,7 +186,7 @@ class TestWaysOfGivingProgress:
         # Use .txt format to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
-    @pytest.mark.parametrize("format", ["tex", "txt"])
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_start_weight_vs_final_weight(self, format):
         """Test that giving progress in program or exercise is the same."""
 

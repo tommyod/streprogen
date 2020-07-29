@@ -115,8 +115,8 @@
                             {% for exercise in day.dynamic_exercises %}
                                 <tr>
                                     <td>&nbsp;{{ exercise.name }}</td>
-                                    <td>{{ exercise.start_weight }}{{ program.units }}</td>
-                                    <td>{{ exercise.final_weight }}{{ program
+                                    <td>{{ exercise.start_weight | round2digits }}{{ program.units }}</td>
+                                    <td>{{ exercise.final_weight | round2digits }}{{ program
                                     .units }}</td>
                                     <td>[{{ exercise.min_reps }}, {{ exercise.max_reps }}]</td>
                                     <td>{{ exercise.weekly_growth(program.duration) }}%</td>
