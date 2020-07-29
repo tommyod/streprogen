@@ -37,8 +37,8 @@ The latest version can be found at \\
 	{% for day in program.days %}
       \textbf{ {{day.name}} } & & & & & \\ \hline
     {% for dynamic_ex in day.dynamic_exercises %}
-        \hspace{0.5em}{{dynamic_ex.name}} & {{dynamic_ex.start_weight}} {{program.units}} &
-         {{dynamic_ex.final_weight}} {{program.units}} & {{dynamic_ex
+        \hspace{0.5em}{{dynamic_ex.name}} & {{dynamic_ex.start_weight|round2digits}} {{program.units}} &
+         {{dynamic_ex.final_weight|round2digits}} {{program.units}} & {{dynamic_ex
          .min_reps}} & {{dynamic_ex.max_reps}} &
           {{dynamic_ex.weekly_growth(program.duration)}}\%\\
     {% endfor %}

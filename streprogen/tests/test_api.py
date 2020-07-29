@@ -152,7 +152,8 @@ def test_progression_means(func, period):
 
 
 class TestWaysOfGivingProgress:
-    def test_inc_week_program_vs_exercise(self):
+    @pytest.mark.parametrize("format", ["tex", "txt"])
+    def test_inc_week_program_vs_exercise(self, format):
         """Test that giving progress in program or exercise is the same."""
 
         program1 = Program("My first program!", duration=8, round_to=1)
@@ -166,9 +167,10 @@ class TestWaysOfGivingProgress:
         program2.render()
 
         # Use .txt format to compare programs
-        assert program1.to_txt() == program2.to_txt()
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
-    def test_inc_per_week_vs_endpoints(self):
+    @pytest.mark.parametrize("format", ["tex", "txt"])
+    def test_inc_per_week_vs_endpoints(self, format):
         """Test that giving progress in program or exercise is the same."""
 
         program1 = Program("My first program!", duration=3, units="kg", round_to=1)
@@ -182,9 +184,10 @@ class TestWaysOfGivingProgress:
         program2.render()
 
         # Use .txt format to compare programs
-        assert program1.to_txt() == program2.to_txt()
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
-    def test_start_weight_vs_final_weight(self):
+    @pytest.mark.parametrize("format", ["tex", "txt"])
+    def test_start_weight_vs_final_weight(self, format):
         """Test that giving progress in program or exercise is the same."""
 
         program1 = Program("My first program!", duration=3, units="kg", round_to=1)
@@ -198,7 +201,7 @@ class TestWaysOfGivingProgress:
         program2.render()
 
         # Use .txt format to compare programs
-        assert program1.to_txt() == program2.to_txt()
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
 
 if __name__ == "__main__":
