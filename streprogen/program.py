@@ -34,10 +34,10 @@ class Program(object):
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
-        functools.partial(progression_diffeq, start_weight=1 + 0.3, final_weight=1 - 0.3, start_week=1, k=0,)
+        functools.partial(progression_diffeq, start_weight=1 + 0.2, final_weight=1 - 0.2, start_week=1, k=0,)
     )
     _default_intensity_scaler_func = staticmethod(
-        functools.partial(progression_diffeq, start_weight=1 - 0.1, final_weight=1 + 0.1, start_week=1, k=0,)
+        functools.partial(progression_diffeq, start_weight=1 - 0.05, final_weight=1 + 0.05, start_week=1, k=0,)
     )
 
     _default_reps_to_intensity_func = staticmethod(reps_to_intensity)

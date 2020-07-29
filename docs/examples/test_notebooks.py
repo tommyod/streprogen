@@ -12,19 +12,17 @@ import os
 
 
 def _exec_notebook(path):
-    with tempfile.NamedTemporaryFile(suffix=".ipynb") as fout:
-        args = [
-            "jupyter",
-            "nbconvert",
-            "--to",
-            "notebook",
-            "--execute",
-            "--ExecutePreprocessor.timeout=1000",
-            "--output",
-            fout.name,
-            path,
-        ]
-        subprocess.check_call(args)
+    script = path.replace(".ipynb", ".py")
+    args = ["jupyter", "nbconvert", "--to", "python", path]
+    subprocess.check_call(args)
+
+    with open(script, "r") as file:
+        lines = "".join(l for l in file if "get_ipython()" not in l)
+
+    with open(script, "w") as file:
+        file.write(lines)
+
+    subprocess.check_call(["python", script])
 
 
 # Run examples
