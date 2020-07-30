@@ -6,7 +6,7 @@ import functools
 import math
 
 
-def reps_to_intensity(reps, slope=-4.0, constant=97.5, quadratic=True):
+def reps_to_intensity(reps, slope=-3.5, constant=97.5, quadratic=True):
     """A mapping from repetitions in range [1, 12] to intensities in range [0, 100].
 
     Parameters
@@ -232,8 +232,8 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
 
 
-reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.5)
-reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-4.5)
+reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.25)
+reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-3.75)
 
 
 def wilks(lifted_kg, bodyweight_kg, gender="male"):

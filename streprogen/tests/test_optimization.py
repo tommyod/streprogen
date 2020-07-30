@@ -42,7 +42,7 @@ def test_repscheme_optimizer(reps_to_intensity_func, reps_goal, intensities_goal
     intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
 
     assert abs(reps - reps_goal) <= 3
-    assert abs(intensity - intensities_goal) <= 3
+    assert abs(intensity - intensities_goal) <= 3.5
 
 
 @pytest.mark.parametrize("reps_slack", [0, 1, 2, 3, 4])

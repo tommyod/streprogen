@@ -52,7 +52,7 @@ class Program(object):
         min_reps=3,
         max_reps=8,
         rep_scaler_func=None,
-        intensity: float = 80,
+        intensity: float = 83,
         intensity_scaler_func=None,
         units: str = "kg",
         round_to: float = 2.5,
@@ -78,13 +78,13 @@ class Program(object):
             
         min_reps
             The minimum number of repetitions for the exercises, e.g. 3.
-            This vlaue can be set globally for the program, or for a specific
+            This value can be set globally for the program, or for a specific
             dynamic exercise. If set at the dynamic exercise level, it will
             override the global program value.
             
         max_reps
             The maximum number of repetitions for the exercises, e.g. 8.
-            This vlaue can be set globally for the program, or for a specific
+            This value can be set globally for the program, or for a specific
             dynamic exercise. If set at the dynamic exercise level, it will
             override the global program value.
 
@@ -112,7 +112,7 @@ class Program(object):
         round_to
             Round the dynamic exercise to the nearest multiple of this
             parameter. Typically 2.5, 5 or 10.
-            This vlaue can be set globally for the program, or for a specific
+            This value can be set globally for the program, or for a specific
             dynamic exercise. If set at the dynamic exercise level, it will
             override the global program value.
 
@@ -167,7 +167,7 @@ class Program(object):
             if self.min_reps > self.max_reps:
                 raise ValueError("'min_reps' larger than 'max_reps'")
 
-        assert isinstance(intensity, numbers.Integral) and intensity > 0
+        assert isinstance(intensity, numbers.Number) and intensity > 0
         self.intensity = intensity
 
         assert isinstance(units, str)
@@ -200,7 +200,7 @@ class Program(object):
         self._rendered = False
         self._set_jinja2_enviroment()
 
-        assert isinstance(intensity, numbers.Number)
+        assert isinstance(percent_inc_per_week, numbers.Number)
         self.percent_inc_per_week = percent_inc_per_week
 
         # TODO: make explicit
@@ -352,12 +352,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             )
             warnings.warn(msg)
 
-        # print({"reps": reps, "intensities": intensities})
         return {"reps": reps, "intensities": intensities}
 
     def _initialize_render_dictionary(self):
         """Initialize a dictionary for rendered values.
-    
     
         Examples
         -------
@@ -700,7 +698,7 @@ if __name__ == "__main__":
     from streprogen import Program
 
     # Create a 4-week program, rounding every exercise to nearest unit og 5kg
-    program = Program("My first program!", duration=8, units="kg", verbose=True)
+    program = Program("My first program!", duration=8, units="kg")
 
     with program.Day("Day A"):
         program.DynamicExercise("Bench press", start_weight=100, min_reps=3, max_reps=8)
