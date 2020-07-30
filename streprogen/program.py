@@ -6,6 +6,7 @@ import statistics
 import warnings
 import numbers
 import time
+import typing
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -46,19 +47,19 @@ class Program(object):
 
     def __init__(
         self,
-        name="Untitled",
+        name: str = "Untitled",
         duration: int = 8,
         reps_per_exercise: int = 25,
-        min_reps=3,
-        max_reps=8,
-        rep_scaler_func=None,
+        min_reps: int = 3,
+        max_reps: int = 8,
+        rep_scaler_func: typing.Callable[[int], float] = None,
         intensity: float = 83,
-        intensity_scaler_func=None,
+        intensity_scaler_func: typing.Callable[[int], float] = None,
         units: str = "kg",
         round_to: float = 2.5,
         percent_inc_per_week: float = 1.5,
-        progression_func=None,
-        reps_to_intensity_func=None,
+        progression_func: typing.Callable = None,
+        reps_to_intensity_func: typing.Callable[[int], float] = None,
         verbose: bool = False,
     ):
 
@@ -340,8 +341,7 @@ class Program(object):
         int_lowest = self.reps_to_intensity_func(dynamic_exercise.max_reps)
 
         if (not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)) and validate:
-            msg = """
-WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
+            msg = """WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
 This maps to intensities in the range [{}, {}], but the goal average intensity is {},
 which is not achievable with this rep range.
 SOLUTION: Either (1) change the repetition range, (2) change the desired intensity
@@ -702,7 +702,7 @@ if __name__ == "__main__":
     from streprogen import Program
 
     # Create a 4-week program, rounding every exercise to nearest unit og 5kg
-    program = Program("My first program!", duration=8, units="kg")
+    program = Program("My first program!", duration=8, units="kg", verbose=True)
 
     with program.Day("Day A"):
         program.DynamicExercise("Bench press", start_weight=100, min_reps=3, max_reps=8)
