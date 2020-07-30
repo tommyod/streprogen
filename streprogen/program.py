@@ -4,6 +4,7 @@
 import functools
 import statistics
 import warnings
+import numbers
 import time
 from os import path
 
@@ -74,6 +75,18 @@ class Program(object):
         reps_per_exercise
             The baseline number of repetitions per dynamic exercise.
             Typically a value in the range [15, 30].
+            
+        min_reps
+            The minimum number of repetitions for the exercises, e.g. 3.
+            This vlaue can be set globally for the program, or for a specific
+            dynamic exercise. If set at the dynamic exercise level, it will
+            override the global program value.
+            
+        max_reps
+            The maximum number of repetitions for the exercises, e.g. 8.
+            This vlaue can be set globally for the program, or for a specific
+            dynamic exercise. If set at the dynamic exercise level, it will
+            override the global program value.
 
         rep_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
@@ -99,6 +112,9 @@ class Program(object):
         round_to
             Round the dynamic exercise to the nearest multiple of this
             parameter. Typically 2.5, 5 or 10.
+            This vlaue can be set globally for the program, or for a specific
+            dynamic exercise. If set at the dynamic exercise level, it will
+            override the global program value.
 
         percent_inc_per_week
             If `final_weight` is not set, this value will be used. Percentage
@@ -136,11 +152,25 @@ class Program(object):
         False
         """
         self.name = escape_string(name)
+
+        assert isinstance(duration, numbers.Integral) and duration > 0
         self.duration = duration
+
+        assert isinstance(reps_per_exercise, numbers.Integral) and reps_per_exercise > 0
         self.reps_per_exercise = reps_per_exercise
+
+        assert isinstance(min_reps, numbers.Integral) and min_reps > 0
+        assert isinstance(max_reps, numbers.Integral) and max_reps > 0
         self.min_reps = min_reps
         self.max_reps = max_reps
+        if self.min_reps and self.max_reps:
+            if self.min_reps > self.max_reps:
+                raise ValueError("'min_reps' larger than 'max_reps'")
+
+        assert isinstance(intensity, numbers.Integral) and intensity > 0
         self.intensity = intensity
+
+        assert isinstance(units, str)
         self.units = units
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.verbose = verbose
@@ -169,6 +199,8 @@ class Program(object):
         self.active_day = None  # Used for Program.Day context manager API
         self._rendered = False
         self._set_jinja2_enviroment()
+
+        assert isinstance(intensity, numbers.Number)
         self.percent_inc_per_week = percent_inc_per_week
 
         # TODO: make explicit

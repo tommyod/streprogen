@@ -154,7 +154,7 @@ def test_progression_means(func, period):
 def test_error_on_non_unique_names():
     """Test that using the same exercise name raises an error."""
 
-    program1 = Program("My first program!", duration=8, round_to=1)
+    program1 = Program(duration=8, round_to=1)
     with program1.Day():
         program1.DynamicExercise("Bench press", start_weight=100, min_reps=4, max_reps=7)
         program1.DynamicExercise("Bench press", start_weight=90, min_reps=1, max_reps=7)
@@ -185,12 +185,12 @@ class TestWaysOfGivingProgress:
     def test_inc_week_program_vs_exercise(self, format):
         """Test that giving progress in program or exercise is the same."""
 
-        program1 = Program("My first program!", duration=8, round_to=1)
+        program1 = Program(duration=8, round_to=1)
         with program1.Day():
             program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
         program1.render()
 
-        program2 = Program("My first program!", duration=8, round_to=1, percent_inc_per_week=2)
+        program2 = Program(duration=8, round_to=1, percent_inc_per_week=2)
         with program2.Day():
             program2.DynamicExercise("Bench press", start_weight=100)
         program2.render()
@@ -202,12 +202,12 @@ class TestWaysOfGivingProgress:
     def test_inc_per_week_vs_endpoints(self, format):
         """Test that giving progress in program or exercise is the same."""
 
-        program1 = Program("My first program!", duration=3, units="kg", round_to=1)
+        program1 = Program(duration=3, units="kg", round_to=1)
         with program1.Day():
             program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
         program1.render()
 
-        program2 = Program("My first program!", duration=3, units="kg", round_to=1)
+        program2 = Program(duration=3, units="kg", round_to=1)
         with program2.Day():
             program2.DynamicExercise("Bench press", start_weight=100, final_weight=106)
         program2.render()
@@ -219,12 +219,12 @@ class TestWaysOfGivingProgress:
     def test_start_weight_vs_final_weight(self, format):
         """Test that giving progress in program or exercise is the same."""
 
-        program1 = Program("My first program!", duration=3, units="kg", round_to=1)
+        program1 = Program(duration=3, units="kg", round_to=1)
         with program1.Day():
             program1.DynamicExercise("Bench press", start_weight=100, percent_inc_per_week=2)
         program1.render()
 
-        program2 = Program("My first program!", duration=3, units="kg", round_to=1)
+        program2 = Program(duration=3, units="kg", round_to=1)
         with program2.Day():
             program2.DynamicExercise("Bench press", percent_inc_per_week=2, final_weight=106)
         program2.render()
