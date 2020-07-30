@@ -181,18 +181,22 @@ class Program(object):
             functools.partial(self._default_rep_scaler_func, final_week=self.duration),
         )
         self.rep_scaler_func = prioritized_not_None(user, default)
+        assert callable(self.rep_scaler_func)
 
         user, default = (
             intensity_scaler_func,
             functools.partial(self._default_intensity_scaler_func, final_week=self.duration),
         )
         self.intensity_scaler_func = prioritized_not_None(user, default)
+        assert callable(self.intensity_scaler_func)
 
         user, default = progression_func, self._default_progression_func
         self.progression_func = prioritized_not_None(user, default)
+        assert callable(self.progression_func)
 
         user, default = reps_to_intensity_func, self._default_reps_to_intensity_func
         self.reps_to_intensity_func = prioritized_not_None(user, default)
+        assert callable(self.reps_to_intensity_func)
 
         # Setup variables that the user has no control over
         self.days = []
@@ -653,7 +657,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             or 'LARGE'.
 
         table_width
-            The table with of the .tex code.
+            The table width of the .tex code.
         
         clear_pages
             If True, the page will be cleared after each week is printed.
