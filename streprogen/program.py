@@ -48,6 +48,8 @@ class Program(object):
         name="Untitled",
         duration: int = 8,
         reps_per_exercise: int = 25,
+        min_reps=3,
+        max_reps=8,
         rep_scaler_func=None,
         intensity: float = 80,
         intensity_scaler_func=None,
@@ -136,6 +138,8 @@ class Program(object):
         self.name = escape_string(name)
         self.duration = duration
         self.reps_per_exercise = reps_per_exercise
+        self.min_reps = min_reps
+        self.max_reps = max_reps
         self.intensity = intensity
         self.units = units
         self.round = functools.partial(round_to_nearest, nearest=round_to)
@@ -180,8 +184,8 @@ class Program(object):
         name,
         start_weight=None,
         final_weight=None,
-        min_reps=3,
-        max_reps=8,
+        min_reps=None,
+        max_reps=None,
         percent_inc_per_week=None,
         reps=None,
         intensity=None,
@@ -456,6 +460,14 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # --------------------------------
 
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
+
+            # Set min and max reps from program, if not set on exercise
+            dyn_ex.min_reps = prioritized_not_None(dyn_ex.min_reps, self.min_reps)
+            dyn_ex.max_reps = prioritized_not_None(dyn_ex.max_reps, self.max_reps)
+
+            if dyn_ex.min_reps > dyn_ex.max_reps:
+                msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
+                raise ValueError(msg.format(dyn_ex.name))
 
             # Use the local rounding function if available,
             # if not use the global rounding function

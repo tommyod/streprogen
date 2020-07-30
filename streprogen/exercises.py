@@ -15,8 +15,8 @@ class DynamicExercise(object):
         name,
         start_weight=None,
         final_weight=None,
-        min_reps=3,
-        max_reps=8,
+        min_reps=None,
+        max_reps=None,
         percent_inc_per_week=None,
         reps=None,
         intensity=None,
@@ -100,9 +100,10 @@ class DynamicExercise(object):
                 msg = "Start weight larger than end weight for exercise '{}'."
                 warnings.warn(msg.format(self.name))
 
-        if self.min_reps > self.max_reps:
-            msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
-            raise ValueError(msg.format(self.name))
+        if self.min_reps and self.max_reps:
+            if self.min_reps > self.max_reps:
+                msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
+                raise ValueError(msg.format(self.name))
 
     def weekly_growth(self, weeks, percent_inc_per_week_program=None):
         """Calculate the weekly growth in percentage, rounded to one digit.
@@ -162,11 +163,11 @@ class DynamicExercise(object):
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = ("name", "min_reps", "max_reps")
+        attrs = ("name",)
         return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
 
     def __hash__(self):
-        attrs = ("name", "min_reps", "max_reps")
+        attrs = ("name",)
         return hash(tuple(getattr(self, attr) for attr in attrs))
 
 

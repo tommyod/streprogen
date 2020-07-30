@@ -153,6 +153,23 @@ def test_progression_means(func, period):
 
 class TestWaysOfGivingProgress:
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])
+    def test_rep_range_exercise_vs_program(self, format):
+        """Test that giving rep range in program or exercise is the same."""
+
+        program1 = Program("My first program!", duration=8, round_to=1)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100, min_reps=4, max_reps=7)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, min_reps=4, max_reps=7)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
+
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_inc_week_program_vs_exercise(self, format):
         """Test that giving progress in program or exercise is the same."""
 
