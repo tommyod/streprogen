@@ -151,6 +151,18 @@ def test_progression_means(func, period):
     assert abs(statistics.mean(values) - target) <= 1e-6
 
 
+def test_error_on_non_unique_names():
+    """Test that using the same exercise name raises an error."""
+
+    program1 = Program("My first program!", duration=8, round_to=1)
+    with program1.Day():
+        program1.DynamicExercise("Bench press", start_weight=100, min_reps=4, max_reps=7)
+        program1.DynamicExercise("Bench press", start_weight=90, min_reps=1, max_reps=7)
+
+    with pytest.raises(ValueError, match="Exercise name not unique: Bench press"):
+        program1.render()
+
+
 class TestWaysOfGivingProgress:
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_rep_range_exercise_vs_program(self, format):
