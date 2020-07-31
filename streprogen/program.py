@@ -154,7 +154,7 @@ class Program(object):
         """
         self.name = escape_string(name)
 
-        assert isinstance(duration, numbers.Integral) and duration > 0
+        assert isinstance(duration, numbers.Integral) and duration > 1
         self.duration = duration
 
         assert isinstance(reps_per_exercise, numbers.Integral) and reps_per_exercise > 0
@@ -701,11 +701,20 @@ if __name__ == "__main__":
 
     from streprogen import Program
 
-    # Create a 4-week program, rounding every exercise to nearest unit og 5kg
-    program = Program("My first program!", duration=8, units="kg", verbose=True)
+    program = Program(
+        "My first program!",
+        duration=8,
+        units="kg",
+        reps_per_exercise=15,
+        intensity=88,
+        intensity_scaler_func=lambda w: 1,
+        round_to=2.5,
+        percent_inc_per_week=2,
+        verbose=True,
+    )
 
-    with program.Day("Day A"):
-        program.DynamicExercise("Bench press", start_weight=100, min_reps=3, max_reps=8)
+    with program.Day("Mandag"):
+        program.DynamicExercise("Knebøy", start_weight=70, min_reps=3, max_reps=5)
 
     # Render the program, then print it
     program.render()

@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-import math
 from functools import wraps
 
 
 def compose(first_func, second_func):
-    """
-    Compose two functions. Documentation is retrieved from the first one.
+    """Compose two functions. Documentation is retrieved from the first one.
 
     Parameters
     ----------
@@ -106,7 +103,7 @@ def chunker(iterable, size=5, fill=""):
 
 
 def prioritized_not_None(*args):
-    """Return the first argument which is not None.
+    """Return the first argument that is not None.
 
     Parameters
     ----------
@@ -167,96 +164,6 @@ def round_to_nearest(number, nearest=1):
     if nearest % 0.01 == 0:
         return round(result, 2)
     return result
-
-
-def all_equal(iterable):
-    """Checks whether all items in an iterable are equal.
-
-    Parameters
-    ----------
-    iterable
-        An iterable, e.g. a string og a list.
-
-    Returns
-    -------
-    boolean
-        True or False.
-    
-    Examples
-    -------
-    >>> all_equal([2, 2, 2])
-    True
-    >>> all_equal([1, 2, 3])
-    False
-    """
-    if len(iterable) in [0, 1]:
-        return False
-
-    first = iterable[0]
-    return all([first == i for i in iterable[1:]])
-
-
-def min_between(min_reps=3, max_reps=8, percentile=0.33):
-    """Function to decide the minimum number of reps to perform
-    given `min_reps` and `max_rep`.
-
-    Parameters
-    ----------
-    min_reps
-        The minimum number of repeitions.
-
-    max_reps
-        The maximum number of repetitions.
-
-    percentile
-        The percentile to cap at.
-
-    Return
-    -------
-    (low, high)
-        A tuple containing a new rep range.
-
-
-    Examples
-    -------
-    >>> min_between(min_reps = 3, max_reps = 8, percentile = 0.33)
-    (3, 5)
-    """
-    higher_limit = min_reps + (max_reps - min_reps) * percentile
-    return min_reps, math.ceil(higher_limit)
-
-
-def spread(iterable):
-    """Returns the maximal spread of a sorted list of numbers.
-
-    Parameters
-    ----------
-    iterable
-        A list of numbers.
-
-    Returns
-    -------
-    max_diff
-        The maximal difference when the iterable is sorted.
-
-
-    Examples
-    -------
-    >>> spread([1, 11, 13, 15])
-    10
-    
-    >>> spread([1, 15, 11, 13])
-    10
-    """
-    if len(iterable) == 1:
-        return 0
-
-    iterable = iterable.copy()
-    iterable.sort()
-
-    max_diff = max(abs(i - j) for (i, j) in zip(iterable[1:], iterable[:-1]))
-
-    return max_diff
 
 
 if __name__ == "__main__":

@@ -175,7 +175,7 @@ class RepSchemeOptimizer:
         try:
             return self._cache[args]
         except KeyError:
-            self._cache[args] = self._optimize(sets, intensities, reps_goal, intensity_goal)
+            self._cache[args] = self._optimize(*args)
             return self._cache[args]
 
 
