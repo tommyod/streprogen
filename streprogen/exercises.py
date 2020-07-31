@@ -97,7 +97,7 @@ class DynamicExercise(object):
 
         if self.final_weight and self.start_weight:
             if self.start_weight > self.final_weight:
-                msg = "Start weight larger than end weight for exercise '{}'."
+                msg = "'start_weight' larger than 'final_weight' for exercise '{}'."
                 warnings.warn(msg.format(self.name))
 
         if self.min_reps and self.max_reps:

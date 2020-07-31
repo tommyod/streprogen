@@ -25,7 +25,7 @@ If you don't have Python installed, you can run code in your browser.
 Learn how to make strength training programs
 ********************************************
 
-* Run code live: `Streprogen - Essential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Streprogen%20-%20Essential%20features.ipynb>`_
+* Run code live: `SEssential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Streprogen%20-%20Essential%20features.ipynb>`_
 * Run code live: `Streprogen - Intermediate Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Streprogen%20-%20Intermediate%20features.ipynb>`_
 * Run code live: `Streprogen - Advanced Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Streprogen%20-%20Advanced%20features.ipynb>`_
 
@@ -35,25 +35,26 @@ Example strength training program library
 * Run code live: `Example - Beginner 5x5 program <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Example%20-%20Beginner%205x5%20program.ipynb>`_
 * Run code live: `Example - Beginner 5x5 program modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Example%20-%20Beginner%205x5%20program%20modified.ipynb>`_
 * Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Example%20-%203%20day%20split%20with%20periodization.ipynb>`_
+* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Example%20-%203%20day%20split%20with%20periodization.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/docs/examples/3DaySplitWithPeriodization.pdf>`_.
 
-Multi-day meal planning with mathematical optimization
-******************************************************
+Multi-day meal planning
+***********************
 
 * Run code live: `Example - Meal planning <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Example%20-%20Meal%20planning.ipynb>`_
 
 
 **Instructions for live code:**
-Click "*Runtime*", then "*Run all*".
-To download a saved file, click on the arrow on the top left, left click the file and "*Download*".
+Click "Runtime", then "Run all".
+To download a saved file, click on the arrow on the top left, left click the file and "Download".
 A downloaded ``.html`` file can be printed from your local browser.
 
 Project summary
 ---------------
 
 Streprogen (short for **stre**\ ngth **pro**\ gram **gen**\ erator) is a
-Python_ 3.5+
+Python_ 3.6+
 package which allows the user to easily create dynamic, flexible
 strength training programs. The main features are:
 
@@ -74,7 +75,7 @@ strength training programs. The main features are:
 Installation
 ------------
 
-Here's the layman guide to installation.
+Here's how to install the software on your local machine.
 
 (1) Download Anaconda_ distribution of Python_ 3.x from the Anaconda_ Website.
 (2) Install ``streprogen`` from PyPI_.
@@ -100,7 +101,7 @@ Sample code
 
     from streprogen import Program
     
-    # Create a 4-week program, rounding every exercise to nearest unit og 5kg
+    # Create an 8-week program, rounding every exercise to nearest unit og 5kg
     program = Program("My first program!", duration=8, units="kg", round_to=5)
     
     with program.Day("Day A"):
@@ -124,39 +125,39 @@ Sample code
     Program parameters
       duration: 8
       reps_per_exercise: 25
-      intensity: 80
+      intensity: 83
       units: kg
     ----------------------------------------------------------------
     Exercise information
       Day A
        Bench press    80kg -> 89.6kg 
         reps: [3, 8]   weekly inc.: 1.5%
-       Squats        100kg -> 112.0kg
+       Squats        100kg -> 112kg  
         reps: [3, 8]   weekly inc.: 1.5%
       Day B
-       Deadlifts     100kg -> 116.0kg
-        reps: [2, 7]   weekly inc.: 2.0%
+       Deadlifts     100kg -> 112kg  
+        reps: [2, 7]   weekly inc.: 1.5%
        Curls         3 x 10 @ 18kg
     ----------------------------------------------------------------
     Program
      Week 1
       Day A
-       Bench press   7 x 60kg   6 x 65kg   5 x 65kg   4 x 70kg   3 x 70kg   
-       Squats        7 x 75kg   6 x 80kg   5 x 80kg   4 x 85kg   3 x 90kg   
+       Bench press   8 x 60kg   7 x 65kg   7 x 65kg   7 x 65kg   
+       Squats        8 x 75kg   7 x 80kg   7 x 80kg   7 x 80kg   
     
       Day B
-       Deadlifts     6 x 80kg   6 x 80kg   5 x 80kg   4 x 85kg   
+       Deadlifts     7 x 80kg   7 x 80kg   6 x 80kg   6 x 80kg   5 x 85kg   
        Curls         3 x 10 @ 18kg
     
      Week 2
       Day A
-       Bench press   7 x 60kg   7 x 60kg   7 x 60kg   6 x 65kg   5 x 65kg   4 x 70kg   
-       Squats        7 x 75kg   7 x 75kg   7 x 75kg   6 x 80kg   5 x 85kg   4 x 90kg   
+       Bench press   7 x 65kg   7 x 65kg   6 x 65kg   5 x 70kg   5 x 70kg   
+       Squats        7 x 80kg   7 x 80kg   6 x 85kg   5 x 85kg   5 x 85kg   
     
       Day B
-       Deadlifts     6 x 80kg   6 x 80kg   6 x 80kg   6 x 80kg   
+       Deadlifts     7 x 80kg   7 x 80kg   6 x 85kg   5 x 85kg   5 x 85kg   
        Curls         3 x 10 @ 18kg
     
      Week 3
       ...
-       ...
+       ...  

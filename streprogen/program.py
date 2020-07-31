@@ -564,12 +564,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
             pretty_gen = (
                 (str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuple_generator
             )
-            joined_gen = (self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
+            out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
 
-            out["strings"] = list(joined_gen)
-
-            # The _rendered dictionary has keys
-            # ['minimum', 'desired_reps', 'desired_intensity'].
             # Update with the ['intensities', 'reps', 'strings'] keys
             self._rendered[week][day][dyn_ex].update(out)
 
@@ -630,7 +626,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Get information related to formatting
         exercises = list(self._yield_exercises())
         max_ex_name = 0
-        if len(exercises) != 0:
+        if exercises:
             max_ex_name = max(len(ex.name) for ex in exercises)
 
         # If rendered, find the length of the longest '6 x 75kg'-type string
@@ -695,7 +691,7 @@ Program.StaticExercise.__doc__ = StaticExercise.__doc__ + "\nSee streprogen.Stat
 if __name__ == "__main__":
     import pytest
 
-    # pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
 
 if __name__ == "__main__":
 

@@ -150,7 +150,7 @@ class RepSchemeOptimizer:
             reps = sum(scheme)
             intensities = map(reps_to_intensity, scheme)
             intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
-            # No weighting is used here, since the units are about the same
+            # No weighting is used here since the units are about the same
             return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2
 
         # Optimization here is simply going through every feasible solution

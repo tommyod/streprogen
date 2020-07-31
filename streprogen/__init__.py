@@ -13,6 +13,7 @@ from streprogen.modeling import (
     reps_to_intensity_relaxed,
     reps_to_intensity_tight,
 )
+from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.program import Program
 
 __version__ = "3.0.0"
@@ -31,4 +32,6 @@ __all__ = [
     "Food",
     "Meal",
     "Mealplan",
+    "RepSchemeGenerator",
+    "RepSchemeOptimizer",
 ]
