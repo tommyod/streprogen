@@ -27,15 +27,15 @@ Learn how to make strength training programs
 
 
 * Run code live: `Essential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Essential%20features.ipynb>`_
-* Run code live: `Essential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Intermediate%20features.ipynb>`_
-* Run code live: `Essential Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Advanced%20features.ipynb>`_
+* Run code live: `Intermediate Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Intermediate%20features.ipynb>`_
+* Run code live: `Advanced Features <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Advanced%20features.ipynb>`_
 
 Example strength training program library
 *****************************************
-* Run code live: `Example - Beginner 5x5 <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner 5x5.ipynb`_
-* Run code live: `Example - Beginner 5x5 modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner 5x5 modified.ipynb`_
-* Run code live: `Example - 3 day full body <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3 day full body.ipynb`_
-* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3 day split.ipynb`_
+* Run code live: `Example - Beginner 5x5 <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner 5x5.ipynb>`_
+* Run code live: `Example - Beginner 5x5 modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner 5x5 modified.ipynb>`_
+* Run code live: `Example - 3 day full body <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3 day full body.ipynb>`_
+* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3 day split.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/docs/examples/3DaySplitWithPeriodization.pdf>`_.
 
