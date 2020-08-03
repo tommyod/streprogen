@@ -42,7 +42,7 @@ Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/ma
 Multi-day meal planning
 ***********************
 
-* Run code live: `Meal Planning <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Meal planning.ipynb`_
+* Run code live: `Meal Planning <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Meal planning.ipynb>`_
 
 
 **Instructions for live code:**
