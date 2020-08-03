@@ -26,9 +26,7 @@ class Food:
     149
     """
 
-    def __init__(
-        self, name, protein, fat, carbs, kcal, price_per_product, grams_per_product
-    ):
+    def __init__(self, name, protein, fat, carbs, kcal, price_per_product, grams_per_product):
         """TODO"""
         self.name = name
         self.protein = protein
@@ -91,10 +89,7 @@ class Meal:
 
     def __getattr__(self, key):
         """Allow accessing attributes of foods, summing over them."""
-        return sum(
-            getattr(food, key) * quantity / 100
-            for (food, quantity) in self.foods.items()
-        )
+        return sum(getattr(food, key) * quantity / 100 for (food, quantity) in self.foods.items())
 
     @property
     def grams(self):
@@ -107,23 +102,14 @@ class Meal:
         return iter(self.foods.keys())
 
     def __copy__(self):
-        return type(self)(
-            name=self.name, foods=self.foods.copy(), discrete=self.discrete
-        )
+        return type(self)(name=self.name, foods=self.foods.copy(), discrete=self.discrete)
 
     def __str__(self):
         name = type(self).__name__
         foods_names = (
-            "{"
-            + ", ".join(
-                "{}g {}".format(quantity, food.name)
-                for food, quantity in self.foods.items()
-            )
-            + "}"
+            "{" + ", ".join("{}g {}".format(quantity, food.name) for food, quantity in self.foods.items()) + "}"
         )
-        return name + "(name='{}', grams={}, foods={})".format(
-            self.name, self.grams, foods_names
-        )
+        return name + "(name='{}', grams={}, foods={})".format(self.name, self.grams, foods_names)
 
 
 if __name__ == "__main__":

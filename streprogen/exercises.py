@@ -13,11 +13,11 @@ class DynamicExercise(object):
     def __init__(
         self,
         name,
-        start_weight,
+        start_weight=None,
         final_weight=None,
-        min_reps=3,
-        max_reps=8,
-        percent_inc_per_week=1.5,
+        min_reps=None,
+        max_reps=None,
+        percent_inc_per_week=None,
         reps=None,
         intensity=None,
         round_to=None,
@@ -85,22 +85,28 @@ class DynamicExercise(object):
         self.reps = reps
         self.intensity = intensity
 
+        var_names = ["start_weight", "final_weight", "percent_inc_per_week"]
+        num_specified = sum(1 if (getattr(self, var) is not None) else 0 for var in var_names)
+        if num_specified == 3:
+            raise ValueError(f"At most 2 out of 3 variables may be set: {var_names}")
+
         if round_to is None:
             self.round = None
         else:
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 
-        if self.final_weight is not None:
+        if self.final_weight and self.start_weight:
             if self.start_weight > self.final_weight:
-                msg = "Start weight larger than end weight for exercise '{}'."
+                msg = "'start_weight' larger than 'final_weight' for exercise '{}'."
                 warnings.warn(msg.format(self.name))
 
-        if self.min_reps > self.max_reps:
-            msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
-            raise ValueError(msg.format(self.name))
+        if self.min_reps and self.max_reps:
+            if self.min_reps > self.max_reps:
+                msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
+                raise ValueError(msg.format(self.name))
 
-    def weekly_growth(self, weeks):
-        """Calculate the weekly growth in percentage, and rounded to a single digit.
+    def weekly_growth(self, weeks, percent_inc_per_week_program=None):
+        """Calculate the weekly growth in percentage, rounded to one digit.
     
         Parameters
         ----------
@@ -110,26 +116,29 @@ class DynamicExercise(object):
         Returns
         -------
         growth_factor
-            A real number such that start * growth_factor** weeks = end.
+            A real number such that start * (1 + growth_factor * (weeks - 1) / 100) = final.
     
         Examples
         -------
-        >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
+        >>> bench = DynamicExercise('Bench press', start_weight=100, final_weight=120)
         >>> bench.weekly_growth(2)
         10.0
         >>> bench.weekly_growth(4)
         5.0
-        >>> bench = DynamicExercise('Bench press', 100, None, 3, 8)
+        >>> bench = DynamicExercise('Bench press', start_weight=100, percent_inc_per_week=1.5)
         >>> bench.weekly_growth(4)
         1.5
         """
-        if self.final_weight is None:
-            return self.percent_inc_per_week
-
         # If the final weight is set, compute the weekly growth
-        start, end = self.start_weight, self.final_weight
-        growth = ((end / start) - 1) / weeks * 100
-        return round(growth, 1)
+        if self.final_weight and self.start_weight:
+            start, end = self.start_weight, self.final_weight
+            growth = ((end / start) - 1) / weeks * 100
+            return round(growth, 1)
+
+        if self.percent_inc_per_week is not None:
+            return self.percent_inc_per_week
+        else:
+            return percent_inc_per_week_program
 
     def __repr__(self):
         """Representation."""
@@ -149,22 +158,16 @@ class DynamicExercise(object):
             "intensity",
         ]
 
-        arg_str = ", ".join(
-            [
-                "{}={}".format(k, self.__dict__[k])
-                for k in strvar
-                if self.__dict__[k] is not None
-            ]
-        )
+        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
 
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        attrs = ("name",)
         return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
 
     def __hash__(self):
-        attrs = ("name", "start_weight", "min_reps", "max_reps")
+        attrs = ("name",)
         return hash(tuple(getattr(self, attr) for attr in attrs))
 
 
@@ -234,13 +237,7 @@ class StaticExercise(object):
 
         strvar = ["name", "sets_reps"]
 
-        arg_str = ", ".join(
-            [
-                "{}={}".format(k, self.__dict__[k])
-                for k in strvar
-                if self.__dict__[k] is not None
-            ]
-        )
+        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
 
         return "{}({})".format(type(self).__name__, arg_str)
 

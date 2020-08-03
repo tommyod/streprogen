@@ -23,9 +23,7 @@ class Bunch(dict):
 class Mealplan:
 
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
-    TEMPLATE_NAMES = {
-        extension: "mealplan_template." + extension for extension in ["txt"]
-    }
+    TEMPLATE_NAMES = {extension: "mealplan_template." + extension for extension in ["txt"]}
 
     def __init__(
         self,
@@ -162,9 +160,7 @@ class Mealplan:
                 if x[i][j] > 0:
                     self.results["meals"].add(self.meals[i])
 
-        self.results["meals"] = list(
-            sorted(self.results["meals"], key=operator.attrgetter("name"))
-        )
+        self.results["meals"] = list(sorted(self.results["meals"], key=operator.attrgetter("name")))
 
         def format_qntity(qnty):
             """Format a number."""
@@ -177,16 +173,12 @@ class Mealplan:
 
             x_day = [x[i][day_num] for i in range(num_meals)]
 
-            result = [
-                (meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0
-            ]
+            result = [(meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0]
             result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
 
             self.results[day_num] = dict()
             for attr in ["price", "protein", "fat", "carbs", "kcal"]:
-                self.results[day_num][attr] = [
-                    getattr(m, attr) * q for (m, q) in result
-                ]
+                self.results[day_num][attr] = [getattr(m, attr) * q for (m, q) in result]
                 self.results[attr].append(sum(self.results[day_num][attr]))
 
             # Heuristics to get more carbohydrates earlier in the day

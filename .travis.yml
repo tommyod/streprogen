@@ -5,7 +5,6 @@ notifications:
   
 language: python
 python:
-  - "3.5"
   - "3.6"
   - "3.7"
   - "3.8"
@@ -27,9 +26,9 @@ before_script:
 
 script:
   # Check that code is formatted correctly w.r.t. black (not avaiable on Py35)
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check; fi
-  - pytest streprogen --verbose --doctest-modules --color=yes # Run all tests
-  - pytest examples --verbose --doctest-modules --color=yes # Run the notebooks
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check -l 120; fi
+  - pytest streprogen --doctest-modules --color=yes # Run all tests
+  - pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
   
 # -------------------- deploy: deploy to PyPI --------- 
 deploy:

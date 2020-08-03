@@ -3,8 +3,180 @@
 
 import functools
 import statistics
+import numbers
 
 from ortools.linear_solver import pywraplp
+
+
+class RepSchemeGenerator:
+    def __init__(self, reps_slack: int = 3, max_diff: int = 1, max_unique: int = 3):
+        """Initialize the generator by supplying hard constraints.
+
+        Parameters
+        ----------
+        reps_slack : int, optional
+            Maximum deviation from the repetition goal.
+        max_diff : int, optional
+            Maximum difference between two consecutive sets.
+        max_unique : int, optional
+            Maximum unique sets in the solution.
+            
+        Examples
+        --------
+        >>> generator = RepSchemeGenerator(reps_slack=0, max_diff=2)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=6):
+        ...     print(result)
+        (2, 2, 2)
+        (2, 4)
+        (3, 3)
+        >>> generator = RepSchemeGenerator(reps_slack=1, max_diff=2)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=6):
+        ...     print(result)
+        (2, 2, 2)
+        (2, 2, 3)
+        (2, 3)
+        (2, 4)
+        (3, 3)
+        (3, 4)
+        >>> generator = RepSchemeGenerator(reps_slack=0, max_diff=1, max_unique=1)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=8):
+        ...     print(result)
+        (2, 2, 2, 2)
+        (4, 4)
+
+        """
+        assert isinstance(reps_slack, numbers.Integral)
+        assert reps_slack >= 0
+        assert isinstance(max_diff, numbers.Integral)
+        assert max_diff >= 0
+        assert isinstance(max_unique, numbers.Integral)
+        assert max_unique >= 1
+
+        self.reps_slack = reps_slack
+        self.max_diff = max_diff
+        self.max_unique = max_unique
+
+    def generate(self, sets: list, reps_goal: int):
+        """
+        Generate repetition schemes.
+
+        Parameters
+        ----------
+        sets : list
+            A list of allowed repetitions. Unique and sorted.
+        reps_goal : int
+            The repetition goal.
+
+        Yields
+        ------
+        Tuples with repetition schemes.
+
+        """
+        assert isinstance(reps_goal, numbers.Integral)
+        assert reps_goal >= 0
+        assert all(s > 0 for s in sets)
+
+        # Store parameters in instance to avoid passing to _generate_sets()
+        self.sets = list(sorted(set(sets)))
+        self.reps_goal = reps_goal
+
+        # Generate sets and yield them out
+        for scheme in self._generate_sets(stack=[]):
+            # Prune solutions with too many unique repetitions
+            if len(set(scheme)) <= self.max_unique:
+                yield scheme
+
+    def _generate_sets(self, i: int = 0, stack=None):
+        """Only to be called internally."""
+        assert stack is not None, "'stack' should be set to [] by caller."
+        assert i >= 0
+        assert isinstance(i, numbers.Integral)
+
+        # Yield the result if it's within the allowed range
+        if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
+            yield tuple(stack)
+
+        # Stop the recursion if the sum is too high. This prunes the search.
+        if sum(stack) > self.reps_goal + self.reps_slack:
+            return
+
+        for j in range(i, len(self.sets)):
+            if not stack:
+                yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
+            else:
+                # Prune solutions with too large differences
+                # This avoids jumps like e.g. [8, 8, 3, 3]
+                if self.sets[j] - stack[-1] <= self.max_diff:
+                    yield from self._generate_sets(i=j, stack=stack + [self.sets[j]])
+
+
+class RepSchemeOptimizer:
+    def __init__(self, generator=None):
+        """Initialize the optimizer.
+
+        Parameters
+        ----------
+        generator : callable, optional
+            A rep scheme generator with a 'generate' method with signature
+            generate(self, sets: list, reps_goal: int). 
+            The default when `None` is the RepSchemeGenerator.
+
+        """
+        if generator is None:
+            self.generator = RepSchemeGenerator()
+        else:
+            self.generator = generator
+
+        self._cache = dict()
+
+    def _optimize(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+        """Core optimization. Moved to its own method for caching."""
+
+        # Convert data to lists (tuples are used for caching)
+        sets = list(sets)
+        intensities = list(intensities)
+
+        # Create a mapping
+        reps_to_intensity_dict = {r_j: i_j for (r_j, i_j) in zip(sets, intensities)}
+
+        def reps_to_intensity(reps):
+            """Map repetitions to intensity, e.g. 8 -> 70."""
+            return reps_to_intensity_dict[reps]
+
+        schemes = self.generator.generate(sets=sets, reps_goal=reps_goal)
+
+        def loss(scheme: list):
+            """Loss function - smaller is better. Uses 2-norm."""
+            reps = sum(scheme)
+            intensities = map(reps_to_intensity, scheme)
+            intensity = sum(r * i for r, i in zip(scheme, intensities)) / reps
+            # No weighting is used here since the units are about the same
+            return (reps - reps_goal) ** 2 + (intensity - intensity_goal) ** 2
+
+        # Optimization here is simply going through every feasible solution
+        # and choosing the best one. The feasible solution search space is so
+        # small that this is fast and efficient, provided that the generator
+        # is efficient.
+        return list(reversed(min(schemes, key=loss)))
+
+    def __call__(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
+        """Use the generator to generate feasible solutions, then optimize."""
+        assert isinstance(sets, tuple)
+        assert isinstance(intensities, tuple)
+        assert reps_goal > 0
+        assert intensity_goal > 1
+        assert all(i_j > 1 for i_j in intensities)
+        assert list(sets) == sorted(sets)
+
+        # Pack the arguments into a tuple for caching
+        args = (sets, intensities, reps_goal, intensity_goal)
+
+        # Try to hit the cache. If it fails: compute, store and return.
+        try:
+            return self._cache[args]
+        except KeyError:
+            self._cache[args] = self._optimize(*args)
+            return self._cache[args]
 
 
 @functools.lru_cache(maxsize=1024, typed=False)
@@ -104,9 +276,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
         #         )
         #         warnings.warn(msg.format(intensities_goal, intensities))
         # =============================================================================
-        return optimize_sets(
-            reps, intensities, reps_goal, intensities_goal=max(intensities)
-        )
+        return optimize_sets(reps, intensities, reps_goal, intensities_goal=max(intensities))
 
     if min(intensities) > intensities_goal:
         # =============================================================================
@@ -115,9 +285,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
         #         )
         #         warnings.warn(msg.format(intensities_goal, intensities))
         # =============================================================================
-        return optimize_sets(
-            reps, intensities, reps_goal, intensities_goal=min(intensities)
-        )
+        return optimize_sets(reps, intensities, reps_goal, intensities_goal=min(intensities))
 
     # The loss measure are normalized in the code, so the ratio of these values
     # will prioritize the goals relatively to each other.
@@ -274,9 +442,7 @@ def optimize_mealplan(
 
     expected_daily_price = params.get("expected_daily_price", 75)
     M1 = params.get("M1", 50)  # Upper bound on x_ij
-    M2 = params.get(
-        "M2", 50
-    )  # Upper bound on x[i][j] * meal.kcal, i.e. calories in a meal
+    M2 = params.get("M2", 50)  # Upper bound on x[i][j] * meal.kcal, i.e. calories in a meal
 
     # A strange bug is that sometime the optimizer will return INFEASIBLE on attempt #1,
     # but calling this function again with the same inputs works. So we allow calling it
@@ -355,9 +521,7 @@ def optimize_mealplan(
 
             # The maximal deviation in a day is approx mean([low, high]) * nutrients
             # The maximal deviation is the above times the number of days
-            denom = statistics.mean(
-                [value for value in [low, high] if value is not None]
-            )
+            denom = statistics.mean([value for value in [low, high] if value is not None])
             denom = denom * num_days  # * len(dietary_constraints)
 
             # Slack variables related to the lower limit. Only "undershooting" is penalized.
@@ -386,9 +550,7 @@ def optimize_mealplan(
 
         # The maximal spread per day is approximately mean([kcal_low, kcal_high]) / meals
         # The maximal spread is the above times the number of days. Normalize w.r.t this
-        denom = statistics.mean(
-            [value for value in dietary_constraints["kcal"] if value is not None]
-        )
+        denom = statistics.mean([value for value in dietary_constraints["kcal"] if value is not None])
         denom = denom * num_days / num_meals
         objective_function += (weight_range / denom) * (upper - lower)
 

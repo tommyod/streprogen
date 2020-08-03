@@ -60,21 +60,20 @@ Sample code
 .. code-block:: python
     :linenos:
 
-    from streprogen import Program, Day, DynamicExercise, StaticExercise
+    from streprogen import Program
+    
+    # Create an 8-week program, rounding every exercise to nearest unit og 5kg
+    program = Program("My first program!", duration=8, units="kg", round_to=5)
+    
+    with program.Day("Day A"):
+        program.DynamicExercise("Bench press", start_weight=80, min_reps=3, max_reps=8)
+        program.DynamicExercise("Squats", start_weight=100, min_reps=3, max_reps=8)
+        
+    with program.Day("Day B"):
+        program.DynamicExercise("Deadlifts", start_weight=100, min_reps=2, max_reps=7)
+        program.StaticExercise("Curls", "3 x 10 @ 18kg")
 
-    # Create a 4-week program
-    program = Program('My first program!', duration = 4)
-
-    # Create some dynamic and static exercises
-    bench = DynamicExercise('Bench press',
-                            start_weight = 60, final_weight = 80)
-    squats = DynamicExercise('Squats',
-                            start_weight = 80, final_weight = 95)
-    curls = StaticExercise('Curls', '3 x 12')
-    day = Day(exercises = [bench, squats, curls])
-
-    # Add day(s) to program and render it
-    program.add_days(day)
+    # Render the program, then print it
     program.render()
     print(program)
 
@@ -83,47 +82,46 @@ Sample code
 
     ----------------------------------------------------------------
     Program: My first program!
-
+    
     Program parameters
-      duration: 4
+      duration: 8
       reps_per_exercise: 25
-      avg_intensity: 75
-      reps_scalers: 1.2, 1, 0.8, 1
-      intensity_scalers: 0.9, 1, 1, 1
+      intensity: 83
       units: kg
     ----------------------------------------------------------------
     Exercise information
-      Day 1
-       Bench press   60kg -> 80kg     reps: [3, 8]   weekly inc.: 7.5%
-       Squats        80kg -> 95kg     reps: [3, 8]   weekly inc.: 4.4%
-       Curls         3 x 12
+      Day A
+       Bench press    80kg -> 89.6kg 
+        reps: [3, 8]   weekly inc.: 1.5%
+       Squats        100kg -> 112kg  
+        reps: [3, 8]   weekly inc.: 1.5%
+      Day B
+       Deadlifts     100kg -> 112kg  
+        reps: [2, 7]   weekly inc.: 1.5%
+       Curls         3 x 10 @ 18kg
     ----------------------------------------------------------------
     Program
      Week 1
-      Day 1
-       Bench press   6 x 45kg    7 x 42.5kg  7 x 42.5kg  7 x 42.5kg
-       Squats        6 x 60kg    7 x 57.5kg  8 x 52.5kg  8 x 52.5kg
-       Curls         3 x 12
-
+      Day A
+       Bench press   8 x 60kg   7 x 65kg   7 x 65kg   7 x 65kg   
+       Squats        8 x 75kg   7 x 80kg   7 x 80kg   7 x 80kg   
+    
+      Day B
+       Deadlifts     7 x 80kg   7 x 80kg   6 x 80kg   6 x 80kg   5 x 85kg   
+       Curls         3 x 10 @ 18kg
+    
      Week 2
-      Day 1
-       Bench press   4 x 55kg    5 x 52.5kg  5 x 52.5kg  5 x 52.5kg  6 x 50kg
-       Squats        4 x 70kg    4 x 70kg    5 x 65kg    6 x 62.5kg  7 x 57.5kg
-       Curls         3 x 12
-
+      Day A
+       Bench press   7 x 65kg   7 x 65kg   6 x 65kg   5 x 70kg   5 x 70kg   
+       Squats        7 x 80kg   7 x 80kg   6 x 85kg   5 x 85kg   5 x 85kg   
+    
+      Day B
+       Deadlifts     7 x 80kg   7 x 80kg   6 x 85kg   5 x 85kg   5 x 85kg   
+       Curls         3 x 10 @ 18kg
+    
      Week 3
-      Day 1
-       Bench press   6 x 55kg    6 x 55kg    6 x 55kg
-       Squats        6 x 67.5kg  6 x 67.5kg  6 x 67.5kg
-       Curls         3 x 12
-
-     Week 4
-      Day 1
-       Bench press   5 x 62.5kg  6 x 60kg    6 x 60kg    7 x 57.5kg
-       Squats        5 x 75kg    6 x 70kg    6 x 70kg    7 x 67.5kg
-       Curls         3 x 12
-
-    ----------------------------------------------------------------
+      ...
+       ...  
 
 Contents
 -----------------
@@ -131,8 +129,14 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   jupyter_notebooks/getting_started.ipynb
-   jupyter_notebooks/advanced.ipynb
+   examples/Essential features.ipynb
+   examples/Intermediate features.ipynb
+   examples/Advanced features.ipynb
+   examples/Beginner 5x5.ipynb
+   examples/Beginner 5x5 modified.ipynb
+   examples/3 day split.ipynb
+   examples/3 day full body.ipynb
+   examples/Meal planning.ipynb
    classes
    functions
  

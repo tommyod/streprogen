@@ -131,6 +131,7 @@ html_theme_options = {
     "description": "The Python strength program generator.",
     "show_powered_by": False,
     "font_size": "16px",
+    "page_width": "1400px",
     "code_font_size": "0.9em",
     "font_family": "Georgia, 'Hiragino Mincho Pro', serif",
 }
@@ -164,9 +165,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, "streprogen.tex", "streprogen Documentation", "Tommy O.", "manual")
-]
+latex_documents = [(master_doc, "streprogen.tex", "streprogen Documentation", "Tommy O.", "manual")]
 
 
 # -- Options for manual page output ---------------------------------------

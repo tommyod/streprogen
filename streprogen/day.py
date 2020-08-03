@@ -100,10 +100,7 @@ class Day(object):
             stat = "static_exercises = [{}]".format(stat)
 
         out_str = "{}({})".format(
-            type(self).__name__,
-            ", ".join(
-                [s for s in ["name = {}".format(self.name), dyn, stat] if len(s) > 2]
-            ),
+            type(self).__name__, ", ".join([s for s in ["name = {}".format(self.name), dyn, stat] if len(s) > 2]),
         )
         return out_str
 

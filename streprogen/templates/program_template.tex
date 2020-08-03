@@ -3,7 +3,7 @@
 % -----------------------------------------------
 \documentclass[12pt, a4paper]{article}% 'twoside' for printing
 \usepackage[utf8]{inputenc}% Allow input to be UTF-8
-\usepackage[margin = 2cm]{geometry}% May be used to set margins
+\usepackage[margin=2cm]{geometry}% May be used to set margins
 
 % -----------------------------------------------
 % Document start
@@ -37,10 +37,11 @@ The latest version can be found at \\
 	{% for day in program.days %}
       \textbf{ {{day.name}} } & & & & & \\ \hline
     {% for dynamic_ex in day.dynamic_exercises %}
-        \hspace{0.5em}{{dynamic_ex.name}} & {{dynamic_ex.start_weight}} {{program.units}} &
-         {{dynamic_ex.final_weight}} {{program.units}} & {{dynamic_ex
-         .min_reps}} & {{dynamic_ex.max_reps}} &
-          {{dynamic_ex.weekly_growth(program.duration)}}\%\\
+        \hspace{0.5em}{{dynamic_ex.name}} & 
+        {{dynamic_ex.start_weight|round2digits}} {{program.units}} &
+        {{dynamic_ex.final_weight|round2digits}} {{program.units}} & 
+        {{dynamic_ex.min_reps}} & {{dynamic_ex.max_reps}} &
+        {{dynamic_ex.weekly_growth(program.duration)}}\%\\
     {% endfor %}
     {% for static_ex in day.static_exercises %}
        \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps(1)}} } \\
