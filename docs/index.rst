@@ -132,10 +132,12 @@ Contents
    examples/Essential features.ipynb
    examples/Intermediate features.ipynb
    examples/Advanced features.ipynb
+   examples/Custom optimization.ipynb
    examples/Beginner 5x5.ipynb
    examples/Beginner 5x5 modified.ipynb
    examples/3 day split.ipynb
    examples/3 day full body.ipynb
+   examples/Block periodization.ipynb
    examples/Meal planning.ipynb
    classes
    functions

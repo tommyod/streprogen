@@ -19,6 +19,7 @@ before_install:
   
 # -------------------- script: run the build script ---------------------------
 before_script:
+  - sudo apt-get install pandoc -y
   - pip install jupyter matplotlib pytest
   - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then pip install black; fi
   - pip install . # Install the package
@@ -29,6 +30,8 @@ script:
   - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then black . --check -l 120; fi
   - pytest streprogen --doctest-modules --color=yes # Run all tests
   - pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
+  - pip install -r docs/requirements.txt
+  - sphinx-build docs docs/_build -v
   
 # -------------------- deploy: deploy to PyPI --------- 
 deploy:
