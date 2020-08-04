@@ -65,6 +65,7 @@ class Program(object):
 
         """Initialize a new program.
 
+
         Parameters
         ----------
         name
@@ -151,6 +152,7 @@ class Program(object):
         >>> program = Program('My training program')
         >>> program._rendered
         False
+
         """
         self.name = escape_string(name)
 
