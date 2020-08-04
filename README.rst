@@ -33,18 +33,18 @@ Learn how to make strength training programs
 
 Example strength training program library
 *****************************************
-* Run code live: `Example - Beginner 5x5 <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner%205x5.ipynb>`_
-* Run code live: `Example - Beginner 5x5 modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Beginner%205x5%20modified.ipynb>`_
-* Run code live: `Example - 3 day full body <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3%20day%20full%20body.ipynb>`_
-* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/3%20day%20split.ipynb>`_
-* Run code live: `Example - Block periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Block%20periodization.ipynb>`_
+* Run code live: `Example - Beginner 5x5 <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Beginner%205x5.ipynb>`_
+* Run code live: `Example - Beginner 5x5 modified <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Beginner%205x5%20modified.ipynb>`_
+* Run code live: `Example - 3 day full body <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/3%20day%20full%20body.ipynb>`_
+* Run code live: `Example - 3 day split with periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/3%20day%20split.ipynb>`_
+* Run code live: `Example - Block periodization <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Block%20periodization.ipynb>`_
 
 Check out the `example PDF output <https://github.com/tommyod/streprogen/blob/master/docs/examples/3DaySplitWithPeriodization.pdf>`_.
 
 Multi-day meal planning
 ***********************
 
-* Run code live: `Meal Planning <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/docs/examples/Meal planning.ipynb>`_
+* Run code live: `Meal Planning <https://colab.research.google.com/github/tommyod/streprogen/blob/master/docs/examples/Meal%20planning.ipynb>`_
 
 
 **Instructions for live code:**
