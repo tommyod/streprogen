@@ -19,6 +19,7 @@ before_install:
   
 # -------------------- script: run the build script ---------------------------
 before_script:
+  - sudo apt-get install pandoc -y
   - pip install jupyter matplotlib pytest
   - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then pip install black; fi
   - pip install . # Install the package
