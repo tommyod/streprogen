@@ -104,8 +104,8 @@ class Program(object):
         intensity_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
             value (factor). The scaling value will be multiplied with the 
-            `intensity` parameter for that week. Should typically return factors
-            between 0.9 and 1.1.
+            `intensity` parameter for that week. 
+            Should typically return factors between 0.9 and 1.1.
 
         units
             The units used for exporting and printing the program, e.g. 'kg'.
