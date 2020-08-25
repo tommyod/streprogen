@@ -90,16 +90,16 @@ class RepSchemeGenerator:
         assert i >= 0
         assert isinstance(i, numbers.Integral)
 
+        # Prune solutions with too many unique repetitions
+        if len(set(stack)) > self.max_unique:
+            return
+
         # Yield the result if it's within the allowed range
         if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
             yield tuple(stack)
 
         # Stop the recursion if the sum is too high. This prunes the search.
         if sum(stack) > self.reps_goal + self.reps_slack:
-            return
-        
-        # Prune solutions with too many unique repetitions
-        if len(set(stack)) > self.max_unique:
             return
 
         for j in range(i, len(self.sets)):
