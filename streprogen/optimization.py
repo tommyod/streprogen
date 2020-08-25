@@ -82,15 +82,17 @@ class RepSchemeGenerator:
 
         # Generate sets and yield them out
         for scheme in self._generate_sets(stack=[]):
-            # Prune solutions with too many unique repetitions
-            if len(set(scheme)) <= self.max_unique:
-                yield scheme
+            yield scheme
 
     def _generate_sets(self, i: int = 0, stack=None):
         """Only to be called internally."""
         assert stack is not None, "'stack' should be set to [] by caller."
         assert i >= 0
         assert isinstance(i, numbers.Integral)
+
+        # Prune solutions with too many unique repetitions
+        if len(set(stack)) > self.max_unique:
+            return
 
         # Yield the result if it's within the allowed range
         if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
