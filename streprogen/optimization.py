@@ -81,10 +81,7 @@ class RepSchemeGenerator:
         self.reps_goal = reps_goal
 
         # Generate sets and yield them out
-        for scheme in self._generate_sets(stack=[]):
-            # Prune solutions with too many unique repetitions
-            if len(set(scheme)) <= self.max_unique:
-                yield scheme
+        yield from self._generate_sets(stack=[])
 
     def _generate_sets(self, i: int = 0, stack=None):
         """Only to be called internally."""
@@ -98,6 +95,10 @@ class RepSchemeGenerator:
 
         # Stop the recursion if the sum is too high. This prunes the search.
         if sum(stack) > self.reps_goal + self.reps_slack:
+            return
+        
+        # Prune solutions with too many unique repetitions
+        if len(set(stack)) <= self.max_unique:
             return
 
         for j in range(i, len(self.sets)):
