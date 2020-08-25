@@ -81,7 +81,8 @@ class RepSchemeGenerator:
         self.reps_goal = reps_goal
 
         # Generate sets and yield them out
-        yield from self._generate_sets(stack=[])
+        for scheme in self._generate_sets(stack=[]):
+            yield scheme
 
     def _generate_sets(self, i: int = 0, stack=None):
         """Only to be called internally."""
@@ -98,7 +99,7 @@ class RepSchemeGenerator:
             return
         
         # Prune solutions with too many unique repetitions
-        if len(set(stack)) <= self.max_unique:
+        if len(set(stack)) > self.max_unique:
             return
 
         for j in range(i, len(self.sets)):
