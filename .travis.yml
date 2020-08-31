@@ -21,7 +21,7 @@ before_install:
 before_script:
   - sudo apt-get install pandoc -y
   - pip install jupyter matplotlib pytest
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then pip install black; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.7 ]]; then pip install black==19.10b0; fi
   - pip install . # Install the package
   - pip show streprogen # Show information about the package
 
