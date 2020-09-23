@@ -13,10 +13,10 @@ import warnings
 class Food:
     """
     A food consists of a name and nutritional data given in units of 100 grams.
-    
+
     Examples
     --------
-    >>> eggs = Food(name='eggs', protein=13.0, fat=10.6, carbs=0.3, kcal=149, 
+    >>> eggs = Food(name='eggs', protein=13.0, fat=10.6, carbs=0.3, kcal=149,
     ...             price_per_product=32.9, grams_per_product=690)
     >>> eggs.price
     4.768115942028985
@@ -66,10 +66,10 @@ class Meal:
     A meal consists of several foods given at some "base" unit of grams. In the example
     below 'eggs' is the general food, an a meal consists of discrete units of eggs,
     weighing approximately 65 grams each.
-    
+
     Examples
     --------
-    >>> eggs = Food(name='eggs', protein=13.0, fat=10.6, carbs=0.3, kcal=149, 
+    >>> eggs = Food(name='eggs', protein=13.0, fat=10.6, carbs=0.3, kcal=149,
     ...             price_per_product=32.9, grams_per_product=690)
     >>> egg = Meal(name='egg', foods={eggs:65}, discrete=True)
     >>> egg.price # price of the meal

@@ -20,7 +20,7 @@ class RepSchemeGenerator:
             Maximum difference between two consecutive sets.
         max_unique : int, optional
             Maximum unique sets in the solution.
-            
+
         Examples
         --------
         >>> generator = RepSchemeGenerator(reps_slack=0, max_diff=2)
@@ -120,7 +120,7 @@ class RepSchemeOptimizer:
         ----------
         generator : callable, optional
             A rep scheme generator with a 'generate' method with signature
-            generate(self, sets: list, reps_goal: int). 
+            generate(self, sets: list, reps_goal: int).
             The default when `None` is the RepSchemeGenerator.
 
         """
@@ -184,86 +184,86 @@ class RepSchemeOptimizer:
 @functools.lru_cache(maxsize=1024, typed=False)
 def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     r"""Get the optimal number of sets.
-    
+
     Introduction
     ------------
-    
+
     This function uses a MIP model to optimize the number of sets in an exercise in a
     strength training program. Novices usually train with SETS x REPS, for instance
     3 x 12 - three sets of twelwe repetitions for some exercise. This is boring and does
     not allow for long-term planning.
-    
+
     Consider a set of avaiable repetitions, {r_j}, and a set of corresponding
     intensities {i_j}. A realistic table might look like:
-        
+
         reps          8     7      6      5      4      3
         intensities   0.7   0.74   0.78   0.82   0.86   0.90
-        
+
     This means that this athlete can perform 6 repetitions at 78% of his/her maximum.
     From these sets we would like to draw reps and intensities to create programs, e.g.,
-    
+
         8 x 0.7   -   6 x 0.78   -   6 x 0.78   -   5 x 0.82
-        
+
     This corresponds to 25 repetitions and a (weighted) average intensity of
     (8 * 0.7 + 6 * 0.78 + 6 * 0.78 + 5 * 0.82) / 25 = 0.7624
-    
+
     Mathematical model
     ------------------
     Let x_j be the number of sets performed with r_j repetitions, and a assume we have
     intensities i_j computed. We use goal programming to balance three constrains:
-        
+
         (1) Number of reps.
             We want \sum_j x_j * r_j = reps_goal. In other words, the total number of
             reps chosen should be close to the goal. We will replace equality with slack
             variables using the goal progamming techniquer.
-            
+
         (2) Average intensity.
-            We want (\sum_j x_j * r_j * i_j) / (\sum_j x_j * r_j) = intensities_goal. 
+            We want (\sum_j x_j * r_j * i_j) / (\sum_j x_j * r_j) = intensities_goal.
             We rewrite to: (\sum_j x_j * r_j * i_j) = intensities_goal * (\sum_j x_j * r_j)
             Then we use slack variables and goal programming to get close.
-            
+
         (3) Dense solutions.
             We do not want solutions such as x_8 = 2 and x_3 = 4 and every other
             component of x to be zero. The jump from 8 reps to 3 reps is too high for
             the athlete. The first measure taken to ensure this is to maximize the
             density of the solution. We define z_j as
-            
+
                 z_j = 1 if x_j >= 1, else z_j = 0
-                
+
             Which is achieved by adding the following constraints for every j:
-                
+
                 z_j <= x_j <= M z_j
                 M = upper bound on x_j
                 z_j \in {0, 1} (binary integer variable)
-                
+
             And then we add -\sum_j z_j to the minimization problem.
-            
+
         (4) Solutions with a small range (i.e. maximum - minimum).
-            With the three constrains above, solutions tend to almost always use the 
-            entire range, going from .e.g 8 reps to 1 reps very often. It is not 
+            With the three constrains above, solutions tend to almost always use the
+            entire range, going from .e.g 8 reps to 1 reps very often. It is not
             desireable to use the entire range of possible repetitions in every workout.
-            
-            We minimize the range by defining variables `minimum` and `maximum` and 
+
+            We minimize the range by defining variables `minimum` and `maximum` and
             adding the constrains
-            
+
                 maximum >= z_j * r_j
                 minimum <= z_j * r_j + (1 - z_j) * M
                 M = upper bound on z_j * r_j
-                
+
             The second constraint is interpreted as "`minimum` is smaller than z_j * r_j
             when z_j = 1 (when x_j >= 1), when z_j = 0 `minimum` is smaller than M".
             Then we add `maximum` - `minimum` to the objective, which we minimize.
-            
+
     We use goal programming on all of these objectives, and we normalize them in a
     sensible way so a user can weight them as he pleases.
-    
+
     Example
     -------
     >>> reps = tuple([8, 7, 6, 5, 4, 3, 2, 1])
     >>> intensities = tuple([0.7, 0.74, 0.78, 0.82, 0.86, 0.9, 0.94, 0.98])
     >>> reps_goal = 25
     >>> intensities_goal = 0.8
-    >>> x, data = optimize_sets(reps, intensities, reps_goal, intensities_goal)        
+    >>> x, data = optimize_sets(reps, intensities, reps_goal, intensities_goal)
     """
     assert isinstance(reps, tuple)
     assert isinstance(intensities, tuple)

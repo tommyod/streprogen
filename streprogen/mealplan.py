@@ -37,7 +37,7 @@ class Mealplan:
         weight_meal_sizes=0.75,
     ):
         """Initialize a new program.
-    
+
         Parameters
         ----------
         meals
@@ -47,34 +47,34 @@ class Mealplan:
             A dict of dietary constraints. The keys can be 'kcal', 'protein', 'fat' or
             'carbs'. The values must be (low, high) limits of the macronutrients, or
             (None, high) to only set an upper limit. Example: {'kcal' : (1600, 1800)}
-            
+
         num_meals
-            The number of meals per day. 
-            
+            The number of meals per day.
+
         num_days
             The number of days in the meal plan.
-            
+
         meal_limits
-            A dictionary with keys equal to meal names. The values must be (low, high) 
-            and limit the number of times a food can be used. Use (None, high) to only 
+            A dictionary with keys equal to meal names. The values must be (low, high)
+            and limit the number of times a food can be used. Use (None, high) to only
             set an upper limit. Example: To have the meal 'bread' at most twice in a
             multi-day meal plan, use {'bread' : (None, 2)}.
-            
+
         weight_price
-            Positive number weighting the overall price of the meal plan. 
-            A higher value weights this objective higher. 
+            Positive number weighting the overall price of the meal plan.
+            A higher value weights this objective higher.
             This value must be set in relation to the other weights.
-            
+
         weight_nutrients
             Positive number weighting the objective of getting as close as possible to
-            satisfying the dietary constraints. A higher value weights this objective 
+            satisfying the dietary constraints. A higher value weights this objective
             higher.  This value must be set in relation to the other weights.
-            
+
         weight_meal_sizes
             Positive number weighting the goal of having equal meal sizes.
-            A higher value weights this objective higher. 
+            A higher value weights this objective higher.
             This value must be set in relation to the other weights.
-            
+
         """
         assert num_meals >= 1
         assert num_days >= 1
@@ -111,15 +111,15 @@ class Mealplan:
 
     def render(self, time_limit_secs=5, epsilon=1e-3, params=None):
         """Render the meal plan to perform the calculations.
-    
+
         Parameters
         ----------
         time_limit_secs
             Solver time limit.
-            
+
         epsilon
             Small number used in optimization routine.
-            
+
         params
             Additional low-level parameters used in optimization. See source code.
 

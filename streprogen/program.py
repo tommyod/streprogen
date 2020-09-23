@@ -27,7 +27,7 @@ from streprogen.utils import (
 
 
 class Program(object):
-    """The program class is a container for days and exercises, along with 
+    """The program class is a container for days and exercises, along with
     the methods and functions used to create training programs."""
 
     REP_SET_SEP = " x "
@@ -36,10 +36,22 @@ class Program(object):
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
-        functools.partial(progression_diffeq, start_weight=1 + 0.2, final_weight=1 - 0.2, start_week=1, k=0,)
+        functools.partial(
+            progression_diffeq,
+            start_weight=1 + 0.2,
+            final_weight=1 - 0.2,
+            start_week=1,
+            k=0,
+        )
     )
     _default_intensity_scaler_func = staticmethod(
-        functools.partial(progression_diffeq, start_weight=1 - 0.05, final_weight=1 + 0.05, start_week=1, k=0,)
+        functools.partial(
+            progression_diffeq,
+            start_weight=1 - 0.05,
+            final_weight=1 + 0.05,
+            start_week=1,
+            k=0,
+        )
     )
 
     _default_reps_to_intensity_func = staticmethod(reps_to_intensity)
@@ -77,13 +89,13 @@ class Program(object):
         reps_per_exercise
             The baseline number of repetitions per dynamic exercise.
             Typically a value in the range [15, 30].
-            
+
         min_reps
             The minimum number of repetitions for the exercises, e.g. 3.
             This value can be set globally for the program, or for a specific
             dynamic exercise. If set at the dynamic exercise level, it will
             override the global program value.
-            
+
         max_reps
             The maximum number of repetitions for the exercises, e.g. 8.
             This value can be set globally for the program, or for a specific
@@ -92,7 +104,7 @@ class Program(object):
 
         rep_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the 
+            value (factor). The scaling value will be multiplied with the
             `reps_per_exercise` parameter for that week. Should typically return factors
             between 0.7 and 1.3.
 
@@ -104,8 +116,8 @@ class Program(object):
 
         intensity_scaler_func
             A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the 
-            `intensity` parameter for that week. 
+            value (factor). The scaling value will be multiplied with the
+            `intensity` parameter for that week.
             Should typically return factors between 0.9 and 1.1.
 
         units
@@ -122,10 +134,10 @@ class Program(object):
             If `final_weight` is not set, this value will be used. Percentage
             increase per week can be set globally for the program, or for each
             dynamic exercise. If set at the dynamic exercise level, it will
-            override the global program value. The increase is  additive, not 
-            multipliactive. For instance, if the increase is set to 
-            `percent_inc_per_week=2`, then after 2 weeks the increase is 4, 
-            not (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter 
+            override the global program value. The increase is  additive, not
+            multipliactive. For instance, if the increase is set to
+            `percent_inc_per_week=2`, then after 2 weeks the increase is 4,
+            not (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter
             must be set to `None` for this parameter to have effect.
 
         progression_func
@@ -145,8 +157,8 @@ class Program(object):
         -------
         Program
             A Program instance.
-    
-    
+
+
         Examples
         -------
         >>> program = Program('My training program')
@@ -231,7 +243,15 @@ class Program(object):
         round_to=None,
     ):
         ex = DynamicExercise(
-            name, start_weight, final_weight, min_reps, max_reps, percent_inc_per_week, reps, intensity, round_to,
+            name,
+            start_weight,
+            final_weight,
+            min_reps,
+            max_reps,
+            percent_inc_per_week,
+            reps,
+            intensity,
+            round_to,
         )
         self.active_day.dynamic_exercises.append(ex)
         return ex
@@ -246,13 +266,13 @@ class Program(object):
         The purpose of this method is to verify that the user has set sensible
         values for the training program before rendering. The user will still
         be able to render, but error messages will be printed. This method:
-            
+
             * Validates that the average intensity is in the range [65, 85].
             * Validates that the number of repetitions is in the range [15, 45].
             * Validates that 'reps_to_intensity_func' maps to [0, 100].
             * Validates that 'reps_to_intensity_func' is a decreasing function.
             * Validates that the exercises do not grow too much.
-            
+
         Apart from these sanity checks, the user is on their own.
         """
         weeks = list(range(1, self.duration + 1))
@@ -306,14 +326,14 @@ class Program(object):
 
     def add_days(self, *days):
         """Add one or several days to the program.
-    
+
         Parameters
         ----------
         *days
             Unpacked tuple containing
             :py:class:`streprogen.Day` instances.
-    
-    
+
+
         Examples
         -------
         >>> program = Program('My training program')
@@ -362,7 +382,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
     def _initialize_render_dictionary(self):
         """Initialize a dictionary for rendered values.
-    
+
         Examples
         -------
         >>> program = Program('My training program')
@@ -404,13 +424,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
     def _yield_week_day(self, enumeration=False):
         """A helper function to reduce the number of nested loops.
-        
+
         Parameters
         ----------
         enumeration
             Whether or not to wrap the days in enumerate().
-            
-    
+
+
         Yields
         -------
         tuple
@@ -447,7 +467,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
     def _yield_exercises(self):
         """A helper function to reduce the number of nested loops.
-        
+
 
         Yields
         -------
@@ -465,7 +485,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """Render the training program to perform the calculations.
         The program can be rendered several times to produce new
         information given the same input parameters.
-    
+
         Parameters
         ----------
         validate
@@ -640,7 +660,12 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["txt"])
-        return template.render(program=self, max_ex_name=max_ex_name, max_ex_scheme=max_ex_scheme, verbose=verbose,)
+        return template.render(
+            program=self,
+            max_ex_name=max_ex_name,
+            max_ex_scheme=max_ex_scheme,
+            verbose=verbose,
+        )
 
     def to_tex(self, text_size="large", table_width=5, clear_pages=False):
         r"""
@@ -656,7 +681,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         table_width
             The table width of the .tex code.
-        
+
         clear_pages
             If True, the page will be cleared after each week is printed.
 
@@ -676,7 +701,12 @@ or (3) ignore this message. The software will do it's best to remedy this.
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["tex"])
 
-        return template.render(program=self, text_size=text_size, table_width=table_width, clear_pages=clear_pages,)
+        return template.render(
+            program=self,
+            text_size=text_size,
+            table_width=table_width,
+            clear_pages=clear_pages,
+        )
 
     def __str__(self):
         """
