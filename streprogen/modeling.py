@@ -47,7 +47,15 @@ def reps_to_intensity(reps, slope=-3.5, constant=97.5, quadratic=True):
 
 
 def progression_sinusoidal(
-    week, start_weight, final_weight, start_week, final_week, period=4, scale=0.025, offset=0, k=0,
+    week,
+    start_weight,
+    final_weight,
+    start_week,
+    final_week,
+    period=4,
+    scale=0.025,
+    offset=0,
+    k=0,
 ):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -91,7 +99,17 @@ def progression_sinusoidal(
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
-            progression_sinusoidal(w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,)
+            progression_sinusoidal(
+                w,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                period,
+                scale,
+                offset,
+                k,
+            )
             for w in week
         )
 
@@ -107,7 +125,15 @@ def progression_sinusoidal(
 
 
 def progression_sawtooth(
-    week, start_weight, final_weight, start_week, final_week, period=4, scale=0.025, offset=0, k=0,
+    week,
+    start_weight,
+    final_weight,
+    start_week,
+    final_week,
+    period=4,
+    scale=0.025,
+    offset=0,
+    k=0,
 ):
     """A sawtooth progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -152,7 +178,17 @@ def progression_sawtooth(
     """
     if isinstance(week, collections.abc.Iterable):
         return list(
-            progression_sawtooth(w, start_weight, final_weight, start_week, final_week, period, scale, offset, k,)
+            progression_sawtooth(
+                w,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                period,
+                scale,
+                offset,
+                k,
+            )
             for w in week
         )
 
@@ -237,8 +273,8 @@ reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-3.75)
 
 
 def wilks(lifted_kg, bodyweight_kg, gender="male"):
-    """Compute Wilks points in kilograms. 
-    
+    """Compute Wilks points in kilograms.
+
     Parameters
     ----------
     lifted_kg : float
@@ -252,7 +288,7 @@ def wilks(lifted_kg, bodyweight_kg, gender="male"):
     -------
     float
         The wilks score.
-        
+
     Examples
     --------
     >>> round(wilks(500, 100, gender="male"), 2)

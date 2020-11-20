@@ -24,57 +24,57 @@ class DynamicExercise(object):
     ):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
-    
+
         Parameters
         ----------
         name
             The name of the exercise, e.g. 'Squats'.
-            
+
         start_weight
             Maximum weight you can lift at the start of the program, e.g. 80.
-            
+
         final_weight
             The goal weight to work towards during the program. This should be
             set in relation to the duration of the training program, e.g. 90.
             If set, this overrides the optional `percent_inc_per_week` parameter.
-            
+
         min_reps
             The minimum number of repetitions for this exercise, e.g. 3.
-            
+
         max_reps
             The maximum number of repetitions for this exercise, e.g. 8.
-            
+
         percent_inc_per_week
-            If `final_weight` is not set, this value will be used. The increase is 
-            additive, not multipliactive. For instance, if the increase is set to 
-            `percent_inc_per_week=2`, then after 2 weeks the increase is 4, not 
+            If `final_weight` is not set, this value will be used. The increase is
+            additive, not multipliactive. For instance, if the increase is set to
+            `percent_inc_per_week=2`, then after 2 weeks the increase is 4, not
             (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter must be
             set to `None` for this parameter to have effect.
-            
+
         reps
             The number of baseline repetitions for this exercise. If this
             parameter is set, it will override the global 'reps_per_exercise'
             parameter for the training program. The repetitions will still
             be scaled by the `rep_scaler_func` parameter in the training program.
-            
+
         intensity
             The average intensity for this exercise. If set, this will
             override the `intensity` parameter in the training program.
             The intensity will still be scaled by the `intensity_scaler_func`
             parameter.
-            
+
         round_to
             Round the output to the closest multiple of this number, e.g. 2.5.
-            
-    
+
+
         Examples
         -------
         >>> bench = DynamicExercise('Bench press', 100, 120, 3, 8)
         >>> bench2 = DynamicExercise('Bench press', 100, 120, 3, 8)
         >>> bench == bench2
         True
-        
-        
+
+
         """
         self.name = escape_string(name)
         self.start_weight = start_weight
@@ -107,7 +107,7 @@ class DynamicExercise(object):
 
     def weekly_growth(self, weeks, percent_inc_per_week_program=None):
         """Calculate the weekly growth in percentage, rounded to one digit.
-    
+
         Parameters
         ----------
         weeks
@@ -117,7 +117,7 @@ class DynamicExercise(object):
         -------
         growth_factor
             A real number such that start * (1 + growth_factor * (weeks - 1) / 100) = final.
-    
+
         Examples
         -------
         >>> bench = DynamicExercise('Bench press', start_weight=100, final_weight=120)
@@ -179,12 +179,12 @@ class StaticExercise(object):
     def __init__(self, name, sets_reps="4 x 10"):
         """Initialize a new static exercise. A static exercise
         is simply a placeholder for some text.
-    
+
         Parameters
         ----------
         name
             The name of the exercise, e.g. 'Curls'.
-            
+
         sets_reps
             A static set/rep scheme, e.g. '4 x 10', or '10 minutes'.
             This paramter can also be a function of one parameter,
@@ -196,8 +196,8 @@ class StaticExercise(object):
         -------
         StaticExercise
             A StaticExercise object.
-    
-    
+
+
         Examples
         -------
         >>> curls = StaticExercise('Curls', '4 x 10')
