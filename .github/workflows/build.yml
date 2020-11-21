@@ -32,7 +32,7 @@ jobs:
       - name: Run tests and linting
         run: |
           sudo apt-get install pandoc -y
-          pip install jupyter matplotlib pytest black wheel setuptools twine --quiet --upgrade
+          pip install pip jupyter matplotlib pytest black wheel setuptools twine --quiet --upgrade
           pip install -e . # Install the package
           black . --check -l 120
           pytest streprogen --doctest-modules --color=yes # Run all tests
