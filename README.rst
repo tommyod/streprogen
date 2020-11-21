@@ -10,7 +10,7 @@ Streprogen - the Python strength program generator.
    :alt: Documentation Status
 
  
-.. image:: https://github.com/tommyod/Efficient-Apriori/workflows/Python%20CI/badge.svg?branch=master	
+.. image:: https://github.com/tommyod/streprogen/workflows/Python%20CI/badge.svg?branch=master	
     :alt: Test Status
    
 
