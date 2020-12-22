@@ -1,0 +1,56 @@
+name: Python CI
+
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0' # weekly
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Allow one of the matrix builds to fail without failing others
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        
+    # The job
+    name: Python ${{ matrix.python-version }}
+    
+    # The steps in the job. Each step either RUNS code, or USES an action
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+          
+      - name: Run tests and linting
+        run: |
+          sudo apt-get install pandoc -y
+          pip install pip jupyter matplotlib pytest black wheel setuptools twine --quiet --upgrade
+          pip install -e . # Install the package
+          black . --check -l 120
+          pytest streprogen --doctest-modules --color=yes # Run all tests
+          pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
+          pip install -r docs/requirements.txt
+          sphinx-build docs docs/_build -v
+
+# ======================= BUILD WHEELS AND UPLOAD TO PYPI ==================================
+
+      - name: Build package ${{ matrix.python-version }}
+        run: |
+          python setup.py sdist bdist_wheel;
+
+      - name: Publish Python distribution to PyPI
+        if: github.ref == 'refs/heads/master'
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          skip_existing: true
+          user: __token__
+          password: ${{ secrets.pypi_password }}
+          
