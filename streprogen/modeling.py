@@ -56,6 +56,7 @@ def progression_sinusoidal(
     scale=0.025,
     offset=0,
     k=0,
+    correct_boundaries=False,
 ):
     """A sinusoidal progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -82,6 +83,8 @@ def progression_sinusoidal(
         The offset (shift) of the sinusoid.
     k
         Exponential growth. Higher results in more exponential growth.
+    correct_boundaries
+        If True, the function is adjusted to pass through the endpoints exactly.
 
 
     Returns
@@ -100,15 +103,7 @@ def progression_sinusoidal(
     if isinstance(week, collections.abc.Iterable):
         return list(
             progression_sinusoidal(
-                w,
-                start_weight,
-                final_weight,
-                start_week,
-                final_week,
-                period,
-                scale,
-                offset,
-                k,
+                w, start_weight, final_weight, start_week, final_week, period, scale, offset, k, correct_boundaries
             )
             for w in week
         )
@@ -121,6 +116,42 @@ def progression_sinusoidal(
     sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
     base_with_sinusoidal = base * (1 + scale * math.sin(sine_argument))
+
+    if correct_boundaries:
+        overshoot_start = start_weight - progression_sinusoidal(
+            start_week,
+            start_weight,
+            final_weight,
+            start_week,
+            final_week,
+            period,
+            scale,
+            offset,
+            k,
+            correct_boundaries=False,
+        )
+
+        undershoot_end = (
+            progression_sinusoidal(
+                final_week,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                period,
+                scale,
+                offset,
+                k,
+                correct_boundaries=False,
+            )
+            - final_weight
+        )
+
+        # Linear correction
+        dy_dx = (overshoot_start + undershoot_end) / (final_week - start_week)
+        correction = overshoot_start - dy_dx * (week - start_week)
+        base_with_sinusoidal = base_with_sinusoidal + correction
+
     return base_with_sinusoidal
 
 
@@ -134,6 +165,7 @@ def progression_sawtooth(
     scale=0.025,
     offset=0,
     k=0,
+    correct_boundaries=False,
 ):
     """A sawtooth progression function going through the points
     ('start_week', 'start_weight') and ('final_week', 'final_weight'), evaluated
@@ -160,6 +192,8 @@ def progression_sawtooth(
         The offset (shift) of the sawtooth.
     k
         Exponential growth. Higher results in more exponential growth.
+    correct_boundaries
+        If True, the function is adjusted to pass through the endpoints exactly.
 
 
     Returns
@@ -179,15 +213,7 @@ def progression_sawtooth(
     if isinstance(week, collections.abc.Iterable):
         return list(
             progression_sawtooth(
-                w,
-                start_weight,
-                final_weight,
-                start_week,
-                final_week,
-                period,
-                scale,
-                offset,
-                k,
+                w, start_weight, final_weight, start_week, final_week, period, scale, offset, k, correct_boundaries
             )
             for w in week
         )
@@ -211,6 +237,42 @@ def progression_sawtooth(
         saw = 0
 
     base_with_sinusoidal = base * (1 + scale * saw)
+
+    if correct_boundaries:
+        overshoot_start = start_weight - progression_sawtooth(
+            start_week,
+            start_weight,
+            final_weight,
+            start_week,
+            final_week,
+            period,
+            scale,
+            offset,
+            k,
+            correct_boundaries=False,
+        )
+
+        undershoot_end = (
+            progression_sawtooth(
+                final_week,
+                start_weight,
+                final_weight,
+                start_week,
+                final_week,
+                period,
+                scale,
+                offset,
+                k,
+                correct_boundaries=False,
+            )
+            - final_weight
+        )
+
+        # Linear correction
+        dy_dx = (overshoot_start + undershoot_end) / (final_week - start_week)
+        correction = overshoot_start - dy_dx * (week - start_week)
+        base_with_sinusoidal = base_with_sinusoidal + correction
+
     return base_with_sinusoidal
 
 
