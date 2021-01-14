@@ -187,6 +187,7 @@ class Program(object):
 
         assert isinstance(units, str)
         self.units = units
+        self.round_to = round_to
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.verbose = verbose
 
@@ -234,6 +235,32 @@ class Program(object):
 
         # TODO: make explicit
         self.optimizer = RepSchemeOptimizer()
+
+    def serialize(self):
+        data = {
+            "name": self.name,
+            "duration": self.duration,
+            "min_reps": self.min_reps,
+            "max_reps": self.max_reps,
+            "reps_per_exercise": self.reps_per_exercise,
+            "rep_scaler_func": self.rep_scalers,
+            "intensity": self.intensity,
+            "intensity_scaler_func": self.intensity_scalers,
+            "units": self.units,
+            "round_to": self.round_to,
+            "percent_inc_per_week": self.percent_inc_per_week,
+            "verbose": self.verbose,
+        }
+
+        data["days"] = [day.serialize() for day in self.days]
+        return data
+
+    @classmethod
+    def deserialize(cls, data):
+        days = data.pop("days")
+        new_program = cls(**data)
+        new_program.add_days(*[Day.deserialize(day_data) for day_data in days])
+        return new_program
 
     def Day(self, name=None):
         day = Day(name=name)
@@ -784,5 +811,7 @@ if __name__ == "__main__":
         program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
 
     program.render()
+
+    print(program.serialize())
 
     # print(program)

@@ -191,6 +191,24 @@ class TestSerialization:
 
         assert day_dict == Day.deserialize(day_dict).serialize()
 
+    def test_Program(self):
+        """Serialize and deserialize should be equal."""
+
+        program = Program(
+            name="Beginner 5x5", duration=4, intensity=85, units="kg", round_to=2.5, rep_scaler_func=[1, 1, 1, 1]
+        )
+
+        with program.Day("A"):
+            program.DynamicExercise(name="Squat", start_weight=100)
+
+        program.render()
+
+        # Create a new program by serializing and deserializing
+        new_program = Program.deserialize(program.serialize())
+        new_program.render()
+
+        assert str(program) == str(new_program)
+
 
 class TestWaysOfGivingRepAndIntensity:
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])
