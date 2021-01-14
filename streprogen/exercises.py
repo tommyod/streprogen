@@ -3,6 +3,7 @@
 
 import functools
 import warnings
+import inspect
 
 from streprogen.utils import compose, escape_string, round_to_nearest
 
@@ -90,6 +91,8 @@ class DynamicExercise(object):
         if num_specified == 3:
             raise ValueError(f"At most 2 out of 3 variables may be set: {var_names}")
 
+        self.round_to = round_to
+
         if round_to is None:
             self.round = None
         else:
@@ -104,6 +107,27 @@ class DynamicExercise(object):
             if self.min_reps > self.max_reps:
                 msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
                 raise ValueError(msg.format(self.name))
+
+    def _simple_attributes(self):
+        """Yield all simple parameters (ints, strings, etc)."""
+        attributes = set(dir(self)) - {"round"}  # round is a function
+        for attr_name in attributes:
+
+            # Skip private members
+            if attr_name.startswith("_"):
+                continue
+
+            # Skip methods
+            if inspect.ismethod(getattr(self, attr_name)):
+                continue
+
+            yield attr_name
+
+    def serialize(self):
+        result = {}
+        for attr_name in self._simple_attributes():
+            result[attr_name] = getattr(self, attr_name)
+        return result
 
     def weekly_growth(self, weeks, percent_inc_per_week_program=None):
         """Calculate the weekly growth in percentage, rounded to one digit.
@@ -163,12 +187,16 @@ class DynamicExercise(object):
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = ("name",)
+        attrs = list(self._simple_attributes())
         return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
 
     def __hash__(self):
         attrs = ("name",)
         return hash(tuple(getattr(self, attr) for attr in attrs))
+
+    @classmethod
+    def deserialize(cls, data):
+        return cls(**data)
 
 
 class StaticExercise(object):
@@ -204,13 +232,14 @@ class StaticExercise(object):
         >>> stretching = StaticExercise('Stretching', '10 minutes')
         """
         self.name = escape_string(name)
+        self.sets_reps = sets_reps
         if isinstance(sets_reps, str):
-            self.sets_reps = self._function_from_string(sets_reps)
+            self.sets_reps_func = self._function_from_string(sets_reps)
         else:
-            self.sets_reps = sets_reps
+            self.sets_reps_func = sets_reps
 
         # Escape after function evaluation
-        self.sets_reps = compose(self.sets_reps, escape_string)
+        self.sets_reps_func = compose(self.sets_reps_func, escape_string)
 
     @staticmethod
     def _function_from_string(string):
@@ -230,6 +259,9 @@ class StaticExercise(object):
         """
         return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
+    def __eq__(self, other):
+        return self.name == other.name and self.sets_reps == other.sets_reps
+
     def __str__(self):
         """
         String formatting for readable human output.
@@ -241,8 +273,20 @@ class StaticExercise(object):
 
         return "{}({})".format(type(self).__name__, arg_str)
 
+    def serialize(self):
+        if callable(self.sets_reps):
+            raise ValueError(f"Cannot serialize {repr(self)} because `sets_reps` is a function.")
+        return {"name": self.name, "sets_reps": self.sets_reps}
+
+    @classmethod
+    def deserialize(cls, data):
+        return cls(**data)
+
 
 if __name__ == "__main__":
     import pytest
 
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+
+    bench = DynamicExercise("Bench", start_weight=100)
+    print(bench.serialize())

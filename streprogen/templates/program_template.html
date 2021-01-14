@@ -137,7 +137,7 @@
                             {% for exercise in day.static_exercises %}
                                 <tr>
                                     <td>&nbsp;{{ exercise.name }}</td>
-                                    <td colspan="7">{{ exercise.sets_reps(1) }}</td>
+                                    <td colspan="7">{{ exercise.sets_reps_func(1) }}</td>
                                 </tr>
                             {% endfor %}
 
@@ -190,7 +190,7 @@
                             {% for static_ex in day.static_exercises %}
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;{{ static_ex.name }}</td>
-                                    <td colspan="{{ table_width - 1 }}">{{ static_ex.sets_reps(week) }}</td>
+                                    <td colspan="{{ table_width - 1 }}">{{ static_ex.sets_reps_func(week) }}</td>
                                 </tr>
                             {% endfor %}
 

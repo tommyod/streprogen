@@ -105,6 +105,19 @@ class Day(object):
         )
         return out_str
 
+    def serialize(self):
+        result = {"name": self.name}
+        result["dynamic_exercises"] = [ex.serialize() for ex in self.dynamic_exercises]
+        result["static_exercises"] = [ex.serialize() for ex in self.static_exercises]
+        return result
+
+    @classmethod
+    def deserialize(cls, data):
+        name = data["name"]
+        exercises = [DynamicExercise.deserialize(ex) for ex in data["dynamic_exercises"]]
+        exercises += [StaticExercise.deserialize(ex) for ex in data["static_exercises"]]
+        return cls(name, exercises)
+
 
 if __name__ == "__main__":
     import pytest

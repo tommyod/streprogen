@@ -190,20 +190,30 @@ class Program(object):
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.verbose = verbose
 
+        # ------ REP SCALERS ------
         # Set functions to user supplied, or defaults if None was passed
         user, default = (
             rep_scaler_func,
             functools.partial(self._default_rep_scaler_func, final_week=self.duration),
         )
-        self.rep_scaler_func = prioritized_not_None(user, default)
-        assert callable(self.rep_scaler_func)
+        rep_scaler_func = prioritized_not_None(user, default)
+        if callable(rep_scaler_func):
+            self.rep_scalers = [rep_scaler_func(w + 1) for w in range(self.duration)]
+        else:
+            self.rep_scalers = list(rep_scaler_func)
+        assert isinstance(self.rep_scalers, list)
 
+        # ------ INTENSITY SCALERS------
         user, default = (
             intensity_scaler_func,
             functools.partial(self._default_intensity_scaler_func, final_week=self.duration),
         )
-        self.intensity_scaler_func = prioritized_not_None(user, default)
-        assert callable(self.intensity_scaler_func)
+        intensity_scaler_func = prioritized_not_None(user, default)
+        if callable(intensity_scaler_func):
+            self.intensity_scalers = [intensity_scaler_func(w + 1) for w in range(self.duration)]
+        else:
+            self.intensity_scalers = list(intensity_scaler_func)
+        assert isinstance(self.intensity_scalers, list)
 
         user, default = progression_func, self._default_progression_func
         self.progression_func = prioritized_not_None(user, default)
@@ -275,10 +285,10 @@ class Program(object):
 
         Apart from these sanity checks, the user is on their own.
         """
-        weeks = list(range(1, self.duration + 1))
+        weeks = list(range(self.duration))
 
         # Validate the intensity
-        intensities = [self.intensity_scaler_func(w) * self.intensity for w in weeks]
+        intensities = [self.intensity_scalers[w] * self.intensity for w in weeks]
 
         if max(intensities) > 90:
             warnings.warn("\nWARNING: Average intensity is > 90.")
@@ -287,7 +297,7 @@ class Program(object):
             warnings.warn("\nWARNING: Average intensity is < 65.")
 
         # Validate the repetitions
-        repetitions = [self.rep_scaler_func(w) * self.reps_per_exercise for w in weeks]
+        repetitions = [self.rep_scalers[w] * self.reps_per_exercise for w in weeks]
         if max(repetitions) > 45:
             warnings.warn("\nWARNING: Number of repetitions > 45.")
 
@@ -532,13 +542,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = round(total_reps * self.rep_scaler_func(week))
+            desired_reps = round(total_reps * self.rep_scalers[week - 1])
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired average intensity
             local_i, global_i = dyn_ex.intensity, self.intensity
             intensity_unscaled = prioritized_not_None(local_i, global_i)
-            scale_factor = self.intensity_scaler_func(week)
+            scale_factor = self.intensity_scalers[week - 1]
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
@@ -758,7 +768,7 @@ if __name__ == "__main__":
         # The name of the training program
         name="Beginner 5x5",
         # The duration of the training program in weeks.
-        # duration=8,
+        duration=4,
         # The baseline number of repetitions per dynamic exercise.
         # reps_per_exercise=25,
         intensity=reps_to_intensity(5),
@@ -766,7 +776,7 @@ if __name__ == "__main__":
         units="kg",
         # What the weights are rounded to.
         round_to=2.5,
-        rep_scaler_func=rep_scaler_func,
+        rep_scaler_func=[1, 1, 1, 1],
         intensity_scaler_func=intensity_scaler_func,
     )
 

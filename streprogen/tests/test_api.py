@@ -164,6 +164,80 @@ def test_error_on_non_unique_names():
         program1.render()
 
 
+class TestSerialization:
+    def test_DynamicExercise(self):
+        """Serialize and deserialize should be equal."""
+
+        dynamic_ex = DynamicExercise("Bench", start_weight=100)
+        dyn_ex_dict = dynamic_ex.serialize()
+        assert dynamic_ex == DynamicExercise.deserialize(dyn_ex_dict)
+
+    def test_StaticExercise(self):
+        """Serialize and deserialize should be equal."""
+
+        static_ex = StaticExercise("Dips", "4 x 10")
+        static_ex_dict = static_ex.serialize()
+        assert static_ex == StaticExercise.deserialize(static_ex_dict)
+
+    def test_Day(self):
+        """Serialize and deserialize should be equal."""
+
+        bench = DynamicExercise("Bench", start_weight=100)
+        deadlift = DynamicExercise("Deadlift", start_weight=100, final_weight=140)
+        static_ex = StaticExercise("Dips", "4 x 10")
+
+        day = Day("Monday", [bench, deadlift, static_ex])
+        day_dict = day.serialize()
+
+        assert day_dict == Day.deserialize(day_dict).serialize()
+
+
+class TestWaysOfGivingRepAndIntensity:
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
+    def test_rep_scalers_as_function_vs_list(self, format):
+        """Test that both functions and lists work the same."""
+
+        def rep_scaler_func(week):
+            return 1 - week / 100
+
+        rep_scalers = [(1 - week / 100) for week in range(1, 9)]
+
+        program1 = Program("My first program!", duration=8, round_to=1, rep_scaler_func=rep_scaler_func)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, rep_scaler_func=rep_scalers)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
+
+    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
+    def test_intensity_scalers_as_function_vs_list(self, format):
+        """Test that both functions and lists work the same."""
+
+        def intensity_scaler_func(week):
+            return 1 - week / 100
+
+        intensity_scalers = [(1 - week / 100) for week in range(1, 9)]
+
+        program1 = Program("My first program!", duration=8, round_to=1, intensity_scaler_func=intensity_scaler_func)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, intensity_scaler_func=intensity_scalers)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
+
+
 class TestWaysOfGivingProgress:
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])
     def test_rep_range_exercise_vs_program(self, format):
