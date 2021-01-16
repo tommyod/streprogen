@@ -260,7 +260,7 @@ class TestSerialization:
 
 
 class TestWaysOfGivingRepAndIntensity:
-    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
+    @pytest.mark.parametrize("format", ["tex", "txt", "html", "dict"])
     def test_rep_scalers_as_function_vs_list(self, format):
         """Test that both functions and lists work the same."""
 
@@ -282,7 +282,7 @@ class TestWaysOfGivingRepAndIntensity:
         # Use .txt format to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
-    @pytest.mark.parametrize("format", ["tex", "txt", "html"])
+    @pytest.mark.parametrize("format", ["tex", "txt", "html", "dict"])
     def test_intensity_scalers_as_function_vs_list(self, format):
         """Test that both functions and lists work the same."""
 
@@ -320,7 +320,7 @@ class TestWaysOfGivingProgress:
             program2.DynamicExercise("Bench press", start_weight=100)
         program2.render()
 
-        # Use .txt format to compare programs
+        # Use formats to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])

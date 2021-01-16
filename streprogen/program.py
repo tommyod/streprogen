@@ -391,11 +391,13 @@ class Program(object):
         """
         self.days.extend(days)
 
-    def _render_dynamic(self, dynamic_exercise, min_reps, max_reps, desired_reps, desired_intensity, validate) -> dict:
+    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
         """
         Render a single dynamic exercise.
         This is done for every exercise for every week.
         """
+
+        min_reps, max_reps = dynamic_exercise._min_max_reps(self)
 
         # Use tuples as inputs to the optimizer can cache the arguments
         sets = tuple(range(min_reps, max_reps + 1))
@@ -535,35 +537,31 @@ or (3) ignore this message. The software will do it's best to remedy this.
             round_func = prioritized_not_None(dyn_ex.round, self.round)
 
             # The desired repetitions to work up to
-            local_r, global_r = dyn_ex.reps, self.reps_per_exercise
-            total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = int(round(total_reps * self.rep_scalers[week - 1]))
+            total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
+            desired_reps = round(total_reps * self.rep_scalers[week - 1])
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired average intensity
-            local_i, global_i = dyn_ex.intensity, self.intensity
-            intensity_unscaled = prioritized_not_None(local_i, global_i)
+            intensity_unscaled = prioritized_not_None(dyn_ex.intensity, self.intensity)
             scale_factor = self.intensity_scalers[week - 1]
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
             # A dictionary is returned with keys 'reps' and 'intensities'
-            render_args = dyn_ex, min_reps, max_reps, desired_reps, desired_intensity, validate
+            render_args = dyn_ex, desired_reps, desired_intensity, validate
             out = self._render_dynamic(*render_args)
 
             # Get increase from program if not available on the exercise
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
-            ans = dyn_ex._progress_information(self)
-            (start_w, final_w, inc_week) = ans
+            (start_w, final_w, inc_week) = dyn_ex._progress_information(self)
 
             weight = self.progression_func(week, start_w, final_w, 1, self.duration)
-            print(start_w, final_w, weight)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
-                msg = f"Weight for '{dyn_ex}' was {round(weight, 1)} in week {week}. "
-                msg += f"This is out of bounds. Start weight is {round(start_w, 1)}. "
-                msg += f"Final weight is {round(start_w, 1)}."
+                msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {weight} in week {week}. "
+                msg += f"This is out of bounds. Start weight is {start_w}. "
+                msg += f"Final weight is {final_w}."
                 warnings.warn(msg)
 
             # Define a function to prettify the weights
