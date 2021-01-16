@@ -6,7 +6,6 @@ import statistics
 import warnings
 import numbers
 import time
-import collections
 import typing
 from os import path
 
@@ -104,10 +103,11 @@ class Program(object):
             override the global program value.
 
         rep_scaler_func
-            A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the
-            `reps_per_exercise` parameter for that week. Should typically return factors
-            between 0.7 and 1.3.
+            A function mapping from a week in the range [1, `duration`] to a
+            scaling value (factor). The scaling value will be multiplied with
+            the `reps_per_exercise` parameter for that week. Should typically
+            return factors between 0.7 and 1.3.
+            Alternatively, a list of length `duration` may be passed.
 
         intensity
             The baseline intensity for each dynamic exercise. The intensity
@@ -116,10 +116,11 @@ class Program(object):
             lift) for that given week. Typically a value around 80.
 
         intensity_scaler_func
-            A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the
-            `intensity` parameter for that week.
+            A function mapping from a week in the range [1, `duration`] to a
+            scaling value (factor). The scaling value will be multiplied with
+            the `intensity` parameter for that week.
             Should typically return factors between 0.9 and 1.1.
+            Alternatively, a list of length `duration` may be passed.
 
         units
             The units used for exporting and printing the program, e.g. 'kg'.
@@ -237,7 +238,8 @@ class Program(object):
         # TODO: make explicit
         self.optimizer = RepSchemeOptimizer()
 
-    def serialize(self):
+    def serialize(self) -> dict:
+        """Export the object to a dictionary."""
         data = {
             "name": self.name,
             "duration": self.duration,
@@ -257,13 +259,17 @@ class Program(object):
         return data
 
     @classmethod
-    def deserialize(cls, data):
+    def deserialize(cls, data: dict):
+        """Create a new object from a dictionary."""
         days = data.pop("days")
         new_program = cls(**data)
-        new_program.add_days(*[Day.deserialize(day_data) for day_data in days])
+
+        for day_data in days:
+            new_program.add_days(Day.deserialize(day_data))
+
         return new_program
 
-    def Day(self, name=None):
+    def Day(self, name: str = None):
         day = Day(name=name)
         day.program = self
         return day
@@ -354,8 +360,8 @@ class Program(object):
 
                 if dynamic_ex.name in ex_names:
                     raise ValueError(f"Exercise name not unique: {dynamic_ex.name}")
-                else:
-                    ex_names.add(dynamic_ex.name)
+
+                ex_names.add(dynamic_ex.name)
 
                 percentage_growth = dynamic_ex.weekly_growth(self.duration, self.percent_inc_per_week)
                 if percentage_growth > 4:
@@ -371,7 +377,6 @@ class Program(object):
             Iterable containing
             :py:class:`streprogen.Day` instances.
 
-
         Examples
         -------
         >>> program = Program('My training program')
@@ -381,12 +386,13 @@ class Program(object):
         """
         self.days.extend(days)
 
-    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate):
+    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
         """
         Render a single dynamic exercise.
-        This is done for each exercise every week.
+        This is done for every exercise for every week.
         """
 
+        # Use tuples as inputs to the optimizer can cache the arguments
         sets = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
         intensities = tuple(map(self.reps_to_intensity_func, sets))
 
@@ -459,49 +465,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 # Iterate over all main exercises
                 for dynamic_ex in day.dynamic_exercises:
                     yield (week, day, dynamic_ex)
-
-    def _yield_week_day(self, enumeration=False):
-        """A helper function to reduce the number of nested loops.
-
-        Parameters
-        ----------
-        enumeration
-            Whether or not to wrap the days in enumerate().
-
-
-        Yields
-        -------
-        tuple
-            A tuple with (week, day_index, day) or (week, day),
-            depending on 'enumeration' parameter.
-
-        """
-        if enumeration:
-            # Iterate over all weeks
-            for week in range(1, self.duration + 1):
-                # Iterate over all days
-                for day_index, day in enumerate(self.days):
-                    yield (week, day_index, day)
-        else:
-            # Iterate over all weeks
-            for week in range(1, self.duration + 1):
-                # Iterate over all days
-                for day in self.days:
-                    yield (week, day)
-
-    def _yield_dynamic_exercises(self):
-        """A helper function to reduce the number of nested loops.
-
-
-        Yields
-        -------
-        :py:class:`streprogen.DynamicExercise`
-            Yields the dynamic exercises in the program.
-
-        """
-        for day in self.days:
-            for dynamic_ex in day.dynamic_exercises:
-                yield dynamic_ex
 
     def _yield_exercises(self):
         """A helper function to reduce the number of nested loops.
