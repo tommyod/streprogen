@@ -169,6 +169,36 @@ def test_dynamic_exercises_are_not_mutated():
     assert exercise.serialize() == exercise_dict
 
 
+def test_program_not_mutated_after_rendering():
+    """Creating and rendering a program should not mutate it's dict
+    representations."""
+
+    # Set some non-typical parameters
+    program = Program(
+        name="MyProgram",
+        duration=5,
+        min_reps=1,
+        reps_per_exercise=31,
+        round_to=10,
+        rep_scaler_func=[0.99, 0.97, 0.96, 0.95, 0.98],
+        intensity_scaler_func=[0.99, 0.97, 0.96, 0.95, 0.98],
+        units="asdf",
+    )
+    with program.Day("A"):
+        program.DynamicExercise("Squats", start_weight=100, final_weight=113, max_reps=12)
+
+    program_serialized = program.serialize()
+    program.render()
+    program_dict = program.to_dict()
+
+    assert program.serialize() == program_serialized
+
+    program = Program.deserialize(program.serialize())
+    program.render()
+    assert program.serialize() == program_serialized
+    assert program_dict == program.to_dict()
+
+
 def test_error_on_non_unique_exercise_names():
     """Test that using the same exercise name raises an error."""
 
