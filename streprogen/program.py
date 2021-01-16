@@ -319,24 +319,29 @@ class Program(object):
 
         Apart from these sanity checks, the user is on their own.
         """
+
+        # Warn if many days have the same name
+        if len(self.days) > len(set(day.name for day in self.days)):
+            warnings.warn("\nWARNING: Some day names are duplicates.")
+
         weeks = list(range(self.duration))
 
         # Validate the intensity
         intensities = [self.intensity_scalers[w] * self.intensity for w in weeks]
 
         if max(intensities) > 90:
-            warnings.warn("\nWARNING: Average intensity is > 90.")
+            warnings.warn("\nWARNING: At least one week has intensity > 90.")
 
         if min(intensities) < 65:
-            warnings.warn("\nWARNING: Average intensity is < 65.")
+            warnings.warn("\nWARNING: At least one week has intensity < 65.")
 
         # Validate the repetitions
         repetitions = [self.rep_scalers[w] * self.reps_per_exercise for w in weeks]
         if max(repetitions) > 45:
-            warnings.warn("\nWARNING: Number of repetitions > 45.")
+            warnings.warn("\nWARNING: At least one week has repetitions > 45.")
 
         if min(repetitions) < 15:
-            warnings.warn("\nWARNING: Number of repetitions < 15.")
+            warnings.warn("\nWARNING: At least one week has repetitions < 15.")
 
         # Validate the 'reps_to_intensity_func'
         for x1, x2 in zip(range(1, 20), range(2, 21)):
@@ -352,21 +357,21 @@ class Program(object):
             warnings.warn("\n'reps_to_intensity_func' maps to < 0.")
 
         # Validate the exercises
-        for day in self.days:
+        ex_names = set()
+        for exercise in self._yield_exercises():
 
-            ex_names = set()
+            if isinstance(exercise, StaticExercise):
+                continue
 
-            for dynamic_ex in day.dynamic_exercises:
+            if exercise.name in ex_names:
+                raise ValueError(f"Exercise name not unique: {exercise.name}")
 
-                if dynamic_ex.name in ex_names:
-                    raise ValueError(f"Exercise name not unique: {dynamic_ex.name}")
+            ex_names.add(exercise.name)
 
-                ex_names.add(dynamic_ex.name)
-
-                percentage_growth = dynamic_ex.weekly_growth(self.duration, self.percent_inc_per_week)
-                if percentage_growth > 4:
-                    msg = '\n"{}" grows with {}% each week.'.format(dynamic_ex.name, percentage_growth)
-                    warnings.warn(msg)
+            _, _, percent_inc_per_week = exercise._progress_information(self)
+            if percent_inc_per_week > 4:
+                msg = f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
+                warnings.warn(msg)
 
     def add_days(self, *days):
         """Add one or several days to the program.

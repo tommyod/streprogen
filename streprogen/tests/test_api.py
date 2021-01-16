@@ -170,7 +170,7 @@ def test_dynamic_exercises_are_not_mutated():
 
 
 def test_program_not_mutated_after_rendering():
-    """Creating and rendering a program should not mutate it's dict
+    """Creating and rendering a program should not mutate its dict
     representations."""
 
     # Set some non-typical parameters
@@ -191,8 +191,10 @@ def test_program_not_mutated_after_rendering():
     program.render()
     program_dict = program.to_dict()
 
+    # Rendering the program should not change the serialization
     assert program.serialize() == program_serialized
 
+    # Serializing and de-serializing should not change the program dict reprs
     program = Program.deserialize(program.serialize())
     program.render()
     assert program.serialize() == program_serialized
