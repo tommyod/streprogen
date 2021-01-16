@@ -357,16 +357,10 @@ class Program(object):
             warnings.warn("\n'reps_to_intensity_func' maps to < 0.")
 
         # Validate the exercises
-        ex_names = set()
         for exercise in self._yield_exercises():
 
             if isinstance(exercise, StaticExercise):
                 continue
-
-            if exercise.name in ex_names:
-                raise ValueError(f"Exercise name not unique: {exercise.name}")
-
-            ex_names.add(exercise.name)
 
             _, _, percent_inc_per_week = exercise._progress_information(self)
             if percent_inc_per_week > 4:
@@ -503,6 +497,15 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         """
         start_time = time.time()
+
+        # Check that exercise names are unique within each day
+        for day in self.days:
+            seen_names = set()
+            for exercise in day.dynamic_exercises + day.static_exercises:
+                if exercise.name in seen_names:
+                    raise Exception(f"Duplicate exercise name in same day: {exercise.name}")
+                else:
+                    seen_names.add(exercise.name)
 
         # --------------------------------
         # Prepare for rendering the dynamic exercises
