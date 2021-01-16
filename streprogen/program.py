@@ -503,7 +503,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             seen_names = set()
             for exercise in day.dynamic_exercises + day.static_exercises:
                 if exercise.name in seen_names:
-                    raise Exception(f"Exercise name not unique: {exercise.name}")
+                    raise ValueError(f"Exercise name not unique: {exercise.name}")
                 else:
                     seen_names.add(exercise.name)
 
