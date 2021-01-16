@@ -386,14 +386,14 @@ class Program(object):
         """
         self.days.extend(days)
 
-    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
+    def _render_dynamic(self, dynamic_exercise, min_reps, max_reps, desired_reps, desired_intensity, validate) -> dict:
         """
         Render a single dynamic exercise.
         This is done for every exercise for every week.
         """
 
         # Use tuples as inputs to the optimizer can cache the arguments
-        sets = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
+        sets = tuple(range(min_reps, max_reps + 1))
         intensities = tuple(map(self.reps_to_intensity_func, sets))
 
         reps = self.optimizer(
@@ -403,8 +403,8 @@ class Program(object):
         intensities = list(map(self.reps_to_intensity_func, reps))
 
         # If repetitions are too high, a low average intensity cannot be attained
-        int_highest = self.reps_to_intensity_func(dynamic_exercise.min_reps)
-        int_lowest = self.reps_to_intensity_func(dynamic_exercise.max_reps)
+        int_highest = self.reps_to_intensity_func(min_reps)
+        int_lowest = self.reps_to_intensity_func(max_reps)
 
         if (not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)) and validate:
             msg = """WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
@@ -414,8 +414,8 @@ SOLUTION: Either (1) change the repetition range, (2) change the desired intensi
 or (3) ignore this message. The software will do it's best to remedy this.
 """.format(
                 dynamic_exercise.name,
-                dynamic_exercise.min_reps,
-                dynamic_exercise.max_reps,
+                min_reps,
+                max_reps,
                 round(int_lowest, 1),
                 round(int_highest, 1),
                 round(desired_intensity, 1),
@@ -519,10 +519,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
             # Set min and max reps from program, if not set on exercise
-            dyn_ex.min_reps = prioritized_not_None(dyn_ex.min_reps, self.min_reps)
-            dyn_ex.max_reps = prioritized_not_None(dyn_ex.max_reps, self.max_reps)
+            min_reps, max_reps = dyn_ex._min_max_reps(self)
 
-            if dyn_ex.min_reps > dyn_ex.max_reps:
+            if min_reps > max_reps:
                 msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
                 raise ValueError(msg.format(dyn_ex.name))
 
@@ -533,7 +532,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # The desired repetitions to work up to
             local_r, global_r = dyn_ex.reps, self.reps_per_exercise
             total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = round(total_reps * self.rep_scalers[week - 1])
+            desired_reps = int(round(total_reps * self.rep_scalers[week - 1]))
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired average intensity
@@ -544,36 +543,23 @@ or (3) ignore this message. The software will do it's best to remedy this.
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
             # A dictionary is returned with keys 'reps' and 'intensities'
-            render_args = dyn_ex, desired_reps, desired_intensity, validate
+            render_args = dyn_ex, min_reps, max_reps, desired_reps, desired_intensity, validate
             out = self._render_dynamic(*render_args)
 
             # Get increase from program if not available on the exercise
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
-            # Case 1: Start weight and final weight is given
-            if (dyn_ex.start_weight is not None) and (dyn_ex.final_weight is not None):
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            # Case 2: Start weight and increase is given
-            elif (dyn_ex.start_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.final_weight = dyn_ex.start_weight * factor
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            # Case 3: Final weight and increase is given
-            elif (dyn_ex.final_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.start_weight = dyn_ex.final_weight / factor
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            else:
-                raise Exception(f"Exercise {dyn_ex} is overspecified.")
+            # Compute the progress
+            ans = dyn_ex._progress_information(self)
+            (start_w, final_w, inc_week) = ans
 
             weight = self.progression_func(week, start_w, final_w, 1, self.duration)
+            print(start_w, final_w, weight)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
-                msg = "Weight for '{dyn_ex}' was {round(weight, 1)} in week {week}. "
-                msg += "This is out of bounds. Start weight is {round(start_w, 1)}. "
-                msg += "Final weight is {round(start_w, 1)}."
+                msg = f"Weight for '{dyn_ex}' was {round(weight, 1)} in week {week}. "
+                msg += f"This is out of bounds. Start weight is {round(start_w, 1)}. "
+                msg += f"Final weight is {round(start_w, 1)}."
+                warnings.warn(msg)
 
             # Define a function to prettify the weights
             def pretty_weight(weight, i, round_function):
@@ -586,7 +572,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             tuples_gen = zip(out["intensities"], out["reps"])
             pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
             out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
-            out["1RM_this_week"] = weight
+            out["1RM_this_week"] = round(weight, 2)
             out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
 
             # Update with the ['intensities', 'reps', 'strings', ...] keys
@@ -780,10 +766,13 @@ if __name__ == "__main__":
     )
 
     with program.Day("Mandag"):
-        program.DynamicExercise("Knebøy", start_weight=70, min_reps=3, max_reps=5)
+        program.DynamicExercise("Knebøy", start_weight=100, min_reps=3, max_reps=5)
 
     # Render the program, then print it
     program.render()
+    from pprint import pprint
+
+    pprint(program.to_dict())
     print(program)
 
     def rep_scaler_func(week, *args):

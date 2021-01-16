@@ -6,15 +6,14 @@ Program parameters
   reps_per_exercise: {{program.reps_per_exercise}}
   intensity: {{program.intensity}}
   units: {{program.units}}
-----------------------------------------------------------------
+---------------------------------------------------------------- 
 Exercise information
 {% for day in program.days %}
   {{day.name}}
 {% for dynamic_ex in day.dynamic_exercises %}
    {{dynamic_ex.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(str
-   ((dynamic_ex.start_weight|round2digits)).rjust(3), program.units, str((dynamic_ex
-   .final_weight)|round2digits).rjust(3), program.units).ljust(12 + 2*program.units|length)}}
-    {{'reps: [{}, {}]'.format(dynamic_ex.min_reps, dynamic_ex.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex.weekly_growth(program.duration))}}
+   ((dynamic_ex._progress_information(program)[0]|round2digits)).rjust(3), program.units, str((dynamic_ex._progress_information(program)[1])|round2digits).rjust(3), program.units).ljust(12 + 2*program.units|length)}}
+    {{'reps: [{}, {}]'.format(*dynamic_ex._min_max_reps(program)).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex._progress_information(program)[2])}}
 {% endfor %}
 {% for static_ex in day.static_exercises %}
    {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps_func(1)}}

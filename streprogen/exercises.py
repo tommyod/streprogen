@@ -5,7 +5,7 @@ import functools
 import warnings
 import inspect
 
-from streprogen.utils import compose, escape_string, round_to_nearest
+from streprogen.utils import compose, escape_string, round_to_nearest, prioritized_not_None
 
 
 class DynamicExercise(object):
@@ -174,6 +174,50 @@ class DynamicExercise(object):
         else:
             return percent_inc_per_week_program
 
+    def _progress_information(self, program):
+        """Return a tuple (start_weight, final_weight, percent_inc_per_week).
+
+        Can only be inferred in the context of a Program argument."""
+
+        # Get increase per week
+        inc_week = prioritized_not_None(self.percent_inc_per_week, program.percent_inc_per_week)
+
+        answer = None
+        # Case 1: Start weight and final weight is given
+        if (self.start_weight is not None) and (self.final_weight is not None):
+            start_w, final_w = self.start_weight, self.final_weight
+            inc_week = ((final_w / start_w) - 1) / program.duration * 100
+            answer = (start_w, final_w, inc_week)
+
+        # Case 2: Start weight and increase is given
+        elif (self.start_weight is not None) and (inc_week is not None):
+            factor = 1 + (inc_week / 100) * program.duration
+            start_w = self.start_weight
+            final_w = self.start_weight * factor
+            answer = (start_w, final_w, inc_week)
+
+        # Case 3: Final weight and increase is given
+        elif (self.final_weight is not None) and (inc_week is not None):
+            factor = 1 + (inc_week / 100) * program.duration
+            start_w = self.final_weight / factor
+            final_w = self.final_weight
+            answer = (start_w, final_w, inc_week)
+
+        else:
+            raise Exception(f"Exercise {self} is overspecified.")
+
+        rounder = functools.partial(round_to_nearest, nearest=0.01)
+
+        return tuple(map(rounder, answer))
+
+    def _min_max_reps(self, program):
+        """Return a tuple (min_reps, max_reps).
+
+        Can only be inferred in the context of a Program argument."""
+        min_reps = prioritized_not_None(self.min_reps, program.min_reps)
+        max_reps = prioritized_not_None(self.max_reps, program.max_reps)
+        return min_reps, max_reps
+
     def __repr__(self):
         """Representation."""
         return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
@@ -297,7 +341,6 @@ class StaticExercise(object):
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
-
+    pytest.main(args=[".", "--doctest-modules", "-vv", "--capture=sys", "-k "])
     bench = DynamicExercise("Bench", start_weight=100)
     print(bench.serialize())

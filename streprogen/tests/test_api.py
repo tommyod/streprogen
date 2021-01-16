@@ -152,6 +152,23 @@ def test_progression_means(func, period):
     assert abs(statistics.mean(values) - target) <= 1e-6
 
 
+def test_dynamic_exercises_are_not_mutated():
+    """Creating a program should not mutate an exercise."""
+
+    # Create an exercise
+    exercise = DynamicExercise("Bench press", start_weight=100)
+    exercise_dict = exercise.serialize()
+
+    # Create a program, add the day and render it
+    program = Program()
+    day = Day("Monday")
+    day.add_exercises(exercise)
+    program.add_days(day)
+    program.render()
+
+    assert exercise.serialize() == exercise_dict
+
+
 def test_error_on_non_unique_exercise_names():
     """Test that using the same exercise name raises an error."""
 
