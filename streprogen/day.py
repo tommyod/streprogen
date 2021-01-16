@@ -26,7 +26,7 @@ class Day(object):
 
         Examples
         -------
-        >>> monday = Day(name = 'Monday')
+        >>> monday = Day(name='Monday')
         >>> curls = StaticExercise('Curls', '3 x 12')
         >>> monday.add_exercises(curls)
         >>> curls in monday.static_exercises
@@ -60,7 +60,7 @@ class Day(object):
 
         Examples
         -------
-        >>> monday = Day(name = 'Monday')
+        >>> monday = Day(name='Monday')
         >>> curls = StaticExercise('Curls', '3 x 12')
         >>> pulldowns = StaticExercise('Pulldowns', '4 x 10')
         >>> monday.add_exercises(curls, pulldowns)
@@ -106,6 +106,7 @@ class Day(object):
         return out_str
 
     def serialize(self):
+        """Export the object to a dictionary."""
         result = {"name": self.name}
         result["dynamic_exercises"] = [ex.serialize() for ex in self.dynamic_exercises]
         result["static_exercises"] = [ex.serialize() for ex in self.static_exercises]
@@ -113,6 +114,7 @@ class Day(object):
 
     @classmethod
     def deserialize(cls, data):
+        """Create a new object from a dictionary."""
         name = data["name"]
         exercises = [DynamicExercise.deserialize(ex) for ex in data["dynamic_exercises"]]
         exercises += [StaticExercise.deserialize(ex) for ex in data["static_exercises"]]

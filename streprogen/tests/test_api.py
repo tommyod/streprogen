@@ -152,7 +152,7 @@ def test_progression_means(func, period):
     assert abs(statistics.mean(values) - target) <= 1e-6
 
 
-def test_error_on_non_unique_names():
+def test_error_on_non_unique_exercise_names():
     """Test that using the same exercise name raises an error."""
 
     program1 = Program(duration=8, round_to=1)

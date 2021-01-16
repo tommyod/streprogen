@@ -124,9 +124,19 @@ class DynamicExercise(object):
             yield attr_name
 
     def serialize(self):
+        """Export the object to a dictionary.
+
+        Examples
+        --------
+        >>> bench = DynamicExercise('Bench press', start_weight=100)
+        >>> bench.serialize() == {'start_weight': 100, 'name': 'Bench press'}
+        True
+
+        """
         result = {}
         for attr_name in self._simple_attributes():
-            result[attr_name] = getattr(self, attr_name)
+            if getattr(self, attr_name) is not None:
+                result[attr_name] = getattr(self, attr_name)
         return result
 
     def weekly_growth(self, weeks, percent_inc_per_week_program=None):
@@ -196,6 +206,7 @@ class DynamicExercise(object):
 
     @classmethod
     def deserialize(cls, data):
+        """Create a new object from a dictionary."""
         return cls(**data)
 
 

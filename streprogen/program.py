@@ -6,6 +6,7 @@ import statistics
 import warnings
 import numbers
 import time
+import collections
 import typing
 from os import path
 
@@ -367,7 +368,7 @@ class Program(object):
         Parameters
         ----------
         *days
-            Unpacked tuple containing
+            Iterable containing
             :py:class:`streprogen.Day` instances.
 
 
@@ -619,18 +620,55 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 return weight
 
             # Create pretty strings
-            tuple_generator = zip(out["intensities"], out["reps"])
-            pretty_gen = (
-                (str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuple_generator
-            )
+            tuples_gen = zip(out["intensities"], out["reps"])
+            pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
             out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
+            out["1RM_this_week"] = weight
+            out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
 
-            # Update with the ['intensities', 'reps', 'strings'] keys
+            # Update with the ['intensities', 'reps', 'strings', ...] keys
             self._rendered[week][day][dyn_ex].update(out)
 
         if self.verbose:
             delta_time = round(time.time() - start_time, 3)
             print(f"Rendered program in {delta_time} seconds.")
+
+    def to_dict(self):
+        """Write the rendered program information to a dictionary."""
+        if not hasattr(self, "_rendered"):
+            raise ValueError("Render the program by calling .render() first.")
+
+        output_dictionary = {"program": self.serialize()}
+        output_dictionary["rendered"] = []
+
+        if not hasattr(self, "_rendered"):
+            return output_dictionary
+
+        # Iterate over all weeks
+        for week in range(1, self.duration + 1):
+            output_week = []
+
+            # Iterate over all days
+            for day in self.days:
+                output_day = {"name": day.name, "dynamic_exercises": [], "static_exercises": []}
+
+                # Iterate over all main exercises
+                for dynamic_ex in day.dynamic_exercises:
+                    out = dynamic_ex.serialize()
+                    out.update(self._rendered[week][day][dynamic_ex])
+                    output_day["dynamic_exercises"].append(out)
+
+                for static_ex in day.static_exercises:
+
+                    output_day["static_exercises"].append(static_ex.serialize())
+
+                # Add daily
+                output_week.append(output_day)
+
+            # Add weekly dict
+            output_dictionary["rendered"].append(output_week)
+
+        return output_dictionary
 
     def _set_jinja2_enviroment(self):
         """
@@ -809,9 +847,12 @@ if __name__ == "__main__":
 
     with program.Day("A"):
         program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
+        program.StaticExercise("Biceps", "4 x 10")
 
     program.render()
 
-    print(program.serialize())
+    from pprint import pprint
+
+    pprint(program.to_dict())
 
     # print(program)
