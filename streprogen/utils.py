@@ -152,6 +152,8 @@ def round_to_nearest(number, nearest=1):
     7
     >>> round_to_nearest(6.8, nearest=5)
     5
+    >>> round_to_nearest(1.2345, nearest=0.01)
+    1.23
     """
     result = nearest * round(number / nearest)
     if result % 1 == 0:

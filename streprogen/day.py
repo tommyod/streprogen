@@ -72,6 +72,7 @@ class Day(object):
         for exercise in exercises:
             if isinstance(exercise, DynamicExercise):
                 self.dynamic_exercises.append(exercise)
+                exercise.day = self
 
             if isinstance(exercise, StaticExercise):
                 self.static_exercises.append(exercise)

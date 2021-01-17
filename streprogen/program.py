@@ -298,6 +298,7 @@ class Program(object):
             round_to,
         )
         self.active_day.dynamic_exercises.append(ex)
+        ex.day = self.active_day
         return ex
 
     def StaticExercise(self, name, sets_reps="4 x 10"):
@@ -362,7 +363,7 @@ class Program(object):
             if isinstance(exercise, StaticExercise):
                 continue
 
-            _, _, percent_inc_per_week = exercise._progress_information(self)
+            _, _, percent_inc_per_week = exercise._progress_information()
             if percent_inc_per_week > 4:
                 msg = f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
                 warnings.warn(msg)
@@ -383,7 +384,9 @@ class Program(object):
         >>> program.add_days(day1, day2)
         >>> program.add_days(day1)
         """
-        self.days.extend(days)
+        for day in days:
+            day.program = self
+            self.days.append(day)
 
     def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
         """
@@ -391,7 +394,8 @@ class Program(object):
         This is done for every exercise for every week.
         """
 
-        min_reps, max_reps = dynamic_exercise._min_max_reps(self)
+        min_reps = dynamic_exercise.min_reps
+        max_reps = dynamic_exercise.max_reps
 
         # Use tuples as inputs to the optimizer can cache the arguments
         sets = tuple(range(min_reps, max_reps + 1))
@@ -529,7 +533,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
             # Set min and max reps from program, if not set on exercise
-            min_reps, max_reps = dyn_ex._min_max_reps(self)
+            min_reps = dyn_ex.min_reps
+            max_reps = dyn_ex.max_reps
 
             if min_reps > max_reps:
                 msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
@@ -558,7 +563,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
-            (start_w, final_w, inc_week) = dyn_ex._progress_information(self)
+            (start_w, final_w, inc_week) = dyn_ex._progress_information()
 
             weight = self.progression_func(week, start_w, final_w, 1, self.duration)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
@@ -778,7 +783,7 @@ if __name__ == "__main__":
     program.render()
     from pprint import pprint
 
-    pprint(program.to_dict())
+    # pprint(program.to_dict())
     print(program)
 
     def rep_scaler_func(week, *args):
@@ -811,6 +816,6 @@ if __name__ == "__main__":
 
     from pprint import pprint
 
-    pprint(program.to_dict())
+    # pprint(program.to_dict())
 
     # print(program)

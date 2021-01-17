@@ -59,10 +59,15 @@ def test_general_api():
     curls = StaticExercise("Curls", curl_func)
     day = Day(exercises=[bench, squats, curls])
 
+    # Variable reference to days are added
+    assert bench.day is not None
+    assert squats.day is not None
+
     assert len(day.dynamic_exercises) == 2
 
     # Add day(s) to program and render it
     program.add_days(day)
+    assert day.program is not None
 
     assert len(program.days) == 1
 
@@ -82,11 +87,16 @@ def test_decorator_api():
 
     with program.Day():
 
-        DynamicExercise("Bench press", 60, 80)
-        DynamicExercise("Squats", 80, 95)
-        StaticExercise("Curls", curl_func)
+        program.DynamicExercise("Bench press", 60, 65)
+        program.DynamicExercise("Squats", 80, 85)
+        program.StaticExercise("Curls", curl_func)
 
     assert len(program.days) == 1
+    assert len(program.days[0].dynamic_exercises) == 2
+    assert len(program.days[0].static_exercises) == 1
+
+    assert program.days[0].program is not None
+    assert program.days[0].dynamic_exercises[0].day is not None
 
     assert not program._rendered
     program.render()

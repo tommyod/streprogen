@@ -38,10 +38,10 @@ The latest version can be found at \\
       \textbf{ {{day.name}} } & & & & & \\ \hline
     {% for dynamic_ex in day.dynamic_exercises %}
         \hspace{0.5em}{{dynamic_ex.name}} & 
-        {{dynamic_ex._progress_information(program)[0]|round2digits}} {{program.units}} &
-        {{dynamic_ex._progress_information(program)[1]|round2digits}} {{program.units}} & 
-        {{dynamic_ex._min_max_reps(program)[0]}} & {{dynamic_ex._min_max_reps(program)[1]}} &
-        {{dynamic_ex._progress_information(program)[2]}}\%\\
+        {{dynamic_ex._progress_information()[0]|round2digits}} {{program.units}} &
+        {{dynamic_ex._progress_information()[1]|round2digits}} {{program.units}} & 
+        {{dynamic_ex.min_reps}} & {{dynamic_ex.max_reps}} &
+        {{dynamic_ex._progress_information()[2]}}\%\\
     {% endfor %}
     {% for static_ex in day.static_exercises %}
        \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps_func(1)}} } \\

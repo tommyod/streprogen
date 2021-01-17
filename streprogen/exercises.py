@@ -80,11 +80,12 @@ class DynamicExercise(object):
         self.name = escape_string(name)
         self.start_weight = start_weight
         self.final_weight = final_weight
-        self.min_reps = min_reps
-        self.max_reps = max_reps
+        self._min_reps = min_reps
+        self._max_reps = max_reps
         self.percent_inc_per_week = percent_inc_per_week
         self.reps = reps
         self.intensity = intensity
+        self.day = None
 
         var_names = ["start_weight", "final_weight", "percent_inc_per_week"]
         num_specified = sum(1 if (getattr(self, var) is not None) else 0 for var in var_names)
@@ -110,7 +111,7 @@ class DynamicExercise(object):
 
     def _simple_attributes(self):
         """Yield all simple parameters (ints, strings, etc)."""
-        attributes = set(dir(self)) - {"round"}  # round is a function
+        attributes = set(dir(self)) - {"round", "day"}  # round is a function
         for attr_name in attributes:
 
             # Skip private members
@@ -121,7 +122,8 @@ class DynamicExercise(object):
             if inspect.ismethod(getattr(self, attr_name)):
                 continue
 
-            yield attr_name
+            if getattr(self, attr_name):
+                yield attr_name
 
     def serialize(self):
         """Export the object to a dictionary.
@@ -133,51 +135,32 @@ class DynamicExercise(object):
         True
 
         """
-        result = {}
-        for attr_name in self._simple_attributes():
-            if getattr(self, attr_name) is not None:
-                result[attr_name] = getattr(self, attr_name)
-        return result
+        result = {
+            "name": self.name,
+            "start_weight": self.start_weight,
+            "final_weight": self.final_weight,
+            "min_reps": self._min_reps,
+            "max_reps": self._max_reps,
+            "percent_inc_per_week": self.percent_inc_per_week,
+            "reps": self.reps,
+            "intensity": self.intensity,
+            "round_to": self.round_to,
+        }
 
-    def weekly_growth(self, weeks, percent_inc_per_week_program=None):
-        """Calculate the weekly growth in percentage, rounded to one digit.
+        return {k: v for (k, v) in result.items() if v}
 
-        Parameters
-        ----------
-        weeks
-            Number of weeks to calculate growth over.
-
-        Returns
-        -------
-        growth_factor
-            A real number such that start * (1 + growth_factor * (weeks - 1) / 100) = final.
-
-        Examples
-        -------
-        >>> bench = DynamicExercise('Bench press', start_weight=100, final_weight=120)
-        >>> bench.weekly_growth(2)
-        10.0
-        >>> bench.weekly_growth(4)
-        5.0
-        >>> bench = DynamicExercise('Bench press', start_weight=100, percent_inc_per_week=1.5)
-        >>> bench.weekly_growth(4)
-        1.5
-        """
-        # If the final weight is set, compute the weekly growth
-        if self.final_weight and self.start_weight:
-            start, end = self.start_weight, self.final_weight
-            growth = ((end / start) - 1) / weeks * 100
-            return round(growth, 1)
-
-        if self.percent_inc_per_week is not None:
-            return self.percent_inc_per_week
-        else:
-            return percent_inc_per_week_program
-
-    def _progress_information(self, program):
+    def _progress_information(self):
         """Return a tuple (start_weight, final_weight, percent_inc_per_week).
 
         Can only be inferred in the context of a Program argument."""
+
+        if self.day is None:
+            raise Exception("Exercise {self.name} must be attached to a Day.")
+
+        if self.day.program is None:
+            raise Exception("Day {self.day.name} must be attached to a Program.")
+
+        program = self.day.program
 
         # Get increase per week
         inc_week = prioritized_not_None(self.percent_inc_per_week, program.percent_inc_per_week)
@@ -210,34 +193,52 @@ class DynamicExercise(object):
 
         return tuple(map(rounder, answer))
 
-    def _min_max_reps(self, program):
-        """Return a tuple (min_reps, max_reps).
+    @property
+    def min_reps(self):
+        """Return min reps. If a Program attribute it set and the exercise
+        attribute is None, use the program attribute."""
+        if (self.day is not None) and (self.day.program is not None):
+            program = self.day.program
+        else:
+            return self._min_reps
 
-        Can only be inferred in the context of a Program argument."""
-        min_reps = prioritized_not_None(self.min_reps, program.min_reps)
-        max_reps = prioritized_not_None(self.max_reps, program.max_reps)
-        return min_reps, max_reps
+        return prioritized_not_None(self._min_reps, program.min_reps)
+
+    @min_reps.setter
+    def min_reps(self):
+        return self._min_reps
+
+    @property
+    def max_reps(self):
+        """Return max reps. If a Program attribute it set and the exercise
+        attribute is None, use the program attribute."""
+        if (self.day is not None) and (self.day.program is not None):
+            program = self.day.program
+        else:
+            return self._max_reps
+
+        return prioritized_not_None(self._max_reps, program.max_reps)
+
+    @max_reps.setter
+    def max_reps(self):
+        return self._max_reps
 
     def __repr__(self):
         """Representation."""
-        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
+        return str(self)
 
     def __str__(self):
-        """Human readable output."""
+        """Human readable output.
 
-        strvar = [
-            "name",
-            "start_weight",
-            "final_weight",
-            "min_reps",
-            "max_reps",
-            "percent_inc_per_week",
-            "reps",
-            "intensity",
-        ]
+        Examples
+        --------
+        >>> ex = DynamicExercise(name="Bench", start_weight=100)
+        >>> str(ex)
+        "DynamicExercise(name='Bench', start_weight=100)"
+        """
 
-        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
-
+        attr_names = self._simple_attributes()
+        arg_str = ", ".join(["{}={}".format(attr, repr(getattr(self, attr))) for attr in attr_names])
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):

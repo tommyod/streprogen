@@ -115,10 +115,10 @@
                             {% for exercise in day.dynamic_exercises %}
                                 <tr>
                                     <td>&nbsp;{{ exercise.name }}</td>
-                                    <td>{{ exercise._progress_information(program)[0] | round2digits }}{{ program.units }}</td>
-                                    <td>{{ exercise._progress_information(program)[1] | round2digits }}{{ program.units }}</td>
-                                    <td>[{{ exercise._min_max_reps(program)[0] }}, {{ exercise._min_max_reps(program)[1] }}]</td>
-                                    <td>{{ exercise._progress_information(program)[2] }}%</td>
+                                    <td>{{ exercise._progress_information()[0] | round2digits }}{{ program.units }}</td>
+                                    <td>{{ exercise._progress_information()[1] | round2digits }}{{ program.units }}</td>
+                                    <td>[{{ exercise.min_reps }}, {{ exercise.max_reps }}]</td>
+                                    <td>{{ exercise._progress_information()[2] }}%</td>
                                     {% if exercise.reps == None %}
                                         <td>{{ program.reps_per_exercise }}</td>
                                     {% else %}
