@@ -111,7 +111,10 @@ class DynamicExercise(object):
 
     def _simple_attributes(self):
         """Yield all simple parameters (ints, strings, etc)."""
-        attributes = set(dir(self)) - {"round", "day"}  # round is a function
+        attributes = list(dir(self))  # round is a function
+        attributes.remove("round")
+        attributes.remove("day")
+
         for attr_name in attributes:
 
             # Skip private members
