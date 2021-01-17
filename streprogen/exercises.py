@@ -155,7 +155,9 @@ class DynamicExercise(object):
     def _progress_information(self):
         """Return a tuple (start_weight, final_weight, percent_inc_per_week).
 
-        Can only be inferred in the context of a Program argument."""
+        Can only be inferred in the context of a Program argument.
+
+        """
 
         if self.day is None:
             raise Exception("Exercise {self.name} must be attached to a Day.")
@@ -168,7 +170,6 @@ class DynamicExercise(object):
         # Get increase per week
         inc_week = prioritized_not_None(self.percent_inc_per_week, program.percent_inc_per_week)
 
-        answer = None
         # Case 1: Start weight and final weight is given
         if (self.start_weight is not None) and (self.final_weight is not None):
             start_w, final_w = self.start_weight, self.final_weight
@@ -245,8 +246,7 @@ class DynamicExercise(object):
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = list(self._simple_attributes())
-        return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
+        return all(getattr(self, attr) == getattr(other, attr) for attr in self._simple_attributes())
 
     def __hash__(self):
         attrs = ("name",)

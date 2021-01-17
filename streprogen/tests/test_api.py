@@ -211,6 +211,54 @@ def test_program_not_mutated_after_rendering():
     assert program_dict == program.to_dict()
 
 
+class TestProgressInformation:
+    def test_progress_information_override_weights(self):
+
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=10)
+        with program.Day("A"):
+            squat = program.DynamicExercise("Squats", start_weight=100, final_weight=150)
+
+        (start_w, final_w, inc_week) = squat._progress_information()
+        assert start_w == 100
+        assert final_w == 150
+        assert inc_week == 5  # Weight override program default
+
+    def test_progress_information_override_perc_inc(self):
+
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=1)
+        with program.Day("A"):
+            squat = program.DynamicExercise("Squats", start_weight=100, percent_inc_per_week=10)
+
+        (start_w, final_w, inc_week) = squat._progress_information()
+        assert start_w == 100
+        assert final_w == 200
+        assert inc_week == 10  # Weight override program default
+
+    def test_progress_information_calcs(self):
+        program = Program(name="MyProgram", duration=10)
+
+        # Three ways of saying the same thing
+        with program.Day():
+            a = program.DynamicExercise("a", start_weight=100, percent_inc_per_week=10)
+            b = program.DynamicExercise("b", start_weight=100, final_weight=200)
+            c = program.DynamicExercise("c", final_weight=200, percent_inc_per_week=10)
+
+        a_info = a._progress_information()
+        b_info = b._progress_information()
+        c_info = c._progress_information()
+
+        assert a_info == b_info
+        assert b_info == c_info
+
+    def test_progress_information_overspecified(self):
+
+        # Set some non-typical parameters
+        program = Program(name="MyProgram", duration=10)
+        with pytest.raises(ValueError, match="At most 2 out of 3 variables may be set"):
+            with program.Day("A"):
+                program.DynamicExercise("Squats", start_weight=100, final_weight=150, percent_inc_per_week=10)
+
+
 def test_error_on_non_unique_exercise_names():
     """Test that using the same exercise name raises an error."""
 
