@@ -235,13 +235,29 @@ class TestProgressInformation:
         assert inc_week == 10  # Weight override program default
 
     def test_progress_information_calcs(self):
-        program = Program(name="MyProgram", duration=10)
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=123)
 
         # Three ways of saying the same thing
         with program.Day():
             a = program.DynamicExercise("a", start_weight=100, percent_inc_per_week=10)
             b = program.DynamicExercise("b", start_weight=100, final_weight=200)
             c = program.DynamicExercise("c", final_weight=200, percent_inc_per_week=10)
+
+        a_info = a._progress_information()
+        b_info = b._progress_information()
+        c_info = c._progress_information()
+
+        assert a_info == b_info
+        assert b_info == c_info
+
+    def test_progress_information_calcs_from_program(self):
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=10)
+
+        # Three ways of saying the same thing
+        with program.Day():
+            a = program.DynamicExercise("a", start_weight=100)
+            b = program.DynamicExercise("b", start_weight=100, final_weight=200)
+            c = program.DynamicExercise("c", final_weight=200)
 
         a_info = a._progress_information()
         b_info = b._progress_information()
