@@ -59,10 +59,15 @@ def test_general_api():
     curls = StaticExercise("Curls", curl_func)
     day = Day(exercises=[bench, squats, curls])
 
+    # Variable reference to days are added
+    assert bench.day is not None
+    assert squats.day is not None
+
     assert len(day.dynamic_exercises) == 2
 
     # Add day(s) to program and render it
     program.add_days(day)
+    assert day.program is not None
 
     assert len(program.days) == 1
 
@@ -82,11 +87,16 @@ def test_decorator_api():
 
     with program.Day():
 
-        DynamicExercise("Bench press", 60, 80)
-        DynamicExercise("Squats", 80, 95)
-        StaticExercise("Curls", curl_func)
+        program.DynamicExercise("Bench press", 60, 65)
+        program.DynamicExercise("Squats", 80, 85)
+        program.StaticExercise("Curls", curl_func)
 
     assert len(program.days) == 1
+    assert len(program.days[0].dynamic_exercises) == 2
+    assert len(program.days[0].static_exercises) == 1
+
+    assert program.days[0].program is not None
+    assert program.days[0].dynamic_exercises[0].day is not None
 
     assert not program._rendered
     program.render()
@@ -152,7 +162,120 @@ def test_progression_means(func, period):
     assert abs(statistics.mean(values) - target) <= 1e-6
 
 
-def test_error_on_non_unique_names():
+def test_dynamic_exercises_are_not_mutated():
+    """Creating a program should not mutate an exercise."""
+
+    # Create an exercise
+    exercise = DynamicExercise("Bench press", start_weight=100)
+    exercise_dict = exercise.serialize()
+
+    # Create a program, add the day and render it
+    program = Program()
+    day = Day("Monday")
+    day.add_exercises(exercise)
+    program.add_days(day)
+    program.render()
+
+    assert exercise.serialize() == exercise_dict
+
+
+def test_program_not_mutated_after_rendering():
+    """Creating and rendering a program should not mutate its dict
+    representations."""
+
+    # Set some non-typical parameters
+    program = Program(
+        name="MyProgram",
+        duration=5,
+        min_reps=1,
+        reps_per_exercise=31,
+        round_to=10,
+        rep_scaler_func=[0.99, 0.97, 0.96, 0.95, 0.98],
+        intensity_scaler_func=[0.99, 0.97, 0.96, 0.95, 0.98],
+        units="asdf",
+    )
+    with program.Day("A"):
+        program.DynamicExercise("Squats", start_weight=100, final_weight=113, max_reps=12)
+
+    program_serialized = program.serialize()
+    program.render()
+    program_dict = program.to_dict()
+
+    # Rendering the program should not change the serialization
+    assert program.serialize() == program_serialized
+
+    # Serializing and de-serializing should not change the program dict reprs
+    program = Program.deserialize(program.serialize())
+    program.render()
+    assert program.serialize() == program_serialized
+    assert program_dict == program.to_dict()
+
+
+class TestProgressInformation:
+    def test_progress_information_override_weights(self):
+
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=10)
+        with program.Day("A"):
+            squat = program.DynamicExercise("Squats", start_weight=100, final_weight=150)
+
+        (start_w, final_w, inc_week) = squat._progress_information()
+        assert start_w == 100
+        assert final_w == 150
+        assert inc_week == 5  # Weight override program default
+
+    def test_progress_information_override_perc_inc(self):
+
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=1)
+        with program.Day("A"):
+            squat = program.DynamicExercise("Squats", start_weight=100, percent_inc_per_week=10)
+
+        (start_w, final_w, inc_week) = squat._progress_information()
+        assert start_w == 100
+        assert final_w == 200
+        assert inc_week == 10  # Weight override program default
+
+    def test_progress_information_calcs(self):
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=123)
+
+        # Three ways of saying the same thing
+        with program.Day():
+            a = program.DynamicExercise("a", start_weight=100, percent_inc_per_week=10)
+            b = program.DynamicExercise("b", start_weight=100, final_weight=200)
+            c = program.DynamicExercise("c", final_weight=200, percent_inc_per_week=10)
+
+        a_info = a._progress_information()
+        b_info = b._progress_information()
+        c_info = c._progress_information()
+
+        assert a_info == b_info
+        assert b_info == c_info
+
+    def test_progress_information_calcs_from_program(self):
+        program = Program(name="MyProgram", duration=10, percent_inc_per_week=10)
+
+        # Three ways of saying the same thing
+        with program.Day():
+            a = program.DynamicExercise("a", start_weight=100)
+            b = program.DynamicExercise("b", start_weight=100, final_weight=200)
+            c = program.DynamicExercise("c", final_weight=200)
+
+        a_info = a._progress_information()
+        b_info = b._progress_information()
+        c_info = c._progress_information()
+
+        assert a_info == b_info
+        assert b_info == c_info
+
+    def test_progress_information_overspecified(self):
+
+        # Set some non-typical parameters
+        program = Program(name="MyProgram", duration=10)
+        with pytest.raises(ValueError, match="At most 2 out of 3 variables may be set"):
+            with program.Day("A"):
+                program.DynamicExercise("Squats", start_weight=100, final_weight=150, percent_inc_per_week=10)
+
+
+def test_error_on_non_unique_exercise_names():
     """Test that using the same exercise name raises an error."""
 
     program1 = Program(duration=8, round_to=1)
@@ -162,6 +285,98 @@ def test_error_on_non_unique_names():
 
     with pytest.raises(ValueError, match="Exercise name not unique: Bench press"):
         program1.render()
+
+
+class TestSerialization:
+    def test_DynamicExercise(self):
+        """Serialize and deserialize should be equal."""
+
+        dynamic_ex = DynamicExercise("Bench", start_weight=100)
+        dyn_ex_dict = dynamic_ex.serialize()
+        assert dynamic_ex == DynamicExercise.deserialize(dyn_ex_dict)
+
+    def test_StaticExercise(self):
+        """Serialize and deserialize should be equal."""
+
+        static_ex = StaticExercise("Dips", "4 x 10")
+        static_ex_dict = static_ex.serialize()
+        assert static_ex == StaticExercise.deserialize(static_ex_dict)
+
+    def test_Day(self):
+        """Serialize and deserialize should be equal."""
+
+        bench = DynamicExercise("Bench", start_weight=100)
+        deadlift = DynamicExercise("Deadlift", start_weight=100, final_weight=140)
+        static_ex = StaticExercise("Dips", "4 x 10")
+
+        day = Day("Monday", [bench, deadlift, static_ex])
+        day_dict = day.serialize()
+
+        assert day_dict == Day.deserialize(day_dict).serialize()
+
+    def test_Program(self):
+        """Serialize and deserialize should be equal."""
+
+        program = Program(
+            name="Beginner 5x5", duration=4, intensity=85, units="kg", round_to=2.5, rep_scaler_func=[1, 1, 1, 1]
+        )
+
+        with program.Day("A"):
+            program.DynamicExercise(name="Squat", start_weight=100)
+
+        program.render()
+
+        # Create a new program by serializing and deserializing
+        new_program = Program.deserialize(program.serialize())
+        new_program.render()
+
+        assert str(program) == str(new_program)
+
+
+class TestWaysOfGivingRepAndIntensity:
+    @pytest.mark.parametrize("format", ["tex", "txt", "html", "dict"])
+    def test_rep_scalers_as_function_vs_list(self, format):
+        """Test that both functions and lists work the same."""
+
+        def rep_scaler_func(week):
+            return 1 - week / 100
+
+        rep_scalers = [(1 - week / 100) for week in range(1, 9)]
+
+        program1 = Program("My first program!", duration=8, round_to=1, rep_scaler_func=rep_scaler_func)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, rep_scaler_func=rep_scalers)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
+
+    @pytest.mark.parametrize("format", ["tex", "txt", "html", "dict"])
+    def test_intensity_scalers_as_function_vs_list(self, format):
+        """Test that both functions and lists work the same."""
+
+        def intensity_scaler_func(week):
+            return 1 - week / 100
+
+        intensity_scalers = [(1 - week / 100) for week in range(1, 9)]
+
+        program1 = Program("My first program!", duration=8, round_to=1, intensity_scaler_func=intensity_scaler_func)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        program2 = Program("My first program!", duration=8, round_to=1, intensity_scaler_func=intensity_scalers)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        # Use .txt format to compare programs
+        assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
 
 class TestWaysOfGivingProgress:
@@ -179,7 +394,7 @@ class TestWaysOfGivingProgress:
             program2.DynamicExercise("Bench press", start_weight=100)
         program2.render()
 
-        # Use .txt format to compare programs
+        # Use formats to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
     @pytest.mark.parametrize("format", ["tex", "txt", "html"])

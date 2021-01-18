@@ -3,8 +3,9 @@
 
 import functools
 import warnings
+import inspect
 
-from streprogen.utils import compose, escape_string, round_to_nearest
+from streprogen.utils import compose, escape_string, round_to_nearest, prioritized_not_None
 
 
 class DynamicExercise(object):
@@ -79,16 +80,19 @@ class DynamicExercise(object):
         self.name = escape_string(name)
         self.start_weight = start_weight
         self.final_weight = final_weight
-        self.min_reps = min_reps
-        self.max_reps = max_reps
+        self._min_reps = min_reps
+        self._max_reps = max_reps
         self.percent_inc_per_week = percent_inc_per_week
         self.reps = reps
         self.intensity = intensity
+        self.day = None
 
         var_names = ["start_weight", "final_weight", "percent_inc_per_week"]
         num_specified = sum(1 if (getattr(self, var) is not None) else 0 for var in var_names)
         if num_specified == 3:
             raise ValueError(f"At most 2 out of 3 variables may be set: {var_names}")
+
+        self.round_to = round_to
 
         if round_to is None:
             self.round = None
@@ -105,70 +109,153 @@ class DynamicExercise(object):
                 msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
                 raise ValueError(msg.format(self.name))
 
-    def weekly_growth(self, weeks, percent_inc_per_week_program=None):
-        """Calculate the weekly growth in percentage, rounded to one digit.
+    def _simple_attributes(self):
+        """Yield all simple parameters (ints, strings, etc)."""
+        attributes = list(dir(self))  # round is a function
+        attributes.remove("round")
+        attributes.remove("day")
 
-        Parameters
-        ----------
-        weeks
-            Number of weeks to calculate growth over.
+        for attr_name in attributes:
 
-        Returns
-        -------
-        growth_factor
-            A real number such that start * (1 + growth_factor * (weeks - 1) / 100) = final.
+            # Skip private members
+            if attr_name.startswith("_"):
+                continue
+
+            # Skip methods
+            if inspect.ismethod(getattr(self, attr_name)):
+                continue
+
+            if getattr(self, attr_name):
+                yield attr_name
+
+    def serialize(self):
+        """Export the object to a dictionary.
 
         Examples
-        -------
-        >>> bench = DynamicExercise('Bench press', start_weight=100, final_weight=120)
-        >>> bench.weekly_growth(2)
-        10.0
-        >>> bench.weekly_growth(4)
-        5.0
-        >>> bench = DynamicExercise('Bench press', start_weight=100, percent_inc_per_week=1.5)
-        >>> bench.weekly_growth(4)
-        1.5
-        """
-        # If the final weight is set, compute the weekly growth
-        if self.final_weight and self.start_weight:
-            start, end = self.start_weight, self.final_weight
-            growth = ((end / start) - 1) / weeks * 100
-            return round(growth, 1)
+        --------
+        >>> bench = DynamicExercise('Bench press', start_weight=100)
+        >>> bench.serialize() == {'start_weight': 100, 'name': 'Bench press'}
+        True
 
-        if self.percent_inc_per_week is not None:
-            return self.percent_inc_per_week
+        """
+        result = {
+            "name": self.name,
+            "start_weight": self.start_weight,
+            "final_weight": self.final_weight,
+            "min_reps": self._min_reps,
+            "max_reps": self._max_reps,
+            "percent_inc_per_week": self.percent_inc_per_week,
+            "reps": self.reps,
+            "intensity": self.intensity,
+            "round_to": self.round_to,
+        }
+
+        return {k: v for (k, v) in result.items() if v}
+
+    def _progress_information(self):
+        """Return a tuple (start_weight, final_weight, percent_inc_per_week).
+
+        Can only be inferred in the context of a Program argument.
+
+        """
+
+        if self.day is None:
+            raise Exception("Exercise {self.name} must be attached to a Day.")
+
+        if self.day.program is None:
+            raise Exception("Day {self.day.name} must be attached to a Program.")
+
+        program = self.day.program
+
+        # Get increase per week
+        inc_week = prioritized_not_None(self.percent_inc_per_week, program.percent_inc_per_week)
+
+        # Case 1: Start weight and final weight is given
+        if (self.start_weight is not None) and (self.final_weight is not None):
+            start_w, final_w = self.start_weight, self.final_weight
+            inc_week = ((final_w / start_w) - 1) / program.duration * 100
+            answer = (start_w, final_w, inc_week)
+
+        # Case 2: Start weight and increase is given
+        elif (self.start_weight is not None) and (inc_week is not None):
+            factor = 1 + (inc_week / 100) * program.duration
+            start_w = self.start_weight
+            final_w = self.start_weight * factor
+            answer = (start_w, final_w, inc_week)
+
+        # Case 3: Final weight and increase is given
+        elif (self.final_weight is not None) and (inc_week is not None):
+            factor = 1 + (inc_week / 100) * program.duration
+            start_w = self.final_weight / factor
+            final_w = self.final_weight
+            answer = (start_w, final_w, inc_week)
+
         else:
-            return percent_inc_per_week_program
+            raise Exception(f"Exercise {self} is overspecified.")
+
+        rounder = functools.partial(round_to_nearest, nearest=0.01)
+
+        return tuple(map(rounder, answer))
+
+    @property
+    def min_reps(self):
+        """Return min reps. If a Program attribute it set and the exercise
+        attribute is None, use the program attribute."""
+        if (self.day is not None) and (self.day.program is not None):
+            program = self.day.program
+        else:
+            return self._min_reps
+
+        return prioritized_not_None(self._min_reps, program.min_reps)
+
+    @min_reps.setter
+    def min_reps(self):
+        return self._min_reps
+
+    @property
+    def max_reps(self):
+        """Return max reps. If a Program attribute it set and the exercise
+        attribute is None, use the program attribute."""
+        if (self.day is not None) and (self.day.program is not None):
+            program = self.day.program
+        else:
+            return self._max_reps
+
+        return prioritized_not_None(self._max_reps, program.max_reps)
+
+    @max_reps.setter
+    def max_reps(self):
+        return self._max_reps
 
     def __repr__(self):
         """Representation."""
-        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
+        return str(self)
 
     def __str__(self):
-        """Human readable output."""
+        """Human readable output.
 
-        strvar = [
-            "name",
-            "start_weight",
-            "final_weight",
-            "min_reps",
-            "max_reps",
-            "percent_inc_per_week",
-            "reps",
-            "intensity",
-        ]
+        Examples
+        --------
+        >>> ex = DynamicExercise(name="Bench", start_weight=100)
+        >>> str(ex)
+        "DynamicExercise(name='Bench', start_weight=100)"
+        """
 
-        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
-
+        attr_names = self._simple_attributes()
+        arg_str = ", ".join(["{}={}".format(attr, repr(getattr(self, attr))) for attr in attr_names])
         return "{}({})".format(type(self).__name__, arg_str)
 
     def __eq__(self, other):
-        attrs = ("name",)
-        return all(getattr(self, attr) == getattr(other, attr) for attr in attrs)
+        return all(getattr(self, attr) == getattr(other, attr) for attr in self._simple_attributes())
 
     def __hash__(self):
         attrs = ("name",)
         return hash(tuple(getattr(self, attr) for attr in attrs))
+
+    @classmethod
+    def deserialize(cls, data):
+        """Create a new object from a dictionary."""
+        return cls(**data)
 
 
 class StaticExercise(object):
@@ -204,13 +291,14 @@ class StaticExercise(object):
         >>> stretching = StaticExercise('Stretching', '10 minutes')
         """
         self.name = escape_string(name)
+        self.sets_reps = sets_reps
         if isinstance(sets_reps, str):
-            self.sets_reps = self._function_from_string(sets_reps)
+            self.sets_reps_func = self._function_from_string(sets_reps)
         else:
-            self.sets_reps = sets_reps
+            self.sets_reps_func = sets_reps
 
         # Escape after function evaluation
-        self.sets_reps = compose(self.sets_reps, escape_string)
+        self.sets_reps_func = compose(self.sets_reps_func, escape_string)
 
     @staticmethod
     def _function_from_string(string):
@@ -230,6 +318,9 @@ class StaticExercise(object):
         """
         return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
 
+    def __eq__(self, other):
+        return self.name == other.name and self.sets_reps == other.sets_reps
+
     def __str__(self):
         """
         String formatting for readable human output.
@@ -241,8 +332,19 @@ class StaticExercise(object):
 
         return "{}({})".format(type(self).__name__, arg_str)
 
+    def serialize(self):
+        if callable(self.sets_reps):
+            raise ValueError(f"Cannot serialize {repr(self)} because `sets_reps` is a function.")
+        return {"name": self.name, "sets_reps": self.sets_reps}
+
+    @classmethod
+    def deserialize(cls, data):
+        return cls(**data)
+
 
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+    pytest.main(args=[".", "--doctest-modules", "-vv", "--capture=sys", "-k "])
+    bench = DynamicExercise("Bench", start_weight=100)
+    print(bench.serialize())

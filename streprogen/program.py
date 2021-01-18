@@ -103,10 +103,11 @@ class Program(object):
             override the global program value.
 
         rep_scaler_func
-            A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the
-            `reps_per_exercise` parameter for that week. Should typically return factors
-            between 0.7 and 1.3.
+            A function mapping from a week in the range [1, `duration`] to a
+            scaling value (factor). The scaling value will be multiplied with
+            the `reps_per_exercise` parameter for that week. Should typically
+            return factors between 0.7 and 1.3.
+            Alternatively, a list of length `duration` may be passed.
 
         intensity
             The baseline intensity for each dynamic exercise. The intensity
@@ -115,10 +116,11 @@ class Program(object):
             lift) for that given week. Typically a value around 80.
 
         intensity_scaler_func
-            A function mapping from a week in the range [1, `duration`] to a scaling
-            value (factor). The scaling value will be multiplied with the
-            `intensity` parameter for that week.
+            A function mapping from a week in the range [1, `duration`] to a
+            scaling value (factor). The scaling value will be multiplied with
+            the `intensity` parameter for that week.
             Should typically return factors between 0.9 and 1.1.
+            Alternatively, a list of length `duration` may be passed.
 
         units
             The units used for exporting and printing the program, e.g. 'kg'.
@@ -187,23 +189,34 @@ class Program(object):
 
         assert isinstance(units, str)
         self.units = units
+        self.round_to = round_to
         self.round = functools.partial(round_to_nearest, nearest=round_to)
         self.verbose = verbose
 
+        # ------ REP SCALERS ------
         # Set functions to user supplied, or defaults if None was passed
         user, default = (
             rep_scaler_func,
             functools.partial(self._default_rep_scaler_func, final_week=self.duration),
         )
-        self.rep_scaler_func = prioritized_not_None(user, default)
-        assert callable(self.rep_scaler_func)
+        rep_scaler_func = prioritized_not_None(user, default)
+        if callable(rep_scaler_func):
+            self.rep_scalers = [rep_scaler_func(w + 1) for w in range(self.duration)]
+        else:
+            self.rep_scalers = list(rep_scaler_func)
+        assert isinstance(self.rep_scalers, list)
 
+        # ------ INTENSITY SCALERS------
         user, default = (
             intensity_scaler_func,
             functools.partial(self._default_intensity_scaler_func, final_week=self.duration),
         )
-        self.intensity_scaler_func = prioritized_not_None(user, default)
-        assert callable(self.intensity_scaler_func)
+        intensity_scaler_func = prioritized_not_None(user, default)
+        if callable(intensity_scaler_func):
+            self.intensity_scalers = [intensity_scaler_func(w + 1) for w in range(self.duration)]
+        else:
+            self.intensity_scalers = list(intensity_scaler_func)
+        assert isinstance(self.intensity_scalers, list)
 
         user, default = progression_func, self._default_progression_func
         self.progression_func = prioritized_not_None(user, default)
@@ -225,7 +238,38 @@ class Program(object):
         # TODO: make explicit
         self.optimizer = RepSchemeOptimizer()
 
-    def Day(self, name=None):
+    def serialize(self) -> dict:
+        """Export the object to a dictionary."""
+        data = {
+            "name": self.name,
+            "duration": self.duration,
+            "min_reps": self.min_reps,
+            "max_reps": self.max_reps,
+            "reps_per_exercise": self.reps_per_exercise,
+            "rep_scaler_func": self.rep_scalers,
+            "intensity": self.intensity,
+            "intensity_scaler_func": self.intensity_scalers,
+            "units": self.units,
+            "round_to": self.round_to,
+            "percent_inc_per_week": self.percent_inc_per_week,
+            "verbose": self.verbose,
+        }
+
+        data["days"] = [day.serialize() for day in self.days]
+        return data
+
+    @classmethod
+    def deserialize(cls, data: dict):
+        """Create a new object from a dictionary."""
+        days = data.pop("days")
+        new_program = cls(**data)
+
+        for day_data in days:
+            new_program.add_days(Day.deserialize(day_data))
+
+        return new_program
+
+    def Day(self, name: str = None):
         day = Day(name=name)
         day.program = self
         return day
@@ -254,6 +298,7 @@ class Program(object):
             round_to,
         )
         self.active_day.dynamic_exercises.append(ex)
+        ex.day = self.active_day
         return ex
 
     def StaticExercise(self, name, sets_reps="4 x 10"):
@@ -275,24 +320,29 @@ class Program(object):
 
         Apart from these sanity checks, the user is on their own.
         """
-        weeks = list(range(1, self.duration + 1))
+
+        # Warn if many days have the same name
+        if len(self.days) > len(set(day.name for day in self.days)):
+            warnings.warn("\nWARNING: Some day names are duplicates.")
+
+        weeks = list(range(self.duration))
 
         # Validate the intensity
-        intensities = [self.intensity_scaler_func(w) * self.intensity for w in weeks]
+        intensities = [self.intensity_scalers[w] * self.intensity for w in weeks]
 
         if max(intensities) > 90:
-            warnings.warn("\nWARNING: Average intensity is > 90.")
+            warnings.warn("\nWARNING: At least one week has intensity > 90.")
 
         if min(intensities) < 65:
-            warnings.warn("\nWARNING: Average intensity is < 65.")
+            warnings.warn("\nWARNING: At least one week has intensity < 65.")
 
         # Validate the repetitions
-        repetitions = [self.rep_scaler_func(w) * self.reps_per_exercise for w in weeks]
+        repetitions = [self.rep_scalers[w] * self.reps_per_exercise for w in weeks]
         if max(repetitions) > 45:
-            warnings.warn("\nWARNING: Number of repetitions > 45.")
+            warnings.warn("\nWARNING: At least one week has repetitions > 45.")
 
         if min(repetitions) < 15:
-            warnings.warn("\nWARNING: Number of repetitions < 15.")
+            warnings.warn("\nWARNING: At least one week has repetitions < 15.")
 
         # Validate the 'reps_to_intensity_func'
         for x1, x2 in zip(range(1, 20), range(2, 21)):
@@ -308,21 +358,15 @@ class Program(object):
             warnings.warn("\n'reps_to_intensity_func' maps to < 0.")
 
         # Validate the exercises
-        for day in self.days:
+        for exercise in self._yield_exercises():
 
-            ex_names = set()
+            if isinstance(exercise, StaticExercise):
+                continue
 
-            for dynamic_ex in day.dynamic_exercises:
-
-                if dynamic_ex.name in ex_names:
-                    raise ValueError(f"Exercise name not unique: {dynamic_ex.name}")
-                else:
-                    ex_names.add(dynamic_ex.name)
-
-                percentage_growth = dynamic_ex.weekly_growth(self.duration, self.percent_inc_per_week)
-                if percentage_growth > 4:
-                    msg = '\n"{}" grows with {}% each week.'.format(dynamic_ex.name, percentage_growth)
-                    warnings.warn(msg)
+            _, _, percent_inc_per_week = exercise._progress_information()
+            if percent_inc_per_week > 4:
+                msg = f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
+                warnings.warn(msg)
 
     def add_days(self, *days):
         """Add one or several days to the program.
@@ -330,9 +374,8 @@ class Program(object):
         Parameters
         ----------
         *days
-            Unpacked tuple containing
+            Iterable containing
             :py:class:`streprogen.Day` instances.
-
 
         Examples
         -------
@@ -341,15 +384,21 @@ class Program(object):
         >>> program.add_days(day1, day2)
         >>> program.add_days(day1)
         """
-        self.days.extend(days)
+        for day in days:
+            day.program = self
+            self.days.append(day)
 
-    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate):
+    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
         """
         Render a single dynamic exercise.
-        This is done for each exercise every week.
+        This is done for every exercise for every week.
         """
 
-        sets = tuple(range(dynamic_exercise.min_reps, dynamic_exercise.max_reps + 1))
+        min_reps = dynamic_exercise.min_reps
+        max_reps = dynamic_exercise.max_reps
+
+        # Use tuples as inputs to the optimizer can cache the arguments
+        sets = tuple(range(min_reps, max_reps + 1))
         intensities = tuple(map(self.reps_to_intensity_func, sets))
 
         reps = self.optimizer(
@@ -359,8 +408,8 @@ class Program(object):
         intensities = list(map(self.reps_to_intensity_func, reps))
 
         # If repetitions are too high, a low average intensity cannot be attained
-        int_highest = self.reps_to_intensity_func(dynamic_exercise.min_reps)
-        int_lowest = self.reps_to_intensity_func(dynamic_exercise.max_reps)
+        int_highest = self.reps_to_intensity_func(min_reps)
+        int_lowest = self.reps_to_intensity_func(max_reps)
 
         if (not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)) and validate:
             msg = """WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
@@ -370,8 +419,8 @@ SOLUTION: Either (1) change the repetition range, (2) change the desired intensi
 or (3) ignore this message. The software will do it's best to remedy this.
 """.format(
                 dynamic_exercise.name,
-                dynamic_exercise.min_reps,
-                dynamic_exercise.max_reps,
+                min_reps,
+                max_reps,
                 round(int_lowest, 1),
                 round(int_highest, 1),
                 round(desired_intensity, 1),
@@ -422,49 +471,6 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 for dynamic_ex in day.dynamic_exercises:
                     yield (week, day, dynamic_ex)
 
-    def _yield_week_day(self, enumeration=False):
-        """A helper function to reduce the number of nested loops.
-
-        Parameters
-        ----------
-        enumeration
-            Whether or not to wrap the days in enumerate().
-
-
-        Yields
-        -------
-        tuple
-            A tuple with (week, day_index, day) or (week, day),
-            depending on 'enumeration' parameter.
-
-        """
-        if enumeration:
-            # Iterate over all weeks
-            for week in range(1, self.duration + 1):
-                # Iterate over all days
-                for day_index, day in enumerate(self.days):
-                    yield (week, day_index, day)
-        else:
-            # Iterate over all weeks
-            for week in range(1, self.duration + 1):
-                # Iterate over all days
-                for day in self.days:
-                    yield (week, day)
-
-    def _yield_dynamic_exercises(self):
-        """A helper function to reduce the number of nested loops.
-
-
-        Yields
-        -------
-        :py:class:`streprogen.DynamicExercise`
-            Yields the dynamic exercises in the program.
-
-        """
-        for day in self.days:
-            for dynamic_ex in day.dynamic_exercises:
-                yield dynamic_ex
-
     def _yield_exercises(self):
         """A helper function to reduce the number of nested loops.
 
@@ -496,6 +502,15 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """
         start_time = time.time()
 
+        # Check that exercise names are unique within each day
+        for day in self.days:
+            seen_names = set()
+            for exercise in day.dynamic_exercises + day.static_exercises:
+                if exercise.name in seen_names:
+                    raise ValueError(f"Exercise name not unique: {exercise.name}")
+                else:
+                    seen_names.add(exercise.name)
+
         # --------------------------------
         # Prepare for rendering the dynamic exercises
         # --------------------------------
@@ -518,10 +533,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
         for (week, day, dyn_ex) in self._yield_week_day_dynamic():
 
             # Set min and max reps from program, if not set on exercise
-            dyn_ex.min_reps = prioritized_not_None(dyn_ex.min_reps, self.min_reps)
-            dyn_ex.max_reps = prioritized_not_None(dyn_ex.max_reps, self.max_reps)
+            min_reps = dyn_ex.min_reps
+            max_reps = dyn_ex.max_reps
 
-            if dyn_ex.min_reps > dyn_ex.max_reps:
+            if min_reps > max_reps:
                 msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
                 raise ValueError(msg.format(dyn_ex.name))
 
@@ -530,15 +545,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
             round_func = prioritized_not_None(dyn_ex.round, self.round)
 
             # The desired repetitions to work up to
-            local_r, global_r = dyn_ex.reps, self.reps_per_exercise
-            total_reps = prioritized_not_None(local_r, global_r)
-            desired_reps = round(total_reps * self.rep_scaler_func(week))
+            total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
+            desired_reps = round(total_reps * self.rep_scalers[week - 1])
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired average intensity
-            local_i, global_i = dyn_ex.intensity, self.intensity
-            intensity_unscaled = prioritized_not_None(local_i, global_i)
-            scale_factor = self.intensity_scaler_func(week)
+            intensity_unscaled = prioritized_not_None(dyn_ex.intensity, self.intensity)
+            scale_factor = self.intensity_scalers[week - 1]
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
@@ -549,30 +562,15 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Get increase from program if not available on the exercise
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
-            # Case 1: Start weight and final weight is given
-            if (dyn_ex.start_weight is not None) and (dyn_ex.final_weight is not None):
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            # Case 2: Start weight and increase is given
-            elif (dyn_ex.start_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.final_weight = dyn_ex.start_weight * factor
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            # Case 3: Final weight and increase is given
-            elif (dyn_ex.final_weight is not None) and (inc_week is not None):
-                factor = 1 + (inc_week / 100) * self.duration
-                dyn_ex.start_weight = dyn_ex.final_weight / factor
-                start_w, final_w = dyn_ex.start_weight, dyn_ex.final_weight
-
-            else:
-                raise Exception(f"Exercise {dyn_ex} is overspecified.")
+            # Compute the progress
+            (start_w, final_w, inc_week) = dyn_ex._progress_information()
 
             weight = self.progression_func(week, start_w, final_w, 1, self.duration)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
-                msg = "Weight for '{dyn_ex}' was {round(weight, 1)} in week {week}. "
-                msg += "This is out of bounds. Start weight is {round(start_w, 1)}. "
-                msg += "Final weight is {round(start_w, 1)}."
+                msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {weight} in week {week}. "
+                msg += f"This is out of bounds. Start weight is {start_w}. "
+                msg += f"Final weight is {final_w}."
+                warnings.warn(msg)
 
             # Define a function to prettify the weights
             def pretty_weight(weight, i, round_function):
@@ -582,18 +580,55 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 return weight
 
             # Create pretty strings
-            tuple_generator = zip(out["intensities"], out["reps"])
-            pretty_gen = (
-                (str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuple_generator
-            )
+            tuples_gen = zip(out["intensities"], out["reps"])
+            pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
             out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
+            out["1RM_this_week"] = round(weight, 2)
+            out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
 
-            # Update with the ['intensities', 'reps', 'strings'] keys
+            # Update with the ['intensities', 'reps', 'strings', ...] keys
             self._rendered[week][day][dyn_ex].update(out)
 
         if self.verbose:
             delta_time = round(time.time() - start_time, 3)
             print(f"Rendered program in {delta_time} seconds.")
+
+    def to_dict(self):
+        """Write the rendered program information to a dictionary."""
+        if not hasattr(self, "_rendered"):
+            raise ValueError("Render the program by calling .render() first.")
+
+        output_dictionary = {"program": self.serialize()}
+        output_dictionary["rendered"] = []
+
+        if not hasattr(self, "_rendered"):
+            return output_dictionary
+
+        # Iterate over all weeks
+        for week in range(1, self.duration + 1):
+            output_week = []
+
+            # Iterate over all days
+            for day in self.days:
+                output_day = {"name": day.name, "dynamic_exercises": [], "static_exercises": []}
+
+                # Iterate over all main exercises
+                for dynamic_ex in day.dynamic_exercises:
+                    out = dynamic_ex.serialize()
+                    out.update(self._rendered[week][day][dynamic_ex])
+                    output_day["dynamic_exercises"].append(out)
+
+                for static_ex in day.static_exercises:
+
+                    output_day["static_exercises"].append(static_ex.serialize())
+
+                # Add daily
+                output_week.append(output_day)
+
+            # Add weekly dict
+            output_dictionary["rendered"].append(output_week)
+
+        return output_dictionary
 
     def _set_jinja2_enviroment(self):
         """
@@ -742,10 +777,13 @@ if __name__ == "__main__":
     )
 
     with program.Day("Mandag"):
-        program.DynamicExercise("Knebøy", start_weight=70, min_reps=3, max_reps=5)
+        program.DynamicExercise("Knebøy", start_weight=100, min_reps=3, max_reps=5)
 
     # Render the program, then print it
     program.render()
+    from pprint import pprint
+
+    # pprint(program.to_dict())
     print(program)
 
     def rep_scaler_func(week, *args):
@@ -758,7 +796,7 @@ if __name__ == "__main__":
         # The name of the training program
         name="Beginner 5x5",
         # The duration of the training program in weeks.
-        # duration=8,
+        duration=4,
         # The baseline number of repetitions per dynamic exercise.
         # reps_per_exercise=25,
         intensity=reps_to_intensity(5),
@@ -766,13 +804,18 @@ if __name__ == "__main__":
         units="kg",
         # What the weights are rounded to.
         round_to=2.5,
-        rep_scaler_func=rep_scaler_func,
+        rep_scaler_func=[1, 1, 1, 1],
         intensity_scaler_func=intensity_scaler_func,
     )
 
     with program.Day("A"):
         program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
+        program.StaticExercise("Biceps", "4 x 10")
 
     program.render()
+
+    from pprint import pprint
+
+    # pprint(program.to_dict())
 
     # print(program)

@@ -38,13 +38,13 @@ The latest version can be found at \\
       \textbf{ {{day.name}} } & & & & & \\ \hline
     {% for dynamic_ex in day.dynamic_exercises %}
         \hspace{0.5em}{{dynamic_ex.name}} & 
-        {{dynamic_ex.start_weight|round2digits}} {{program.units}} &
-        {{dynamic_ex.final_weight|round2digits}} {{program.units}} & 
+        {{dynamic_ex._progress_information()[0]|round2digits}} {{program.units}} &
+        {{dynamic_ex._progress_information()[1]|round2digits}} {{program.units}} & 
         {{dynamic_ex.min_reps}} & {{dynamic_ex.max_reps}} &
-        {{dynamic_ex.weekly_growth(program.duration)}}\%\\
+        {{dynamic_ex._progress_information()[2]}}\%\\
     {% endfor %}
     {% for static_ex in day.static_exercises %}
-       \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps(1)}} } \\
+       \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps_func(1)}} } \\
       {% endfor %}
 {% endfor %}
 \end{tabular}
@@ -80,7 +80,7 @@ Not rendered. Call program.render() to render it.
   {% endfor %}
 
   {% for static_ex in day.static_exercises %}
-   \hspace{0.75em} {{static_ex.name}} &  \multicolumn{ {{table_width - 1}} }{l}{ {{static_ex.sets_reps(week)}} } \\
+   \hspace{0.75em} {{static_ex.name}} &  \multicolumn{ {{table_width - 1}} }{l}{ {{static_ex.sets_reps_func(week)}} } \\
   {% endfor %}
   \end{tabular}
 
