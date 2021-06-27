@@ -242,7 +242,18 @@ class Program(object):
     def set_optimization_params(self, reps_slack=None, max_diff=None, max_unique=None):
         """Set default parameters.
 
-        Passing None for a paramter will get use the defaults in RepSchemeGenerator."""
+        Passing None for a paramter will get use the defaults in RepSchemeGenerator.
+
+        Parameters
+        ----------
+        reps_slack : int, optional
+            Maximum deviation from the repetition goal.
+        max_diff : int, optional
+            Maximum difference between two consecutive sets.
+        max_unique : int, optional
+            Maximum unique sets in the solution.
+
+        """
 
         # Get the default parameters
         signature = inspect.signature(RepSchemeGenerator.__init__)
