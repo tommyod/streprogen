@@ -330,7 +330,7 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
 
 
-def progression_hyperbolic_sine(week, start_weight, final_weight, start_week, final_week, k=0):
+def progression_sinh(week, start_weight, final_weight, start_week, final_week, k=0):
     """A progression function similar to the hyperbolic sine, but going through 
     the points ('start_week', 'start_weight') and ('end_week', 'final_weight').
     Evaluated in 'week'.
@@ -357,12 +357,12 @@ def progression_hyperbolic_sine(week, start_weight, final_weight, start_week, fi
         
     Examples
     -------
-    >>> progression_sigmoid(1, start_weight=3, final_weight=10, start_week=1, 
+    >>> progression_sinh(1, start_weight=3, final_weight=10, start_week=1, 
     ...                     final_week=5, k=0)
     3.0
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(progression_hyperbolic_sine(w, start_weight, final_weight, start_week, final_week, k) for w in week)
+        return list(progression_sinh(w, start_weight, final_weight, start_week, final_week, k) for w in week)
 
     assert week <= final_week
     assert week >= start_week

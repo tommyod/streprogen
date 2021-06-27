@@ -7,6 +7,7 @@ from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.mealplan import Mealplan
 from streprogen.modeling import (
     progression_diffeq,
+    progression_sinh,
     progression_sinusoidal,
     progression_sawtooth,
     reps_to_intensity,
