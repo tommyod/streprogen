@@ -17,7 +17,7 @@ from streprogen.modeling import (
 from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.program import Program
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 __all__ = [
     "StaticExercise",
@@ -28,6 +28,7 @@ __all__ = [
     "reps_to_intensity_tight",
     "reps_to_intensity_relaxed",
     "progression_diffeq",
+    "progression_sinh",
     "progression_sinusoidal",
     "progression_sawtooth",
     "Food",
