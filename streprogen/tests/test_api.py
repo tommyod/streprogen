@@ -448,8 +448,25 @@ class TestWaysOfGivingProgress:
         # Use .txt format to compare programs
         assert getattr(program1, f"to_{format}")() == getattr(program2, f"to_{format}")()
 
+    def test_setting_optimization_params(self):
+        """Test that setting via method works."""
+
+        program1 = Program(duration=12, units="kg", round_to=1)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        program2 = Program(duration=12, units="kg", round_to=1)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+
+        program2.set_optimization_params(reps_slack=3, max_diff=1, max_unique=2)
+        program2.render()
+
+        # They should be different
+        assert str(program1) != str(program2)
+
 
 if __name__ == "__main__":
-    if True:
-        # --durations=10  <- May be used to show potentially slow tests
-        pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys", "-vv"])
+    # --durations=10  <- May be used to show potentially slow tests
+    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys", "-vv"])
