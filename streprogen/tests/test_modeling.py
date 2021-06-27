@@ -15,7 +15,11 @@ from streprogen import progression_sinh
 def test_progression_sinh(k, duration):
 
     # Test first and last points
-    assert progression_sinh(0, 50, 100, 1, final_week=duration, k=k) == 0
+    assert progression_sinh(1, 50, 100, 1, final_week=duration, k=k) == 50
+    assert progression_sinh(duration, 50, 100, 1, final_week=duration, k=k) == 100
+
+    # Test midpoint
+    assert progression_sinh((duration + 1) / 2, 50, 100, 1, final_week=duration, k=k) == 75
 
 
 if __name__ == "__main__":
