@@ -330,6 +330,58 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     return (S_i - S_m) * math.exp(a * k) + S_m + a * (S_i - S_m) * math.exp(-k)
 
 
+def progression_sinh(week, start_weight, final_weight, start_week, final_week, k=0):
+    """A progression function similar to the hyperbolic sine, but going through
+    the points ('start_week', 'start_weight') and ('end_week', 'final_weight').
+    Evaluated in 'week'.
+
+    Parameters
+    ----------
+    week
+        The week to evaluate the linear function at.
+    start_weight
+        The weight at 'start_week'.
+    final_weight
+        The weight at 'final_week'.
+    start_week
+        The number of the first week, typically 1.
+    final_week
+        The number of the final week, e.g. 8.
+    k
+        How much the function "bends". k=0 is linear, k>0 bends it.
+
+    Returns
+    -------
+    weight
+        The weight at 'week'.
+
+    Examples
+    -------
+    >>> progression_sinh(1, start_weight=3, final_weight=10, start_week=1,
+    ...                     final_week=5, k=0)
+    3.0
+    """
+    if isinstance(week, collections.abc.Iterable):
+        return list(progression_sinh(w, start_weight, final_weight, start_week, final_week, k) for w in week)
+
+    assert week <= final_week
+    assert week >= start_week
+    assert k >= 0
+
+    # Normalize the time
+    time_fraction = (week - start_week) / (final_week - start_week)
+    assert time_fraction >= 0
+    assert time_fraction <= 1
+
+    diff_weight = (final_weight - start_weight) / 2
+    mid_weight = (start_weight + final_weight) / 2
+
+    f1 = -math.exp(-k * time_fraction)
+    f2 = math.exp(k * (time_fraction - 1))
+
+    return mid_weight + diff_weight * ((1 - time_fraction) * f1 + time_fraction * f2)
+
+
 reps_to_intensity_tight = functools.partial(reps_to_intensity, slope=-3.25)
 reps_to_intensity_relaxed = functools.partial(reps_to_intensity, slope=-3.75)
 

@@ -7,6 +7,7 @@ import warnings
 import numbers
 import time
 import typing
+import inspect
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -17,7 +18,7 @@ from streprogen.modeling import (
     progression_diffeq,
     reps_to_intensity,
 )
-from streprogen.optimization import RepSchemeOptimizer
+from streprogen.optimization import RepSchemeOptimizer, RepSchemeGenerator
 from streprogen.utils import (
     chunker,
     escape_string,
@@ -237,6 +238,35 @@ class Program(object):
 
         # TODO: make explicit
         self.optimizer = RepSchemeOptimizer()
+
+    def set_optimization_params(self, reps_slack=None, max_diff=None, max_unique=None):
+        """Set default parameters.
+
+        Passing None for a paramter will get use the defaults in RepSchemeGenerator.
+
+        Parameters
+        ----------
+        reps_slack : int, optional
+            Maximum deviation from the repetition goal.
+        max_diff : int, optional
+            Maximum difference between two consecutive sets.
+        max_unique : int, optional
+            Maximum unique sets in the solution.
+
+        """
+
+        # Get the default parameters
+        signature = inspect.signature(RepSchemeGenerator.__init__)
+        defaults = {k: v.default for k, v in signature.parameters.items() if v.default is not inspect.Parameter.empty}
+
+        # Use defaults if None is passed
+        reps_slack = defaults["reps_slack"] if reps_slack is None else reps_slack
+        max_diff = defaults["reps_slack"] if max_diff is None else max_diff
+        max_unique = defaults["reps_slack"] if max_unique is None else max_unique
+
+        self.optimizer = RepSchemeOptimizer(
+            RepSchemeGenerator(reps_slack=reps_slack, max_diff=max_diff, max_unique=max_unique)
+        )
 
     def serialize(self) -> dict:
         """Export the object to a dictionary."""
