@@ -36,22 +36,10 @@ class Program(object):
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
-        functools.partial(
-            progression_diffeq,
-            start_weight=1 + 0.2,
-            final_weight=1 - 0.2,
-            start_week=1,
-            k=0,
-        )
+        functools.partial(progression_diffeq, start_weight=1 + 0.2, final_weight=1 - 0.2, start_week=1, k=0,)
     )
     _default_intensity_scaler_func = staticmethod(
-        functools.partial(
-            progression_diffeq,
-            start_weight=1 - 0.05,
-            final_weight=1 + 0.05,
-            start_week=1,
-            k=0,
-        )
+        functools.partial(progression_diffeq, start_weight=1 - 0.05, final_weight=1 + 0.05, start_week=1, k=0,)
     )
 
     _default_reps_to_intensity_func = staticmethod(reps_to_intensity)
@@ -287,15 +275,7 @@ class Program(object):
         round_to=None,
     ):
         ex = DynamicExercise(
-            name,
-            start_weight,
-            final_weight,
-            min_reps,
-            max_reps,
-            percent_inc_per_week,
-            reps,
-            intensity,
-            round_to,
+            name, start_weight, final_weight, min_reps, max_reps, percent_inc_per_week, reps, intensity, round_to,
         )
         self.active_day.dynamic_exercises.append(ex)
         ex.day = self.active_day
@@ -695,12 +675,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["txt"])
-        return template.render(
-            program=self,
-            max_ex_name=max_ex_name,
-            max_ex_scheme=max_ex_scheme,
-            verbose=verbose,
-        )
+        return template.render(program=self, max_ex_name=max_ex_name, max_ex_scheme=max_ex_scheme, verbose=verbose,)
 
     def to_tex(self, text_size="large", table_width=5, clear_pages=False):
         r"""
@@ -736,12 +711,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         env = self.jinja2_environment
         template = env.get_template(self.TEMPLATE_NAMES["tex"])
 
-        return template.render(
-            program=self,
-            text_size=text_size,
-            table_width=table_width,
-            clear_pages=clear_pages,
-        )
+        return template.render(program=self, text_size=text_size, table_width=table_width, clear_pages=clear_pages,)
 
     def __str__(self):
         """
