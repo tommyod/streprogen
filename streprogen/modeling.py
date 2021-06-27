@@ -331,10 +331,10 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
 
 
 def progression_sinh(week, start_weight, final_weight, start_week, final_week, k=0):
-    """A progression function similar to the hyperbolic sine, but going through 
+    """A progression function similar to the hyperbolic sine, but going through
     the points ('start_week', 'start_weight') and ('end_week', 'final_weight').
     Evaluated in 'week'.
-    
+
     Parameters
     ----------
     week
@@ -349,15 +349,15 @@ def progression_sinh(week, start_weight, final_weight, start_week, final_week, k
         The number of the final week, e.g. 8.
     k
         How much the function "bends". k=0 is linear, k>0 bends it.
-        
+
     Returns
     -------
     weight
         The weight at 'week'.
-        
+
     Examples
     -------
-    >>> progression_sinh(1, start_weight=3, final_weight=10, start_week=1, 
+    >>> progression_sinh(1, start_weight=3, final_weight=10, start_week=1,
     ...                     final_week=5, k=0)
     3.0
     """

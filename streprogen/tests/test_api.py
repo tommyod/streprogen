@@ -136,7 +136,8 @@ def test_progression_periods(period):
 
 
 @pytest.mark.parametrize(
-    "func, period", list(itertools.product([progression_sawtooth, progression_sinusoidal], [1, 2, 3, 4, 5])),
+    "func, period",
+    list(itertools.product([progression_sawtooth, progression_sinusoidal], [1, 2, 3, 4, 5])),
 )
 def test_progression_means(func, period):
 
