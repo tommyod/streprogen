@@ -17,7 +17,7 @@ from streprogen.modeling import (
 from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.program import Program
 
-__version__ = "3.3.0"
+__version__ = "3.4.0"
 
 __all__ = [
     "StaticExercise",
