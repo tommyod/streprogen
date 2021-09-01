@@ -69,7 +69,9 @@ class DynamicExercise(object):
             Round the output to the closest multiple of this number, e.g. 2.5.
 
         shift
-            TODO
+            Shift evaluation of repetitions, intensity and progress `shift`
+            weeks ahead in time. An exercise shifted by 1 will have its reps,
+            intensity and strength evalated at week i + 1 instead of in week i.
 
 
         Examples
