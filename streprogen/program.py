@@ -615,7 +615,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
-                msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {weight} in week {week}. "
+                msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {round(weight, 2)} in week {week}. "
                 msg += f"This is out of bounds. Start weight is {start_w}. "
                 msg += f"Final weight is {final_w}."
                 warnings.warn(msg)
