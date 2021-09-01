@@ -203,6 +203,7 @@ class Program(object):
         rep_scaler_func = prioritized_not_None(user, default)
         if callable(rep_scaler_func):
             self.rep_scalers = [rep_scaler_func(w + 1) for w in range(self.duration)]
+            self.rep_scaler_func = rep_scaler_func
         else:
             self.rep_scalers = list(rep_scaler_func)
         assert isinstance(self.rep_scalers, list)
@@ -215,6 +216,7 @@ class Program(object):
         intensity_scaler_func = prioritized_not_None(user, default)
         if callable(intensity_scaler_func):
             self.intensity_scalers = [intensity_scaler_func(w + 1) for w in range(self.duration)]
+            self.intensity_scaler_func = intensity_scaler_func
         else:
             self.intensity_scalers = list(intensity_scaler_func)
         assert isinstance(self.intensity_scalers, list)
@@ -315,6 +317,7 @@ class Program(object):
         reps=None,
         intensity=None,
         round_to=None,
+        shift=0,
     ):
         ex = DynamicExercise(
             name,
@@ -326,6 +329,7 @@ class Program(object):
             reps,
             intensity,
             round_to,
+            shift,
         )
         self.active_day.dynamic_exercises.append(ex)
         ex.day = self.active_day
@@ -576,12 +580,26 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # The desired repetitions to work up to
             total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
-            desired_reps = round(total_reps * self.rep_scalers[week - 1])
+            try:
+                desired_reps = round(total_reps * self.rep_scalers[week - 1 + dyn_ex.shift])
+            except IndexError:
+                if hasattr(self, "rep_scaler_func"):
+                    desired_reps = round(total_reps * self.rep_scaler_func(week - 1 + dyn_ex.shift))
+                else:
+                    raise TypeError("Using `shift` requires `rep_scaler_func` to be a function, not a list.")
+
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
             # The desired average intensity
             intensity_unscaled = prioritized_not_None(dyn_ex.intensity, self.intensity)
-            scale_factor = self.intensity_scalers[week - 1]
+            try:
+                scale_factor = self.intensity_scalers[week - 1 + dyn_ex.shift]
+            except IndexError:
+                if hasattr(self, "intensity_scaler_func"):
+                    scale_factor = self.intensity_scaler_func(week - 1 + dyn_ex.shift)
+                else:
+                    raise TypeError("Using `shift` requires `intensity_scaler_func` to be a function, not a list.")
+
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
 
@@ -595,7 +613,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Compute the progress
             (start_w, final_w, inc_week) = dyn_ex._progress_information()
 
-            weight = self.progression_func(week, start_w, final_w, 1, self.duration)
+            weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
             if weight > max(start_w, final_w) or weight < min(start_w, final_w):
                 msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {weight} in week {week}. "
                 msg += f"This is out of bounds. Start weight is {start_w}. "
