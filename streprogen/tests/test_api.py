@@ -497,6 +497,26 @@ class TestShiftingDynExercises:
 
         assert program1.to_dict()["rendered"][4] == program2.to_dict()["rendered"][4 - shift]
 
+    def test_list_vs_function_arg(self):
+        """Test that index 0 in the list corresponds to week=1."""
+
+        def rep_scaler_func(week):
+            return 1 + week / 10
+
+        program1 = Program("My first program!", duration=8, rep_scaler_func=rep_scaler_func)
+        with program1.Day():
+            program1.DynamicExercise("Bench press", start_weight=100)
+        program1.render()
+
+        rep_scaler_list = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8]
+
+        program2 = Program("My first program!", duration=8, rep_scaler_func=rep_scaler_list)
+        with program2.Day():
+            program2.DynamicExercise("Bench press", start_weight=100)
+        program2.render()
+
+        assert str(program1) == str(program2)
+
 
 if __name__ == "__main__":
     # --durations=10  <- May be used to show potentially slow tests

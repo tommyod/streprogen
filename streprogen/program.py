@@ -584,7 +584,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 desired_reps = round(total_reps * self.rep_scalers[week - 1 + dyn_ex.shift])
             except IndexError:
                 if hasattr(self, "rep_scaler_func"):
-                    desired_reps = round(total_reps * self.rep_scaler_func(week - 1 + dyn_ex.shift))
+                    desired_reps = round(total_reps * self.rep_scaler_func(week + dyn_ex.shift))
                 else:
                     raise TypeError("Using `shift` requires `rep_scaler_func` to be a function, not a list.")
 
@@ -596,7 +596,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 scale_factor = self.intensity_scalers[week - 1 + dyn_ex.shift]
             except IndexError:
                 if hasattr(self, "intensity_scaler_func"):
-                    scale_factor = self.intensity_scaler_func(week - 1 + dyn_ex.shift)
+                    scale_factor = self.intensity_scaler_func(week + dyn_ex.shift)
                 else:
                     raise TypeError("Using `shift` requires `intensity_scaler_func` to be a function, not a list.")
 
