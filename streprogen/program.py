@@ -614,9 +614,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
             (start_w, final_w, inc_week) = dyn_ex._progress_information()
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
-            if weight > max(start_w, final_w) or weight < min(start_w, final_w):
+
+            # Test that the weight is not too far from min and max
+            upper_threshold = max(start_w, final_w) + abs(start_w - final_w)
+            lower_threshold = min(start_w, final_w) - 2 * abs(start_w - final_w)
+            if not (lower_threshold <= weight <= upper_threshold):
                 msg = f"\nWARNING: Weight for '{dyn_ex.name}' was {round(weight, 2)} in week {week}. "
-                msg += f"This is out of bounds. Start weight is {start_w}. "
+                msg += f"This is far from start and final weights. Start weight is {start_w}. "
                 msg += f"Final weight is {final_w}."
                 warnings.warn(msg)
 
