@@ -22,6 +22,7 @@ class DynamicExercise(object):
         reps=None,
         intensity=None,
         round_to=None,
+        shift=0,
     ):
         """Initialize a new dynamic exercise. A dynamic exercise is rendered by
         the program, and the set/rep scheme will vary from week to week.
@@ -67,6 +68,11 @@ class DynamicExercise(object):
         round_to
             Round the output to the closest multiple of this number, e.g. 2.5.
 
+        shift
+            Shift evaluation of repetitions, intensity and progress `shift`
+            weeks ahead in time. An exercise shifted by 1 will have its reps,
+            intensity and strength evalated at week i + 1 instead of in week i.
+
 
         Examples
         -------
@@ -94,6 +100,9 @@ class DynamicExercise(object):
 
         self.round_to = round_to
 
+        assert isinstance(shift, int), "'shift' must be an integer"
+        self.shift = shift
+
         if round_to is None:
             self.round = None
         else:
@@ -114,6 +123,7 @@ class DynamicExercise(object):
         attributes = list(dir(self))  # round is a function
         attributes.remove("round")
         attributes.remove("day")
+        attributes.remove("shift")
 
         for attr_name in attributes:
 

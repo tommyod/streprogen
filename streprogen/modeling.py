@@ -313,8 +313,8 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     if isinstance(week, collections.abc.Iterable):
         return list(progression_diffeq(w, start_weight, final_weight, start_week, final_week, k) for w in week)
 
-    assert week <= final_week
-    assert week >= start_week
+    # assert week <= final_week
+    # assert week >= start_week
 
     S_i = start_weight
     S_m = final_weight
