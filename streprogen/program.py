@@ -580,9 +580,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # The desired repetitions to work up to
             total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
-            try:
-                desired_reps = round(total_reps * self.rep_scalers[week - 1 + dyn_ex.shift])
-            except IndexError:
+            index_to_lookup = (week - 1 + dyn_ex.shift)
+            if 0 <= index_to_lookup < self.duration:
+                desired_reps = round(total_reps * self.rep_scalers[index_to_lookup])
+            else:
                 if hasattr(self, "rep_scaler_func"):
                     desired_reps = round(total_reps * self.rep_scaler_func(week + dyn_ex.shift))
                 else:
@@ -592,9 +593,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # The desired average intensity
             intensity_unscaled = prioritized_not_None(dyn_ex.intensity, self.intensity)
-            try:
-                scale_factor = self.intensity_scalers[week - 1 + dyn_ex.shift]
-            except IndexError:
+            if 0 <= index_to_lookup < self.duration:
+                scale_factor = self.intensity_scalers[index_to_lookup]
+            else:
                 if hasattr(self, "intensity_scaler_func"):
                     scale_factor = self.intensity_scaler_func(week + dyn_ex.shift)
                 else:
