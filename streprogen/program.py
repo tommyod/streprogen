@@ -580,7 +580,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # The desired repetitions to work up to
             total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
-            
+
             # If the index is not valid (due to shifting), use function
             index_to_lookup = week - 1 + dyn_ex.shift
             if 0 <= index_to_lookup < self.duration:
