@@ -19,7 +19,7 @@ Install locally using ``pip install streprogen``, or run live notebooks online.
 Run code in your browser
 ------------------------
 
-If you don't have Python installed, you can run code in your browser.
+If you don't have Python installed, you can run the code in your browser.
 
 Learn how to make strength training programs
 ********************************************

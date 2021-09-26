@@ -101,6 +101,7 @@ class DynamicExercise(object):
         self.round_to = round_to
 
         assert isinstance(shift, int), "'shift' must be an integer"
+        # assert shift >= 0, "'shift' must be non-negative"
         self.shift = shift
 
         if round_to is None:
