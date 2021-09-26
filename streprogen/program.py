@@ -580,7 +580,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # The desired repetitions to work up to
             total_reps = prioritized_not_None(dyn_ex.reps, self.reps_per_exercise)
-            index_to_lookup = (week - 1 + dyn_ex.shift)
+            index_to_lookup = week - 1 + dyn_ex.shift
             if 0 <= index_to_lookup < self.duration:
                 desired_reps = round(total_reps * self.rep_scalers[index_to_lookup])
             else:
