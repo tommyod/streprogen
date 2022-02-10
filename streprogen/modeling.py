@@ -435,7 +435,7 @@ def wilks(lifted_kg, bodyweight_kg, gender="male"):
         f = -9.054e-8
 
     x = bodyweight_kg
-    coeff = 500 / (a + b * x + c * x ** 2 + d * x ** 3 + e * x ** 4 + f * x ** 5)
+    coeff = 500 / (a + b * x + c * x**2 + d * x**3 + e * x**4 + f * x**5)
 
     return round(coeff * lifted_kg, 2)
 
