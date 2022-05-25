@@ -16,8 +16,9 @@ from streprogen.modeling import (
 )
 from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.program import Program
+from streprogen.sampling import sample_markov_ladder, sample_markov_loop
 
-__version__ = "3.4.1"
+__version__ = "3.5.0"
 
 __all__ = [
     "StaticExercise",
@@ -36,4 +37,6 @@ __all__ = [
     "Mealplan",
     "RepSchemeGenerator",
     "RepSchemeOptimizer",
+    "sample_markov_ladder",
+    "sample_markov_loop",
 ]
