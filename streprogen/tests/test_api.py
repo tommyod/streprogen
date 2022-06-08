@@ -519,7 +519,7 @@ class TestShiftingDynExercises:
 
 
 class TestRounding:
-    def test_rounding_funcs(self):
+    def test_rounding_func_exercise(self):
         """Test that both functions and numbers work for rounding."""
 
         def round_function(x):
@@ -534,6 +534,29 @@ class TestRounding:
             program.DynamicExercise("Squats", 80, 85, round_to=round_function)
 
         program.render()
+
+        return True
+
+    def test_rounding_func_program(self):
+        """Test that both functions and numbers work for rounding."""
+
+        def round_function(x):
+            return round(x / 4) * 4
+
+        # Create a 4-week program
+        program = Program("My first program!", duration=8, round_to=round_function)
+
+        with program.Day():
+
+            program.DynamicExercise("Bench press", 60, 65)
+            program.DynamicExercise("Squats", 80, 85)
+
+        program.render()
+
+        for week in program.to_dict()["rendered"]:
+            for day in week:
+                for dyn_ex in day["dynamic_exercises"]:
+                    assert all(w % 4 == 0 for w in dyn_ex["weights"])
 
         return True
 

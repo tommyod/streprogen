@@ -191,7 +191,13 @@ class Program(object):
         assert isinstance(units, str)
         self.units = units
         self.round_to = round_to
-        self.round = functools.partial(round_to_nearest, nearest=round_to)
+
+        # Create a callable
+        if callable(round_to):
+            self.round = round_to
+        else:
+            self.round = functools.partial(round_to_nearest, nearest=round_to)
+
         self.verbose = verbose
 
         # ------ REP SCALERS ------
