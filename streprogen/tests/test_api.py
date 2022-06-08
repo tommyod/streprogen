@@ -518,6 +518,26 @@ class TestShiftingDynExercises:
         assert str(program1) == str(program2)
 
 
+class TestRounding:
+    def test_rounding_funcs(self):
+        """Test that both functions and numbers work for rounding."""
+
+        def round_function(x):
+            return round(x / 4) * 4
+
+        # Create a 4-week program
+        program = Program("My first program!", duration=8)
+
+        with program.Day():
+
+            program.DynamicExercise("Bench press", 60, 65, round_to=2.5)
+            program.DynamicExercise("Squats", 80, 85, round_to=round_function)
+
+        program.render()
+
+        return True
+
+
 if __name__ == "__main__":
     # --durations=10  <- May be used to show potentially slow tests
-    pytest.main(args=[".", "--doctest-modules", "--capture=sys", "-v", "-k", "shift"])
+    pytest.main(args=[".", "--doctest-modules", "--capture=sys", "-v", "-k", "round"])
