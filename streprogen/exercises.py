@@ -67,6 +67,8 @@ class DynamicExercise(object):
 
         round_to
             Round the output to the closest multiple of this number, e.g. 2.5.
+            Alternatively, a callable can be passed. The callable must take
+            a number as input and return a rounded number as output.
 
         shift
             Shift evaluation of repetitions, intensity and progress `shift`
@@ -104,8 +106,13 @@ class DynamicExercise(object):
         # assert shift >= 0, "'shift' must be non-negative"
         self.shift = shift
 
+        # Use program value instead of exercise value
         if round_to is None:
             self.round = None
+
+        # A callable
+        elif callable(round_to):
+            self.round = round_to
         else:
             self.round = functools.partial(round_to_nearest, nearest=round_to)
 

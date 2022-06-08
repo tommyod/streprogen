@@ -69,7 +69,7 @@ class Program(object):
         intensity: float = 83,
         intensity_scaler_func: typing.Callable[[int], float] = None,
         units: str = "kg",
-        round_to: float = 2.5,
+        round_to: typing.Union[float, typing.Callable] = 2.5,
         percent_inc_per_week: float = 1.5,
         progression_func: typing.Callable = None,
         reps_to_intensity_func: typing.Callable[[int], float] = None,
@@ -128,7 +128,7 @@ class Program(object):
 
         round_to
             Round the dynamic exercise to the nearest multiple of this
-            parameter. Typically 2.5, 5 or 10.
+            parameter. Typically 2.5, 5 or 10. A callable can alternatively be passed.
             This value can be set globally for the program, or for a specific
             dynamic exercise. If set at the dynamic exercise level, it will
             override the global program value.
@@ -191,7 +191,13 @@ class Program(object):
         assert isinstance(units, str)
         self.units = units
         self.round_to = round_to
-        self.round = functools.partial(round_to_nearest, nearest=round_to)
+
+        # Create a callable
+        if callable(round_to):
+            self.round = round_to
+        else:
+            self.round = functools.partial(round_to_nearest, nearest=round_to)
+
         self.verbose = verbose
 
         # ------ REP SCALERS ------
