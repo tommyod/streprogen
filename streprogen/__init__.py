@@ -18,7 +18,7 @@ from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.program import Program
 from streprogen.sampling import sample_markov_ladder, sample_markov_loop
 
-__version__ = "3.6.0"
+__version__ = "4.0.0"
 
 __all__ = [
     "StaticExercise",
