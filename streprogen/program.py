@@ -337,13 +337,13 @@ class Program(object):
             round_to,
             shift,
         )
-        self.active_day.dynamic_exercises.append(ex)
+        self.active_day.exercises.append(ex)
         ex.day = self.active_day
         return ex
 
     def StaticExercise(self, name, sets_reps="4 x 10"):
         ex = StaticExercise(name, sets_reps)
-        self.active_day.static_exercises.append(ex)
+        self.active_day.exercises.append(ex)
         return ex
 
     def _validate(self):
@@ -491,8 +491,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 self._rendered[week][day] = dict()
 
                 # Iterate over all main exercises
-                for dynamic_ex in day.dynamic_exercises:
-                    self._rendered[week][day][dynamic_ex] = dict()
+                for exercise in day.exercises:
+                    if isinstance(exercise, DynamicExercise):
+                        self._rendered[week][day][exercise] = dict()
 
     def _yield_week_day_dynamic(self):
         """A helper function to reduce the number of nested loops.
@@ -508,8 +509,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Iterate over all days
             for day in self.days:
                 # Iterate over all main exercises
-                for dynamic_ex in day.dynamic_exercises:
-                    yield (week, day, dynamic_ex)
+                for exercise in day.exercises:
+                    if not isinstance(exercise, DynamicExercise):
+                        continue
+                    yield (week, day, exercise)
 
     def _yield_exercises(self):
         """A helper function to reduce the number of nested loops.
@@ -522,10 +525,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         """
         for day in self.days:
-            for dynamic_ex in day.dynamic_exercises:
-                yield dynamic_ex
-            for static_ex in day.static_exercises:
-                yield static_ex
+            for exercise in day.exercises:
+                yield exercise
 
     def render(self, validate=True):
         """Render the training program to perform the calculations.
@@ -545,7 +546,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Check that exercise names are unique within each day
         for day in self.days:
             seen_names = set()
-            for exercise in day.dynamic_exercises + day.static_exercises:
+            for exercise in day.exercises:
                 if exercise.name in seen_names:
                     raise ValueError(f"Exercise name not unique: {exercise.name}")
                 else:
@@ -671,17 +672,17 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Iterate over all days
             for day in self.days:
-                output_day = {"name": day.name, "dynamic_exercises": [], "static_exercises": []}
+                output_day = {"name": day.name, "exercises": []}
 
-                # Iterate over all main exercises
-                for dynamic_ex in day.dynamic_exercises:
-                    out = dynamic_ex.serialize()
-                    out.update(self._rendered[week][day][dynamic_ex])
-                    output_day["dynamic_exercises"].append(out)
-
-                for static_ex in day.static_exercises:
-
-                    output_day["static_exercises"].append(static_ex.serialize())
+                for exercise in day.exercises:
+                    if isinstance(exercise, DynamicExercise):
+                        out = exercise.serialize()
+                        out.update(self._rendered[week][day][exercise])
+                        output_day["exercises"].append(out)
+                    elif isinstance(exercise, StaticExercise):
+                        output_day["exercises"].append(exercise.serialize())
+                    else:
+                        raise TypeError(f"Expected exercise, got object: {exercise}")
 
                 # Add daily
                 output_week.append(output_day)
@@ -705,6 +706,15 @@ or (3) ignore this message. The software will do it's best to remedy this.
         round2digits = functools.partial(round_to_nearest, nearest=0.1)
         env.filters["round2digits"] = round2digits
         env.filters["mean"] = statistics.mean
+
+        def is_static_exercise(arg):
+            return isinstance(arg, StaticExercise)
+
+        def is_dynamic_exercise(arg):
+            return isinstance(arg, DynamicExercise)
+
+        env.filters["is_static_exercise"] = is_static_exercise
+        env.filters["is_dynamic_exercise"] = is_dynamic_exercise
 
         self.jinja2_environment = env
 
@@ -825,28 +835,6 @@ if __name__ == "__main__":
 
     from streprogen import Program
 
-    program = Program(
-        "My first program!",
-        duration=8,
-        units="kg",
-        reps_per_exercise=15,
-        intensity=88,
-        intensity_scaler_func=lambda w: 1,
-        round_to=2.5,
-        percent_inc_per_week=2,
-        verbose=True,
-    )
-
-    with program.Day("Mandag"):
-        program.DynamicExercise("Knebøy", start_weight=100, min_reps=3, max_reps=5)
-
-    # Render the program, then print it
-    program.render()
-    from pprint import pprint
-
-    # pprint(program.to_dict())
-    print(program)
-
     def rep_scaler_func(week, *args):
         return 1
 
@@ -870,13 +858,11 @@ if __name__ == "__main__":
     )
 
     with program.Day("A"):
-        program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
         program.StaticExercise("Biceps", "4 x 10")
+        program.DynamicExercise(name="Squat", start_weight=100, min_reps=5, max_reps=5)
 
     program.render()
 
-    from pprint import pprint
-
     # pprint(program.to_dict())
 
-    # print(program)
+    print(program)

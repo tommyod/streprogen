@@ -10,14 +10,16 @@ Program parameters
 Exercise information
 {% for day in program.days %}
   {{day.name}}
-{% for dynamic_ex in day.dynamic_exercises %}
-   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(str
-   ((dynamic_ex._progress_information()[0]|round2digits)).rjust(3), program.units, str((dynamic_ex._progress_information()[1])|round2digits).rjust(3), program.units).ljust(12 + 2*program.units|length)}}
-    {{'reps: [{}, {}]'.format(dynamic_ex.min_reps, dynamic_ex.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(dynamic_ex._progress_information()[2])}}
+{% for exercise in day.exercises %}
+  {% if exercise | is_dynamic_exercise %}
+   {{exercise.name.ljust(max_ex_name + 2)}} {{'{}{} -> {}{}'.format(str
+   ((exercise._progress_information()[0]|round2digits)).rjust(3), program.units, str((exercise._progress_information()[1])|round2digits).rjust(3), program.units).ljust(12 + 2*program.units|length)}}
+    {{'reps: [{}, {}]'.format(exercise.min_reps, exercise.max_reps).ljust(12+3)}}{{'weekly inc.: {}%'.format(exercise._progress_information()[2])}}
+  {% endif %}
+  {% if exercise | is_static_exercise %}
+   {{exercise.name.ljust(max_ex_name + 2)}} {{exercise.sets_reps_func(1)}}
+  {% endif %}
 {% endfor %}
-{% for static_ex in day.static_exercises %}
-   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps_func(1)}}
-  {% endfor %}
 {% endfor %}
 ----------------------------------------------------------------
 Program
@@ -28,17 +30,17 @@ Not rendered. Call Program.render() to render it.
  Week {{week}}
 {% for day in program.days %}
   {{day.name}}
-  {% for dynamic_ex in day.dynamic_exercises %}
-   {{dynamic_ex.name.ljust(max_ex_name + 2)}} {% for scheme in program._rendered[week][day][dynamic_ex]['strings'] %}{{scheme.ljust(max_ex_scheme + 2)}}{% endfor %}
-   {% if verbose == True %}
-
-   {{'stats'.ljust(max_ex_name + 2)}} {{'reps(actual/desired): {}/{}'.format(program._rendered[week][day][dynamic_ex]['reps']|sum, program._rendered[week][day][dynamic_ex]['desired_reps']).ljust(30)}}{{'intensity(a/d): {}/{}'.format(program._rendered[week][day][dynamic_ex]['intensities']|mean|int, program._rendered[week][day][dynamic_ex]['desired_intensity'])}}
-   {% endif %}
-
-  {% endfor %}
-  {% for static_ex in day.static_exercises %}
-   {{static_ex.name.ljust(max_ex_name + 2)}} {{static_ex.sets_reps_func(week)}}
-  {% endfor %}
+  {% for exercise in day.exercises %}
+   {% if exercise | is_dynamic_exercise %}
+   {{exercise.name.ljust(max_ex_name + 2)}} {% for scheme in program._rendered[week][day][exercise]['strings'] %}{{scheme.ljust(max_ex_scheme + 2)}}{% endfor %}  
+    {% if verbose == True %}
+     {{'stats'.ljust(max_ex_name + 2)}} {{'reps(actual/desired): {}/{}'.format(program._rendered[week][day][exercise]['reps']|sum, program._rendered[week][day][exercise]['desired_reps']).ljust(30)}}{{'intensity(a/d): {}/{}'.format(program._rendered[week][day][exercise]['intensities']|mean|int, program._rendered[week][day][exercise]['desired_intensity'])}}
+    {% endif %}
+  {% endif %}
+  {% if exercise | is_static_exercise %}
+   {{exercise.name.ljust(max_ex_name + 2)}} {{exercise.sets_reps_func(week)}}
+  {% endif %}
+{% endfor %}
 
 {% endfor %}
 {% endfor %}

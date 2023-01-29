@@ -21,7 +21,7 @@ def test_progression_sinh(k, duration):
 
 
 @pytest.mark.parametrize("k, duration", [(0, 12), (0, 13), (3, 12), (3, 13)])
-def progression_diffeq(k, duration):
+def test_progression_diffeq(k, duration):
 
     # Test first and last points
     assert progression_diffeq(1, 50, 100, 1, final_week=duration, k=k) == 50

@@ -29,12 +29,11 @@ class Day(object):
         >>> monday = Day(name='Monday')
         >>> curls = StaticExercise('Curls', '3 x 12')
         >>> monday.add_exercises(curls)
-        >>> curls in monday.static_exercises
+        >>> curls in monday.exercises
         True
         """
         self.name = escape_string(name)
-        self.dynamic_exercises = []
-        self.static_exercises = []
+        self.exercises = []
 
         self.program = None
 
@@ -64,18 +63,18 @@ class Day(object):
         >>> curls = StaticExercise('Curls', '3 x 12')
         >>> pulldowns = StaticExercise('Pulldowns', '4 x 10')
         >>> monday.add_exercises(curls, pulldowns)
-        >>> curls in monday.static_exercises
+        >>> curls in monday.exercises
         True
-        >>> pulldowns in monday.static_exercises
+        >>> pulldowns in monday.exercises
         True
         """
         for exercise in exercises:
             if isinstance(exercise, DynamicExercise):
-                self.dynamic_exercises.append(exercise)
+                self.exercises.append(exercise)
                 exercise.day = self
 
             if isinstance(exercise, StaticExercise):
-                self.static_exercises.append(exercise)
+                self.exercises.append(exercise)
 
     def __repr__(self):
         return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
@@ -91,38 +90,36 @@ class Day(object):
         >>> pulldowns = StaticExercise('Pulldowns', '4 x 10')
         >>> monday.add_exercises(curls, pulldowns)
         >>> print(monday)
-        Day(name = Monday, static_exercises = [Curls, Pulldowns])
+        Day(name = Monday, exercises = [Curls, Pulldowns])
         """
-        dyn = ", ".join([d.name for d in self.dynamic_exercises])
-        if len(dyn) > 0:
-            dyn = "dynamic_exercises = [{}]".format(dyn)
-        stat = ", ".join([d.name for d in self.static_exercises])
-        if len(stat) > 0:
-            stat = "static_exercises = [{}]".format(stat)
+        exercises = ", ".join([d.name for d in self.exercises])
+        if len(exercises) > 0:
+            exercises = "exercises = [{}]".format(exercises)
 
         out_str = "{}({})".format(
             type(self).__name__,
-            ", ".join([s for s in ["name = {}".format(self.name), dyn, stat] if len(s) > 2]),
+            ", ".join([s for s in ["name = {}".format(self.name), exercises] if len(s) > 2]),
         )
         return out_str
 
     def serialize(self):
         """Export the object to a dictionary."""
         result = {"name": self.name}
-        result["dynamic_exercises"] = [ex.serialize() for ex in self.dynamic_exercises]
-        result["static_exercises"] = [ex.serialize() for ex in self.static_exercises]
+        result["exercises"] = [ex.serialize() for ex in self.exercises]
         return result
 
     @classmethod
     def deserialize(cls, data):
         """Create a new object from a dictionary."""
         name = data["name"]
-        exercises = [DynamicExercise.deserialize(ex) for ex in data["dynamic_exercises"]]
-        exercises += [StaticExercise.deserialize(ex) for ex in data["static_exercises"]]
+        exercises = [
+            StaticExercise.deserialize(ex) if "sets_reps" in ex.keys() else DynamicExercise.deserialize(ex)
+            for ex in data["exercises"]
+        ]
         return cls(name, exercises)
 
 
 if __name__ == "__main__":
     import pytest
 
-    pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
+    pytest.main(args=[__file__, "--doctest-modules", "-v", "--capture=sys"])

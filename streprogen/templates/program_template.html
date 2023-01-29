@@ -112,7 +112,9 @@
                             <tr>
                                 <td colspan="8"><strong>{{ day.name }}</strong></td>
                             </tr>
-                            {% for exercise in day.dynamic_exercises %}
+                            
+                            {% for exercise in day.exercises %}
+                            {% if exercise | is_dynamic_exercise %}
                                 <tr>
                                     <td>&nbsp;{{ exercise.name }}</td>
                                     <td>{{ exercise._progress_information()[0] | round2digits }}{{ program.units }}</td>
@@ -131,18 +133,15 @@
                                         <td>{{ exercise.intensity }}</td>
                                     {% endif %}
                                 </tr>
-                            {% endfor %}
-
-                            {% for exercise in day.static_exercises %}
+                            {% endif %}
+                            {% if exercise | is_static_exercise %}
                                 <tr>
                                     <td>&nbsp;{{ exercise.name }}</td>
                                     <td colspan="7">{{ exercise.sets_reps_func(1) }}</td>
                                 </tr>
+                            {% endif %}
                             {% endfor %}
-
                         {% endfor %}
-
-
                     </table>
                 </div>
             </div>
@@ -167,13 +166,15 @@
                             <tr>
                                 <td colspan="{{ table_width }}"><h5>&nbsp;{{ day.name }}</h5></td>
                             </tr>
-
-                            {% for dynamic_ex in day.dynamic_exercises %}
-
-                                {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
+                            
+                            
+                            
+                            {% for exercise in day.exercises %}
+                            {% if exercise | is_dynamic_exercise %}
+                                {% for i, chunk in enumerate(chunker(program._rendered[week][day][exercise]['strings'], table_width - 1)) %}
                                     <tr>
                                         {% if i == 0 %}
-                                            <td>&nbsp;&nbsp;&nbsp;{{ dynamic_ex.name }}</td>
+                                            <td>&nbsp;&nbsp;&nbsp;{{ exercise.name }}</td>
                                         {% else %}
                                             <td></td>
                                         {% endif %}
@@ -182,19 +183,15 @@
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
-
-
-                            {% endfor %}
-
-                            {% for static_ex in day.static_exercises %}
+                            {% endif %}
+                            {% if exercise | is_static_exercise %}
                                 <tr>
-                                    <td>&nbsp;&nbsp;&nbsp;{{ static_ex.name }}</td>
-                                    <td colspan="{{ table_width - 1 }}">{{ static_ex.sets_reps_func(week) }}</td>
+                                    <td>&nbsp;&nbsp;&nbsp;{{ exercise.name }}</td>
+                                    <td colspan="{{ table_width - 1 }}">{{ exercise.sets_reps_func(week) }}</td>
                                 </tr>
+                            {% endif %}
                             {% endfor %}
-
                         {% endfor %}
-
                     {% endfor %}
                 </table>
             {% endif %}
