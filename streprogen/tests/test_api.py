@@ -32,7 +32,7 @@ def test_verbose_api(duration):
     day = Day()
     day.add_exercises(bench, squats, curls)
 
-    assert len(day.dynamic_exercises) == 2
+    assert len(day.exercises) == 3
 
     # Add day(s) to program and render it
     program.add_days(day)
@@ -63,7 +63,7 @@ def test_general_api():
     assert bench.day is not None
     assert squats.day is not None
 
-    assert len(day.dynamic_exercises) == 2
+    assert len(day.exercises) == 3
 
     # Add day(s) to program and render it
     program.add_days(day)
@@ -92,11 +92,10 @@ def test_decorator_api():
         program.StaticExercise("Curls", curl_func)
 
     assert len(program.days) == 1
-    assert len(program.days[0].dynamic_exercises) == 2
-    assert len(program.days[0].static_exercises) == 1
+    assert len(program.days[0].exercises) == 3
 
     assert program.days[0].program is not None
-    assert program.days[0].dynamic_exercises[0].day is not None
+    assert program.days[0].exercises[0].day is not None
 
     assert not program._rendered
     program.render()
@@ -555,7 +554,7 @@ class TestRounding:
 
         for week in program.to_dict()["rendered"]:
             for day in week:
-                for dyn_ex in day["dynamic_exercises"]:
+                for dyn_ex in day["exercises"]:
                     assert all(w % 4 == 0 for w in dyn_ex["weights"])
 
         return True

@@ -36,16 +36,18 @@ The latest version can be found at \\
     & \textbf{Reps max} & \textbf{Weekly increase} \\ \hline
 	{% for day in program.days %}
       \textbf{ {{day.name}} } & & & & & \\ \hline
-    {% for dynamic_ex in day.dynamic_exercises %}
-        \hspace{0.5em}{{dynamic_ex.name}} & 
-        {{dynamic_ex._progress_information()[0]|round2digits}} {{program.units}} &
-        {{dynamic_ex._progress_information()[1]|round2digits}} {{program.units}} & 
-        {{dynamic_ex.min_reps}} & {{dynamic_ex.max_reps}} &
-        {{dynamic_ex._progress_information()[2]}}\%\\
-    {% endfor %}
-    {% for static_ex in day.static_exercises %}
-       \hspace{0.5em}{{static_ex.name}} & \multicolumn{ 5 }{l}{ {{static_ex.sets_reps_func(1)}} } \\
-      {% endfor %}
+    {% for exercise in day.exercises%}
+    {% if exercise | is_dynamic_exercise %}
+        \hspace{0.5em}{{exercise.name}} & 
+        {{exercise._progress_information()[0]|round2digits}} {{program.units}} &
+        {{exercise._progress_information()[1]|round2digits}} {{program.units}} & 
+        {{exercise.min_reps}} & {{exercise.max_reps}} &
+        {{exercise._progress_information()[2]}}\%\\
+    {% endif %}
+    {% if exercise | is_static_exercise %}
+        \hspace{0.5em}{{exercise.name}} & \multicolumn{ 5 }{l}{ {{exercise.sets_reps_func(1)}} } \\
+    {% endif %}
+  {% endfor %}
 {% endfor %}
 \end{tabular}
 
@@ -63,11 +65,12 @@ Not rendered. Call program.render() to render it.
 
   \begin{tabular}{l|{% for i in range(table_width - 1) %}l{% endfor %}}
   \hspace{0.75em} \textbf{Exercise} & \multicolumn{ {{table_width - 1}} }{l}{ \textbf{Sets / reps} } \\ \hline
-  {% for dynamic_ex in day.dynamic_exercises %}
-      {% for i, chunk in enumerate(chunker(program._rendered[week][day][dynamic_ex]['strings'], table_width - 1)) %}
+  {% for exercise in day.exercises %}
+  {% if exercise | is_dynamic_exercise%}
+      {% for i, chunk in enumerate(chunker(program._rendered[week][day][exercise]['strings'], table_width - 1)) %}
 
             {% if i == 0 %}
-            \hspace{0.75em} {{dynamic_ex.name}}
+            \hspace{0.75em} {{exercise.name}}
             {% else %}
             \hspace{0.75em}
             {% endif %}
@@ -77,10 +80,12 @@ Not rendered. Call program.render() to render it.
             \\
 
       {% endfor %}
-  {% endfor %}
-
-  {% for static_ex in day.static_exercises %}
-   \hspace{0.75em} {{static_ex.name}} &  \multicolumn{ {{table_width - 1}} }{l}{ {{static_ex.sets_reps_func(week)}} } \\
+  {% endif %}
+  {% if exercise | is_static_exercise%}
+  \hspace{0.75em} {{exercise.name}} &  \multicolumn{ {{table_width - 1}} }{l}{ {{exercise.sets_reps_func(week)}} } \\
+  {% endif %}
+      
+      
   {% endfor %}
   \end{tabular}
 
