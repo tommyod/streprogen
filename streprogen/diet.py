@@ -80,7 +80,6 @@ class Meal:
     # This means that a baseline
 
     def __init__(self, name, foods, discrete=True):
-
         self.name = name
         self.foods = foods
         self.discrete = discrete

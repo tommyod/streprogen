@@ -47,7 +47,6 @@ def test_repscheme_optimizer(reps_to_intensity_func, reps_goal, intensities_goal
 
 @pytest.mark.parametrize("reps_slack", [0, 1, 2, 3, 4])
 def test_repscheme_generator_reps_slack(reps_slack):
-
     generator = RepSchemeGenerator(reps_slack=reps_slack)
     sets = [3, 4, 5, 6, 7, 8]
     for reps_goal in [15, 20, 25, 30]:
@@ -58,7 +57,6 @@ def test_repscheme_generator_reps_slack(reps_slack):
 
 @pytest.mark.parametrize("max_unique", [1, 2, 3, 4])
 def test_repscheme_generator_max_unique(max_unique):
-
     generator = RepSchemeGenerator(max_unique=max_unique)
     sets = [3, 4, 5, 6, 7, 8]
     for reps_goal in [15, 20, 25, 30]:
@@ -69,7 +67,6 @@ def test_repscheme_generator_max_unique(max_unique):
 
 @pytest.mark.parametrize("max_diff", [0, 1, 2, 3, 4])
 def test_repscheme_generator_max_diff(max_diff):
-
     generator = RepSchemeGenerator(max_diff=max_diff)
     sets = [3, 4, 5, 6, 7, 8]
     for reps_goal in [15, 20, 25, 30]:

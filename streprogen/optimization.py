@@ -385,7 +385,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     z = [z_j.solution_value() for z_j in z]
 
     # Assert that the property of the z's hold
-    for (x_j, z_j) in zip(x, z):
+    for x_j, z_j in zip(x, z):
         if z_j == 1:
             assert x_j >= 1
         else:
@@ -510,7 +510,6 @@ def optimize_mealplan(
     # OBJECTIVE FUNCTION TERM 2: Deviation from nutrients (on a daily basis)
     for j in range(num_days):
         for macro, (low, high) in dietary_constraints.items():
-
             # No point in adding any constraints if it's None
             if low is None and high is None:
                 continue
@@ -546,7 +545,6 @@ def optimize_mealplan(
         upper = solver.NumVar(0, INF, "upper_kcal_{}".format(j))
 
         for i, meal in enumerate(meals):
-
             solver.Add(lower <= x[i][j] * meal.kcal + (1 - z[i][j]) * M2)
             solver.Add(upper >= x[i][j] * meal.kcal)
 
@@ -562,7 +560,6 @@ def optimize_mealplan(
 
     # HARD CONSTRAINT 2: Number of times a food is used
     for i, (meal, (low, high)) in enumerate(zip(meals, meals_limits)):
-
         times_used = sum(z[i])
         assert len(z[i]) == num_days
 
@@ -585,7 +582,6 @@ def optimize_mealplan(
     solver.Minimize(objective_function)
     result_status = solver.Solve()
     if result_status == solver.INFEASIBLE:
-
         if first_call:
             params["first_call"] = False
 

@@ -39,7 +39,7 @@ jobs:
           pytest streprogen --doctest-modules --color=yes # Run all tests
           pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
           pip install -r docs/requirements.txt
-          sphinx-build docs docs/_build -v
+          sphinx-build docs docs/_build -v -W
 
 # ======================= BUILD WHEELS AND UPLOAD TO PYPI ==================================
 

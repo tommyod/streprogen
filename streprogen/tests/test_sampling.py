@@ -23,7 +23,6 @@ from streprogen.sampling import sample_markov_ladder, sample_markov_loop
     ],
 )
 def test_markov_ladder(probabilities, structure):
-
     generator = sample_markov_ladder(probabilities, structure=structure)
 
     # Scale after calling sampling, to test that normalization is not needed
@@ -50,7 +49,6 @@ def test_markov_ladder(probabilities, structure):
     ],
 )
 def test_markov_loop(probabilities, structure):
-
     generator = sample_markov_loop(probabilities, structure=structure)
 
     # Scale after calling sampling, to test that normalization is not needed

@@ -75,7 +75,6 @@ class Program(object):
         reps_to_intensity_func: typing.Callable[[int], float] = None,
         verbose: bool = False,
     ):
-
         """Initialize a new program.
 
 
@@ -399,7 +398,6 @@ class Program(object):
 
         # Validate the exercises
         for exercise in self._yield_exercises():
-
             if isinstance(exercise, StaticExercise):
                 continue
 
@@ -571,8 +569,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Render the dynamic exercises
         # --------------------------------
 
-        for (week, day, dyn_ex) in self._yield_week_day_dynamic():
-
+        for week, day, dyn_ex in self._yield_week_day_dynamic():
             # Set min and max reps from program, if not set on exercise
             min_reps = dyn_ex.min_reps
             max_reps = dyn_ex.max_reps
@@ -760,7 +757,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
         if self._rendered:
-            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+            for week, day, dynamic_ex in self._yield_week_day_dynamic():
                 lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
@@ -800,7 +797,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
         if self._rendered:
-            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+            for week, day, dynamic_ex in self._yield_week_day_dynamic():
                 lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
@@ -832,7 +829,6 @@ if __name__ == "__main__":
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
 
 if __name__ == "__main__":
-
     from streprogen import Program
 
     def rep_scaler_func(week, *args):
