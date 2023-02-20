@@ -29,7 +29,7 @@ def test_markov_ladder(probabilities, structure):
     probabilities = [p_i / sum(probabilities) for p_i in probabilities]
 
     # Draw samples and normalize output probabilities
-    num_samples = 100_000
+    num_samples = 1_000_000
     samples = itertools.islice(generator, num_samples)
     counts = collections.Counter(samples)
     output_probabilities = [counts[k] / num_samples for k in sorted(counts.keys())]
@@ -55,7 +55,7 @@ def test_markov_loop(probabilities, structure):
     probabilities = [p_i / sum(probabilities) for p_i in probabilities]
 
     # Draw samples and normalize output probabilities
-    num_samples = 100_000
+    num_samples = 1_000_000
     samples = itertools.islice(generator, num_samples)
     counts = collections.Counter(samples)
     output_probabilities = [counts[k] / num_samples for k in sorted(counts.keys())]
