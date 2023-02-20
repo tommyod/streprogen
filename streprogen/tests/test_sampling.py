@@ -23,14 +23,13 @@ from streprogen.sampling import sample_markov_ladder, sample_markov_loop
     ],
 )
 def test_markov_ladder(probabilities, structure):
-
     generator = sample_markov_ladder(probabilities, structure=structure)
 
     # Scale after calling sampling, to test that normalization is not needed
     probabilities = [p_i / sum(probabilities) for p_i in probabilities]
 
     # Draw samples and normalize output probabilities
-    num_samples = 100_000
+    num_samples = 1_000_000
     samples = itertools.islice(generator, num_samples)
     counts = collections.Counter(samples)
     output_probabilities = [counts[k] / num_samples for k in sorted(counts.keys())]
@@ -50,14 +49,13 @@ def test_markov_ladder(probabilities, structure):
     ],
 )
 def test_markov_loop(probabilities, structure):
-
     generator = sample_markov_loop(probabilities, structure=structure)
 
     # Scale after calling sampling, to test that normalization is not needed
     probabilities = [p_i / sum(probabilities) for p_i in probabilities]
 
     # Draw samples and normalize output probabilities
-    num_samples = 100_000
+    num_samples = 1_000_000
     samples = itertools.islice(generator, num_samples)
     counts = collections.Counter(samples)
     output_probabilities = [counts[k] / num_samples for k in sorted(counts.keys())]

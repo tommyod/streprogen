@@ -134,7 +134,6 @@ class DynamicExercise(object):
         attributes.remove("shift")
 
         for attr_name in attributes:
-
             # Skip private members
             if attr_name.startswith("_"):
                 continue

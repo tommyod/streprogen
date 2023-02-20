@@ -86,7 +86,6 @@ def test_decorator_api():
     program = Program("My first program!", duration=8)
 
     with program.Day():
-
         program.DynamicExercise("Bench press", 60, 65)
         program.DynamicExercise("Squats", 80, 85)
         program.StaticExercise("Curls", curl_func)
@@ -104,9 +103,7 @@ def test_decorator_api():
 
 @pytest.mark.parametrize("period", [0, 1])
 def test_progression_periods(period):
-
     for week in range(1, 8 + 1):
-
         ans = progression_sawtooth(
             week,
             start_weight=1.0,
@@ -139,7 +136,6 @@ def test_progression_periods(period):
     list(itertools.product([progression_sawtooth, progression_sinusoidal], [1, 2, 3, 4, 5])),
 )
 def test_progression_means(func, period):
-
     weeks = list(range(1, period + 1))
     target = 42
 
@@ -212,7 +208,6 @@ def test_program_not_mutated_after_rendering():
 
 class TestProgressInformation:
     def test_progress_information_override_weights(self):
-
         program = Program(name="MyProgram", duration=10, percent_inc_per_week=10)
         with program.Day("A"):
             squat = program.DynamicExercise("Squats", start_weight=100, final_weight=150)
@@ -223,7 +218,6 @@ class TestProgressInformation:
         assert inc_week == 5  # Weight override program default
 
     def test_progress_information_override_perc_inc(self):
-
         program = Program(name="MyProgram", duration=10, percent_inc_per_week=1)
         with program.Day("A"):
             squat = program.DynamicExercise("Squats", start_weight=100, percent_inc_per_week=10)
@@ -266,7 +260,6 @@ class TestProgressInformation:
         assert b_info == c_info
 
     def test_progress_information_overspecified(self):
-
         # Set some non-typical parameters
         program = Program(name="MyProgram", duration=10)
         with pytest.raises(ValueError, match="At most 2 out of 3 variables may be set"):
@@ -468,7 +461,6 @@ class TestWaysOfGivingProgress:
 
 class TestShiftingDynExercises:
     def test_shifting_zero(self):
-
         program1 = Program("My first program!", duration=8, round_to=1)
         with program1.Day():
             program1.DynamicExercise("Bench press", start_weight=100)
@@ -483,7 +475,6 @@ class TestShiftingDynExercises:
 
     @pytest.mark.parametrize("shift", [-3, -2, -1, 0, 1, 2, 3])
     def test_shifting_k(self, shift):
-
         program1 = Program("My first program!", duration=8, round_to=1)
         with program1.Day():
             program1.DynamicExercise("Bench press", start_weight=100)
@@ -528,13 +519,12 @@ class TestRounding:
         program = Program("My first program!", duration=8)
 
         with program.Day():
-
             program.DynamicExercise("Bench press", 60, 65, round_to=2.5)
             program.DynamicExercise("Squats", 80, 85, round_to=round_function)
 
         program.render()
 
-        return True
+        assert True
 
     def test_rounding_func_program(self):
         """Test that both functions and numbers work for rounding."""
@@ -546,7 +536,6 @@ class TestRounding:
         program = Program("My first program!", duration=8, round_to=round_function)
 
         with program.Day():
-
             program.DynamicExercise("Bench press", 60, 65)
             program.DynamicExercise("Squats", 80, 85)
 
@@ -557,7 +546,7 @@ class TestRounding:
                 for dyn_ex in day["exercises"]:
                     assert all(w % 4 == 0 for w in dyn_ex["weights"])
 
-        return True
+        assert True
 
 
 if __name__ == "__main__":

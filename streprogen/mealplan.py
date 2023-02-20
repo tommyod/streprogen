@@ -21,7 +21,6 @@ class Bunch(dict):
 
 
 class Mealplan:
-
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
     TEMPLATE_NAMES = {extension: "mealplan_template." + extension for extension in ["txt"]}
 
@@ -170,7 +169,6 @@ class Mealplan:
             return qnty
 
         for day_num in range(num_days):
-
             x_day = [x[i][day_num] for i in range(num_meals)]
 
             result = [(meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0]

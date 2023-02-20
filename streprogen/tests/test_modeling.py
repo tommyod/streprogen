@@ -11,7 +11,6 @@ from streprogen import progression_sinh, progression_diffeq
 
 @pytest.mark.parametrize("k, duration", [(0, 12), (0, 13), (3, 12), (3, 13)])
 def test_progression_sinh(k, duration):
-
     # Test first and last points
     assert progression_sinh(1, 50, 100, 1, final_week=duration, k=k) == 50
     assert progression_sinh(duration, 50, 100, 1, final_week=duration, k=k) == 100
@@ -22,7 +21,6 @@ def test_progression_sinh(k, duration):
 
 @pytest.mark.parametrize("k, duration", [(0, 12), (0, 13), (3, 12), (3, 13)])
 def test_progression_diffeq(k, duration):
-
     # Test first and last points
     assert progression_diffeq(1, 50, 100, 1, final_week=duration, k=k) == 50
     assert progression_diffeq(duration, 50, 100, 1, final_week=duration, k=k) == 100

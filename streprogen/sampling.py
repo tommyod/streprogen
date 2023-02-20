@@ -136,7 +136,6 @@ def sample_markov_ladder(probabilities, structure=None):
 
     k, n = len(structure), len(probabilities)
     while True:
-
         # Assemble probabilities
         left_probs = [structure[i] / probabilities[state] for i in reversed(range(1, min(k, state + 1)))]
         right_probs = [structure[i] / probabilities[state] for i in range(1, min(k, n - state))]
