@@ -524,7 +524,7 @@ class TestRounding:
 
         program.render()
 
-        return True
+        assert True
 
     def test_rounding_func_program(self):
         """Test that both functions and numbers work for rounding."""
@@ -546,7 +546,7 @@ class TestRounding:
                 for dyn_ex in day["exercises"]:
                     assert all(w % 4 == 0 for w in dyn_ex["weights"])
 
-        return True
+        assert True
 
 
 if __name__ == "__main__":
