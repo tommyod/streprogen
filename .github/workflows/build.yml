@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false # Allow one of the matrix builds to fail without failing others
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
         
     # The job
     name: Python ${{ matrix.python-version }}
@@ -21,10 +21,10 @@ jobs:
     steps:
     
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -36,7 +36,7 @@ jobs:
           pip install -e . # Install the package
           black . --check -l 120
           flake8 streprogen --select=F811,F841,F401,E711,E712,E731
-          pytest streprogen --doctest-modules --color=yes # Run all tests
+          pytest streprogen --doctest-modules --color=yes # Run tests
           pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
           pip install -r docs/requirements.txt
           sphinx-build docs docs/_build -v
