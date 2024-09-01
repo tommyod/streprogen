@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ["strength", "training", "program", "health", "fitness", "generator", "weightlifting", "powerlifting", "exercise"]
+keywords = ["strength", "training", "health", "fitness", "generator", "weightlifting", "powerlifting", "exercise"]
 requires-python = ">=3.8"
 
 [project.urls]
