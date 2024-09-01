@@ -1,7 +1,4 @@
-dependencies = [
-    "jinja2>=2.11.2",
-    "ortools>=7.7.7810",
-][build-system]
+[build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
