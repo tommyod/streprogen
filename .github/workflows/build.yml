@@ -34,7 +34,7 @@ jobs:
           sudo apt-get install pandoc -y
           pip install pip jupyter matplotlib pytest black wheel setuptools twine flake8 --quiet --upgrade
           pip install . # Install the package
-          black . --check -l 120 --ignore="*_version.py"
+          black . --check -l 120 --exclude="*_version.py"
           flake8 streprogen --select=F811,F841,F401,E711,E712,E731
           pytest streprogen --doctest-modules --color=yes # Run tests
           pytest docs/examples --verbose --doctest-modules --color=yes # Run test_notebooks.py
