@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streprogen"
+dynamic = ["version", "readme"]
+description = "The Python strength program generator."
+authors = [
+    {name = "Tommy Odland", email = "tommy.odland@gmail.com"},
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["strength", "training", "program", "health", "fitness", "generator", "weightlifting", "powerlifting", "exercise"]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/tommyod/streprogen"
+Repository = "https://github.com/tommyod/streprogen.git"
+
+[tool.setuptools_scm]
+write_to = "streprogen/_version.py"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst"], content-type = "text/x-rst"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["streprogen*"]
+exclude = ["contrib", "docs", "tests"]
+
+[tool.setuptools.package-data]
+"streprogen" = ["templates/*", "*.tex", "*.html"]
