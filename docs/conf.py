@@ -57,7 +57,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "streprogen"
-copyright = "2017-2019, Tommy O."
+copyright = "2017-2014, Tommy O."
 author = "Tommy O."
 
 # The version info for the project you're documenting, acts as replacement for
@@ -65,7 +65,10 @@ author = "Tommy O."
 # built documents.
 #
 
-from streprogen import __version__
+
+from importlib.metadata import version
+
+__version__ = version("streprogen")
 
 # The short X.Y version.
 version = __version__
