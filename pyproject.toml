@@ -1,10 +1,11 @@
 [build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "streprogen"
-dynamic = ["version", "readme"]
+version = "4.0.2"
+dynamic = ["readme"]
 description = "The Python strength program generator."
 authors = [
     {name = "Tommy Odland", email = "tommy.odland@gmail.com"},
@@ -31,9 +32,6 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/tommyod/streprogen"
 Repository = "https://github.com/tommyod/streprogen.git"
-
-[tool.setuptools_scm]
-write_to = "streprogen/_version.py"
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.rst"], content-type = "text/x-rst"}
