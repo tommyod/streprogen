@@ -8,6 +8,7 @@ import numbers
 import time
 import typing
 import inspect
+import csv
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -33,7 +34,7 @@ class Program(object):
 
     REP_SET_SEP = " x "
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
-    TEMPLATE_NAMES = {extension: "program_template." + extension for extension in ["html", "txt", "tex"]}
+    TEMPLATE_NAMES = {extension: "program_template." + extension for extension in ["html", "txt", "tex","csv"]}
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
@@ -75,6 +76,7 @@ class Program(object):
         reps_to_intensity_func: typing.Callable[[int], float] = None,
         verbose: bool = False,
     ):
+
         """Initialize a new program.
 
 
@@ -398,6 +400,7 @@ class Program(object):
 
         # Validate the exercises
         for exercise in self._yield_exercises():
+
             if isinstance(exercise, StaticExercise):
                 continue
 
@@ -569,7 +572,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # Render the dynamic exercises
         # --------------------------------
 
-        for week, day, dyn_ex in self._yield_week_day_dynamic():
+        for (week, day, dyn_ex) in self._yield_week_day_dynamic():
+
             # Set min and max reps from program, if not set on exercise
             min_reps = dyn_ex.min_reps
             max_reps = dyn_ex.max_reps
@@ -757,7 +761,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
         if self._rendered:
-            for week, day, dynamic_ex in self._yield_week_day_dynamic():
+            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
                 lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
@@ -769,6 +773,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             max_ex_scheme=max_ex_scheme,
             verbose=verbose,
         )
+
 
     def to_tex(self, text_size="large", table_width=5, clear_pages=False):
         r"""
@@ -797,7 +802,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         # If rendered, find the length of the longest '6 x 75kg'-type string
         max_ex_scheme = 0
         if self._rendered:
-            for week, day, dynamic_ex in self._yield_week_day_dynamic():
+            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
                 lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
@@ -817,6 +822,41 @@ or (3) ignore this message. The software will do it's best to remedy this.
         """
         return self.to_txt()
 
+    def to_csv(self, verbose=False):
+        """Write the program information to text,
+        which can be printed in a terminal.
+
+        Parameters
+        ----------
+        verbose
+            If True, more information is shown.
+
+        Returns
+        -------
+        string
+            Program as text.
+        """
+        # Get information related to formatting
+        exercises = list(self._yield_exercises())
+        max_ex_name = 0
+        if exercises:
+            max_ex_name = max(len(ex.name) for ex in exercises)
+
+        # If rendered, find the length of the longest '6 x 75kg'-type string
+        max_ex_scheme = 0
+        if self._rendered:
+            for (week, day, dynamic_ex) in self._yield_week_day_dynamic():
+                lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
+                max_ex_scheme = max(max_ex_scheme, max(lengths))
+
+        env = self.jinja2_environment
+        template = env.get_template(self.TEMPLATE_NAMES["csv"])
+        return template.render(
+            program=self,
+            max_ex_name=max_ex_name,
+            max_ex_scheme=max_ex_scheme,
+            verbose=verbose,
+        )
 
 # Patch up the docs
 Program.Day.__doc__ = Day.__doc__ + "\nSee streprogen.Day for accurate signature."
@@ -829,6 +869,7 @@ if __name__ == "__main__":
     pytest.main(args=[".", "--doctest-modules", "-v", "--capture=sys"])
 
 if __name__ == "__main__":
+
     from streprogen import Program
 
     def rep_scaler_func(week, *args):
