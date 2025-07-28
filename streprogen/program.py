@@ -246,7 +246,14 @@ class Program(object):
         # TODO: make explicit
         self.optimizer = RepSchemeOptimizer()
 
-    def set_optimization_params(self, reps_slack=None, max_diff=None, max_unique=None):
+    def set_optimization_params(
+        self,
+        reps_slack=None,
+        max_diff=None,
+        max_unique=None,
+        min_sets=None,
+        max_sets=None,
+    ):
         """Set default parameters.
 
         Passing None for a paramter will get use the defaults in RepSchemeGenerator.
@@ -259,6 +266,10 @@ class Program(object):
             Maximum difference between two consecutive sets.
         max_unique : int, optional
             Maximum unique sets in the solution.
+        min_sets : int, optional
+            Minimum number of sets in the soluion.
+        max_sets : int, optional
+            Maximum number of sets in the soluion.
 
         """
 
@@ -270,9 +281,17 @@ class Program(object):
         reps_slack = defaults["reps_slack"] if reps_slack is None else reps_slack
         max_diff = defaults["reps_slack"] if max_diff is None else max_diff
         max_unique = defaults["reps_slack"] if max_unique is None else max_unique
+        min_sets = defaults["min_sets"] if min_sets is None else min_sets
+        max_sets = defaults["max_sets"] if max_sets is None else max_sets
 
         self.optimizer = RepSchemeOptimizer(
-            RepSchemeGenerator(reps_slack=reps_slack, max_diff=max_diff, max_unique=max_unique)
+            RepSchemeGenerator(
+                reps_slack=reps_slack,
+                max_diff=max_diff,
+                max_unique=max_unique,
+                min_sets=min_sets,
+                max_sets=max_sets,
+            )
         )
 
     def serialize(self) -> dict:
@@ -440,7 +459,10 @@ class Program(object):
         intensities = tuple(map(self.reps_to_intensity_func, sets))
 
         reps = self.optimizer(
-            sets=sets, intensities=intensities, reps_goal=desired_reps, intensity_goal=desired_intensity
+            sets=sets,
+            intensities=intensities,
+            reps_goal=desired_reps,
+            intensity_goal=desired_intensity,
         )
 
         intensities = list(map(self.reps_to_intensity_func, reps))

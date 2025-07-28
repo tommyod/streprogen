@@ -9,7 +9,14 @@ from ortools.linear_solver import pywraplp
 
 
 class RepSchemeGenerator:
-    def __init__(self, reps_slack: int = 3, max_diff: int = 1, max_unique: int = 3):
+    def __init__(
+        self,
+        reps_slack: int = 3,
+        max_diff: int = 1,
+        max_unique: int = 3,
+        min_sets: int = 0,
+        max_sets: int = 99,
+    ):
         """Initialize the generator by supplying hard constraints.
 
         Parameters
@@ -20,6 +27,10 @@ class RepSchemeGenerator:
             Maximum difference between two consecutive sets.
         max_unique : int, optional
             Maximum unique sets in the solution.
+        min_sets : int, optional
+            Minimum number of sets in the soluion.
+        max_sets : int, optional
+            Maximum number of sets in the soluion.
 
         Examples
         --------
@@ -43,7 +54,11 @@ class RepSchemeGenerator:
         ...     print(result)
         (2, 2, 2, 2)
         (4, 4)
-
+        >>> generator = RepSchemeGenerator(reps_slack=1, max_diff=2, min_sets=3)
+        >>> for result in generator.generate(sets=[2, 3, 4], reps_goal=6):
+        ...     print(result)
+        (2, 2, 2)
+        (2, 2, 3)
         """
         assert isinstance(reps_slack, numbers.Integral)
         assert reps_slack >= 0
@@ -51,10 +66,16 @@ class RepSchemeGenerator:
         assert max_diff >= 0
         assert isinstance(max_unique, numbers.Integral)
         assert max_unique >= 1
+        assert isinstance(min_sets, numbers.Integral)
+        assert min_sets >= 0
+        assert isinstance(max_sets, numbers.Integral)
+        assert max_sets <= 99
 
         self.reps_slack = reps_slack
         self.max_diff = max_diff
         self.max_unique = max_unique
+        self.min_sets = min_sets
+        self.max_sets = max_sets
 
     def generate(self, sets: list, reps_goal: int):
         """
@@ -94,8 +115,12 @@ class RepSchemeGenerator:
         if len(set(stack)) > self.max_unique:
             return
 
+        # Prune if there are too many sets
+        if len(stack) > self.max_sets:
+            return
+
         # Yield the result if it's within the allowed range
-        if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack):
+        if stack and (abs(sum(stack) - self.reps_goal) <= self.reps_slack) and len(stack) >= self.min_sets:
             yield tuple(stack)
 
         # Stop the recursion if the sum is too high. This prunes the search.

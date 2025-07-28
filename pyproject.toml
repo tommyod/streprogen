@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streprogen"
-version = "4.0.3"
+version = "4.1.0"
 dynamic = ["readme"]
 description = "The Python strength program generator."
 authors = [
