@@ -33,10 +33,7 @@ class Program(object):
 
     REP_SET_SEP = " x "
     TEMPLATE_DIR = path.join(path.dirname(__file__), "templates")
-    TEMPLATE_NAMES = {
-        extension: "program_template." + extension
-        for extension in ["html", "txt", "tex"]
-    }
+    TEMPLATE_NAMES = {extension: "program_template." + extension for extension in ["html", "txt", "tex"]}
 
     # Default functions
     _default_rep_scaler_func = staticmethod(
@@ -219,15 +216,11 @@ class Program(object):
         # ------ INTENSITY SCALERS------
         user, default = (
             intensity_scaler_func,
-            functools.partial(
-                self._default_intensity_scaler_func, final_week=self.duration
-            ),
+            functools.partial(self._default_intensity_scaler_func, final_week=self.duration),
         )
         intensity_scaler_func = prioritized_not_None(user, default)
         if callable(intensity_scaler_func):
-            self.intensity_scalers = [
-                intensity_scaler_func(w + 1) for w in range(self.duration)
-            ]
+            self.intensity_scalers = [intensity_scaler_func(w + 1) for w in range(self.duration)]
             self.intensity_scaler_func = intensity_scaler_func
         else:
             self.intensity_scalers = list(intensity_scaler_func)
@@ -282,11 +275,7 @@ class Program(object):
 
         # Get the default parameters
         signature = inspect.signature(RepSchemeGenerator.__init__)
-        defaults = {
-            k: v.default
-            for k, v in signature.parameters.items()
-            if v.default is not inspect.Parameter.empty
-        }
+        defaults = {k: v.default for k, v in signature.parameters.items() if v.default is not inspect.Parameter.empty}
 
         # Use defaults if None is passed
         reps_slack = defaults["reps_slack"] if reps_slack is None else reps_slack
@@ -433,9 +422,7 @@ class Program(object):
 
             _, _, percent_inc_per_week = exercise._progress_information()
             if percent_inc_per_week > 4:
-                msg = (
-                    f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
-                )
+                msg = f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
                 warnings.warn(msg)
 
     def add_days(self, *days):
@@ -458,9 +445,7 @@ class Program(object):
             day.program = self
             self.days.append(day)
 
-    def _render_dynamic(
-        self, dynamic_exercise, desired_reps, desired_intensity, validate
-    ) -> dict:
+    def _render_dynamic(self, dynamic_exercise, desired_reps, desired_intensity, validate) -> dict:
         """
         Render a single dynamic exercise.
         This is done for every exercise for every week.
@@ -486,9 +471,7 @@ class Program(object):
         int_highest = self.reps_to_intensity_func(min_reps)
         int_lowest = self.reps_to_intensity_func(max_reps)
 
-        if (
-            not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)
-        ) and validate:
+        if (not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)) and validate:
             msg = """WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
 This maps to intensities in the range [{}, {}], but the goal average intensity is {},
 which is not achievable with this rep range.
@@ -630,13 +613,9 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 desired_reps = round(total_reps * self.rep_scalers[index_to_lookup])
             else:
                 if hasattr(self, "rep_scaler_func"):
-                    desired_reps = round(
-                        total_reps * self.rep_scaler_func(week + dyn_ex.shift)
-                    )
+                    desired_reps = round(total_reps * self.rep_scaler_func(week + dyn_ex.shift))
                 else:
-                    raise TypeError(
-                        "Using `shift` requires `rep_scaler_func` to be a function, not a list."
-                    )
+                    raise TypeError("Using `shift` requires `rep_scaler_func` to be a function, not a list.")
 
             self._rendered[week][day][dyn_ex]["desired_reps"] = int(desired_reps)
 
@@ -648,9 +627,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
                 if hasattr(self, "intensity_scaler_func"):
                     scale_factor = self.intensity_scaler_func(week + dyn_ex.shift)
                 else:
-                    raise TypeError(
-                        "Using `shift` requires `intensity_scaler_func` to be a function, not a list."
-                    )
+                    raise TypeError("Using `shift` requires `intensity_scaler_func` to be a function, not a list.")
 
             desired_intensity = intensity_unscaled * scale_factor
             self._rendered[week][day][dyn_ex]["desired_intensity"] = desired_intensity
@@ -660,16 +637,12 @@ or (3) ignore this message. The software will do it's best to remedy this.
             out = self._render_dynamic(*render_args)
 
             # Get increase from program if not available on the exercise
-            inc_week = prioritized_not_None(
-                dyn_ex.percent_inc_per_week, self.percent_inc_per_week
-            )
+            inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
             (start_w, final_w, inc_week) = dyn_ex._progress_information()
 
-            weight = self.progression_func(
-                week + dyn_ex.shift, start_w, final_w, 1, self.duration
-            )
+            weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
 
             # Test that the weight is not too far from min and max
             upper_threshold = max(start_w, final_w) + abs(start_w - final_w)
@@ -689,15 +662,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Create pretty strings
             tuples_gen = zip(out["intensities"], out["reps"])
-            pretty_gen = (
-                (str(r), str(pretty_weight(weight, i, round_func)) + self.units)
-                for (i, r) in tuples_gen
-            )
+            pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
             out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
             out["1RM_this_week"] = round(weight, 2)
-            out["weights"] = [
-                pretty_weight(weight, i, round_func) for i in out["intensities"]
-            ]
+            out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
 
             # Update with the ['intensities', 'reps', 'strings', ...] keys
             self._rendered[week][day][dyn_ex].update(out)
@@ -812,9 +780,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         max_ex_scheme = 0
         if self._rendered:
             for week, day, dynamic_ex in self._yield_week_day_dynamic():
-                lengths = [
-                    len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]
-                ]
+                lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
         env = self.jinja2_environment
@@ -854,9 +820,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
         max_ex_scheme = 0
         if self._rendered:
             for week, day, dynamic_ex in self._yield_week_day_dynamic():
-                lengths = [
-                    len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]
-                ]
+                lengths = [len(s) for s in self._rendered[week][day][dynamic_ex]["strings"]]
                 max_ex_scheme = max(max_ex_scheme, max(lengths))
 
         env = self.jinja2_environment
@@ -878,12 +842,8 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
 # Patch up the docs
 Program.Day.__doc__ = Day.__doc__ + "\nSee streprogen.Day for accurate signature."
-Program.DynamicExercise.__doc__ = (
-    DynamicExercise.__doc__ + "\nSee streprogen.DynamicExercise for accurate signature."
-)
-Program.StaticExercise.__doc__ = (
-    StaticExercise.__doc__ + "\nSee streprogen.StaticExercise for accurate signature."
-)
+Program.DynamicExercise.__doc__ = DynamicExercise.__doc__ + "\nSee streprogen.DynamicExercise for accurate signature."
+Program.StaticExercise.__doc__ = StaticExercise.__doc__ + "\nSee streprogen.StaticExercise for accurate signature."
 
 if __name__ == "__main__":
     import pytest
