@@ -1,0 +1,35 @@
+Program Name,Duration,Reps per Exercise,Intensity,Units
+{{ program.name }},{{program.duration}},{{program.reps_per_exercise}},{{program.intensity}},{{program.units}}
+
+
+Day,Exercise Name,Min Reps, Max Reps,Progress Information
+{% for day in program.days %}
+  {% for exercise in day.exercises %}
+    {% if exercise | is_dynamic_exercise %}
+      {{ day.name }},{{ exercise.name }},{{ exercise.min_reps }},{{ exercise.max_reps }},{{ '{}{} -> {}{}'.format(str((exercise._progress_information()[0]|round2digits)).rjust(3), program.units, str((exercise._progress_information()[1])|round2digits).rjust(3), program.units).ljust(12 + 2*program.units|length) }} Weekly Inc.: {{ exercise._progress_information()[2] }}%
+    {% endif %}
+    {% if exercise | is_static_exercise %}
+      {{ day.name }},{{ exercise.name }},{{ exercise.sets_reps_func(1) }},Static Exercise
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+
+
+{% if program._rendered == False %}
+Not rendered. Call Program.render() to render it.
+{% else %}
+Week, Day, Exercise Name
+{% for week in range(1, program.duration + 1) %}
+{% for day in program.days %}
+{% for exercise in day.exercises %}
+{% if exercise | is_dynamic_exercise %}
+{{ week }}, {{ day.name }}, {{ exercise.name }}, {% for scheme in program._rendered[week][day][exercise]['strings'] %}{{ scheme }},, {% endfor %},
+{% endif %}
+{% if exercise | is_static_exercise %}
+{{ week }}, {{ day.name }}, {{ exercise.name }}, {{ exercise.sets_reps_func(week) }}, 
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endif %}
