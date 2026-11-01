@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 keywords = ["strength", "training", "health", "fitness", "generator", "weightlifting", "powerlifting", "exercise"]
 requires-python = ">=3.9"
@@ -43,3 +44,9 @@ exclude = ["contrib", "docs", "tests"]
 
 [tool.setuptools.package-data]
 "streprogen" = ["templates/*", "*.tex", "*.html"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "ruff>=0.17.3",
+]
