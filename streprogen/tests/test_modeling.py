@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test the modeling functions.
 """
 
 import pytest
 
-from streprogen import progression_sinh, progression_diffeq
+from streprogen import progression_diffeq, progression_sinh
 
 
 @pytest.mark.parametrize("k, duration", [(0, 12), (0, 13), (3, 12), (3, 13)])

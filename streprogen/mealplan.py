@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Sat Aug 31 18:28:06 2019
 
@@ -7,17 +6,17 @@ Created on Sat Aug 31 18:28:06 2019
 """
 
 import operator
+import warnings
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
 
 from streprogen.optimization import optimize_mealplan
-import warnings
 
 
 class Bunch(dict):
     def __init__(self, *args, **kwds):
-        super(Bunch, self).__init__(*args, **kwds)
+        super().__init__(*args, **kwds)
         self.__dict__ = self
 
 
@@ -160,7 +159,7 @@ class Mealplan:
                 if x[i][j] > 0:
                     self.results["meals"].add(self.meals[i])
 
-        self.results["meals"] = list(sorted(self.results["meals"], key=operator.attrgetter("name")))
+        self.results["meals"] = sorted(self.results["meals"], key=operator.attrgetter("name"))
 
         def format_qntity(qnty):
             """Format a number."""

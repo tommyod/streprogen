@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import functools
-import statistics
 import numbers
+import statistics
 
 from ortools.linear_solver import pywraplp
 
@@ -98,7 +97,7 @@ class RepSchemeGenerator:
         assert all(s > 0 for s in sets)
 
         # Store parameters in instance to avoid passing to _generate_sets()
-        self.sets = list(sorted(set(sets)))
+        self.sets = sorted(set(sets))
         self.reps_goal = reps_goal
 
         # Generate sets and yield them out
@@ -332,7 +331,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     INF = solver.infinity()
 
     # Create decision variables. x_j = number of sets with j reptitions
-    x = [solver.IntVar(0, INF, "x_{}".format(r_j)) for r_j in reps]
+    x = [solver.IntVar(0, INF, f"x_{r_j}") for r_j in reps]
     # Must choose at least one set
     solver.Add(sum(x) >= 1)
 
@@ -345,7 +344,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
 
     # Add many linear penalities with increasing 'diff' to create a convex penalty
     for diff in range(10):
-        delta = solver.NumVar(0, INF, "slack_reps_{}".format(diff))
+        delta = solver.NumVar(0, INF, f"slack_reps_{diff}")
         solver.Add(total_reps - reps_goal <= delta + diff)
         solver.Add(reps_goal - total_reps <= delta + diff)
         objective_function += penalty_reps * (delta) / reps_goal
@@ -359,7 +358,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
 
     # Add many linear penalities with increasing 'diff' to create a convex penalty
     for diff in range(10):
-        delta = solver.NumVar(0, INF, "slack_intensity_{}".format(diff))
+        delta = solver.NumVar(0, INF, f"slack_intensity_{diff}")
         solver.Add(numerator - intensities_goal * denominator <= delta + diff)
         solver.Add(intensities_goal * denominator - numerator <= delta + diff)
         objective_function += penalty_intensity * (delta) / intensities_goal
@@ -371,7 +370,7 @@ def optimize_sets(reps, intensities, reps_goal, intensities_goal):
     # Create binary indicator variables z_j
     # z_j = 1 if and only if x_j >= 1, if not then z_j = 0
     M = 2 * reps_goal
-    z = [solver.IntVar(0, 1, "z_{}".format(r_j)) for r_j in reps]
+    z = [solver.IntVar(0, 1, f"z_{r_j}") for r_j in reps]
     for x_j, z_j in zip(x, z):
         solver.Add(z_j <= x_j)
         solver.Add(x_j <= M * z_j)
@@ -510,12 +509,12 @@ def optimize_mealplan(
     # Loop over every combination of meal and days, create variables
     for i, meal in enumerate(meals):
         for j in range(num_days):
-            z[i][j] = solver.IntVar(0, 1, "z_{}{}".format(i, j))
+            z[i][j] = solver.IntVar(0, 1, f"z_{i}{j}")
 
             if meal.discrete:
-                x[i][j] = solver.IntVar(0, INF, "x_{}{}".format(i, j))
+                x[i][j] = solver.IntVar(0, INF, f"x_{i}{j}")
             else:
-                x[i][j] = solver.NumVar(0, INF, "x_{}{}".format(i, j))
+                x[i][j] = solver.NumVar(0, INF, f"x_{i}{j}")
 
             # These constraints ensure that z_ij = 1 iff x_ij >= EPSILON
             solver.Add(EPSILON * z[i][j] <= x[i][j])
@@ -566,8 +565,8 @@ def optimize_mealplan(
 
     # OBJECTIVE FUNCTION TERM 3: Minimal range on calories (on a daily basis)
     for j in range(num_days):
-        lower = solver.NumVar(0, INF, "lower_kcal_{}".format(j))
-        upper = solver.NumVar(0, INF, "upper_kcal_{}".format(j))
+        lower = solver.NumVar(0, INF, f"lower_kcal_{j}")
+        upper = solver.NumVar(0, INF, f"upper_kcal_{j}")
 
         for i, meal in enumerate(meals):
             solver.Add(lower <= x[i][j] * meal.kcal + (1 - z[i][j]) * M2)

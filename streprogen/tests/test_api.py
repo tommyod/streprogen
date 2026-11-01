@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test the API. The API should be considered fixed in future releases and should
 be equal for every implementation. Therefore it's important to have unit tests
 for the API.
 """
 
-import pytest
 import itertools
 import statistics
 
-from streprogen import Day, DynamicExercise, Program, StaticExercise
-from streprogen import progression_sawtooth, progression_sinusoidal
+import pytest
+
+from streprogen import (
+    Day,
+    DynamicExercise,
+    Program,
+    StaticExercise,
+    progression_sawtooth,
+    progression_sinusoidal,
+)
 
 
 @pytest.mark.parametrize("duration", list(range(2, 9)))
@@ -19,7 +25,7 @@ def test_verbose_api(duration):
     """The oldest, most verbose API."""
 
     def curl_func(week):
-        return "{} x 10".format(week)
+        return f"{week} x 10"
 
     # Create a 4-week program
     program = Program("My first program!", duration=duration)
@@ -48,7 +54,7 @@ def test_general_api():
     """The slightly more easy API."""
 
     def curl_func(week):
-        return "{} x 10".format(week)
+        return f"{week} x 10"
 
     # Create a 4-week program
     program = Program("My first program!", duration=8)
@@ -80,7 +86,7 @@ def test_decorator_api():
     """The new API."""
 
     def curl_func(week):
-        return "{} x 10".format(week)
+        return f"{week} x 10"
 
     # Create a 4-week program
     program = Program("My first program!", duration=8)
