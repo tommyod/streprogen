@@ -212,7 +212,7 @@ class TestProgressInformation:
         with program.Day("A"):
             squat = program.DynamicExercise("Squats", start_weight=100, final_weight=150)
 
-        (start_w, final_w, inc_week) = squat._progress_information()
+        start_w, final_w, inc_week = squat._progress_information()
         assert start_w == 100
         assert final_w == 150
         assert inc_week == 5  # Weight override program default
@@ -222,7 +222,7 @@ class TestProgressInformation:
         with program.Day("A"):
             squat = program.DynamicExercise("Squats", start_weight=100, percent_inc_per_week=10)
 
-        (start_w, final_w, inc_week) = squat._progress_information()
+        start_w, final_w, inc_week = squat._progress_information()
         assert start_w == 100
         assert final_w == 200
         assert inc_week == 10  # Weight override program default

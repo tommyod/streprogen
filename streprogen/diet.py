@@ -3,6 +3,7 @@
 """
 Data classes for optimizing meals.
 """
+
 import warnings
 
 # =============================================================================

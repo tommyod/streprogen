@@ -640,7 +640,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
-            (start_w, final_w, inc_week) = dyn_ex._progress_information()
+            start_w, final_w, inc_week = dyn_ex._progress_information()
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
 

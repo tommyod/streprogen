@@ -5,6 +5,7 @@ Created on Sat Aug 31 18:28:06 2019
 
 @author: tommy
 """
+
 import operator
 from os import path
 
