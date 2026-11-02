@@ -1,4 +1,3 @@
-
 from streprogen.day import Day
 from streprogen.diet import Food, Meal
 from streprogen.exercises import DynamicExercise, StaticExercise

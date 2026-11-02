@@ -1,4 +1,3 @@
-
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.utils import escape_string
 

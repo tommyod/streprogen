@@ -1,4 +1,3 @@
-
 import bisect
 import itertools
 import numbers
