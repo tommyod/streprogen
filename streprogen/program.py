@@ -64,9 +64,9 @@ class Program:
         reps_per_exercise: int = 25,
         min_reps: int = 3,
         max_reps: int = 8,
-        rep_scaler_func: typing.Callable[[int], float] | None = None,
+        rep_scaler_func: typing.Callable[[int], float] | list | None = None,
         intensity: float = 83,
-        intensity_scaler_func: typing.Callable[[int], float] | None = None,
+        intensity_scaler_func: typing.Callable[[int], float] | list | None = None,
         units: str = "kg",
         round_to: float | typing.Callable = 2.5,
         percent_inc_per_week: float = 1.5,
@@ -132,14 +132,17 @@ class Program:
             override the global program value.
 
         percent_inc_per_week
-            If `final_weight` is not set, this value will be used. Percentage
-            increase per week can be set globally for the program, or for each
-            dynamic exercise. If set at the dynamic exercise level, it will
-            override the global program value. The increase is  additive, not
-            multipliactive. For instance, if the increase is set to
-            `percent_inc_per_week=2`, then after 2 weeks the increase is 4,
-            not (1.02 * 1.02 - 1) * 100 = 4.04. The `final_weight` parameter
-            must be set to `None` for this parameter to have effect.
+            Percentage increase per week, used if one of `final_weight` or
+            `start_weight` is not set to infer it from the other. Can be set
+            globally for the program, or for each dynamic exercise. If set at
+            the dynamic exercise level, it will override the global program value.
+            The increase is  additive, not multipliactive. For instance, if the
+            increase is set to `percent_inc_per_week=2`, then after 2 weeks the
+            increase is 4, not (1.02 * 1.02 - 1) * 100 = 4.04.
+            One of `final_weight` or `start_weight` must be set to `None` for this
+            parameter to have effect. NOTE: parameter is only a shorthand to set
+            a missing value, it does not mean that increase per week will
+            literally be linear with the same percentage.
 
         progression_func
             The function used to model overall 1RM progression in the
@@ -182,7 +185,7 @@ class Program:
         if self.min_reps and self.max_reps and self.min_reps > self.max_reps:
             raise ValueError("'min_reps' larger than 'max_reps'")
 
-        assert isinstance(intensity, numbers.Number) and intensity > 0
+        assert isinstance(intensity, numbers.Number) and intensity > 1
         self.intensity = intensity
 
         assert isinstance(units, str)
@@ -228,7 +231,10 @@ class Program:
         self.progression_func = prioritized_not_None(user, default)
         assert callable(self.progression_func)
 
-        user, default = reps_to_intensity_func, self._default_reps_to_intensity_func
+        user, default = (
+            reps_to_intensity_func,
+            self._default_reps_to_intensity_func,
+        )
         self.reps_to_intensity_func = prioritized_not_None(user, default)
         assert callable(self.reps_to_intensity_func)
 
@@ -626,11 +632,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             render_args = dyn_ex, desired_reps, desired_intensity, validate
             out = self._render_dynamic(*render_args)
 
-            # Get increase from program if not available on the exercise
-            prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
-
-            # Compute the progress
+            # Compute the progress. Only two out of three need to be set.
+            # This method looks to Program too
             start_w, final_w, _inc_week = dyn_ex._progress_information()
+            # _inc_week is not actually used
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
 
@@ -652,7 +657,13 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
             # Create pretty strings
             tuples_gen = zip(out["intensities"], out["reps"])
-            pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
+            pretty_gen = (
+                (
+                    str(r),
+                    str(pretty_weight(weight, i, round_func)) + self.units,
+                )
+                for (i, r) in tuples_gen
+            )
             out["strings"] = [self.REP_SET_SEP.join(list(k)) for k in pretty_gen]
             out["1RM_this_week"] = round(weight, 2)
             out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
