@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.utils import escape_string
 
@@ -112,7 +110,7 @@ class Day:
         """Create a new object from a dictionary."""
         name = data["name"]
         exercises = [
-            StaticExercise.deserialize(ex) if "sets_reps" in ex.keys() else DynamicExercise.deserialize(ex)
+            StaticExercise.deserialize(ex) if "sets_reps" in ex else DynamicExercise.deserialize(ex)
             for ex in data["exercises"]
         ]
         return cls(name, exercises)

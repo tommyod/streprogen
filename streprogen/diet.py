@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Data classes for optimizing meals.
 """

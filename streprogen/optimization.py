@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import functools
 import numbers
 import statistics
@@ -101,8 +99,7 @@ class RepSchemeGenerator:
         self.reps_goal = reps_goal
 
         # Generate sets and yield them out
-        for scheme in self._generate_sets(stack=[]):
-            yield scheme
+        yield from self._generate_sets(stack=[])
 
     def _generate_sets(self, i: int = 0, stack=None):
         """Only to be called internally."""
@@ -153,7 +150,7 @@ class RepSchemeOptimizer:
         else:
             self.generator = generator
 
-        self._cache = dict()
+        self._cache = {}
 
     def _optimize(self, sets: tuple, intensities: tuple, reps_goal: int, intensity_goal: float):
         """Core optimization. Moved to its own method for caching."""
@@ -461,7 +458,7 @@ def optimize_mealplan(
         meals_limits = [(None, None) for meal in meals]
 
     if params is None:
-        params = dict()
+        params = {}
 
     # A small number such as 0.001. x_ij >= EPSILON <=> z_ij = 1
     EPSILON = epsilon
@@ -495,7 +492,7 @@ def optimize_mealplan(
         raise RuntimeError(msg.format(meals_total, maximum_limit))
 
     allowed_macros = ("kcal", "protein", "fat", "carbs")
-    assert all(key in allowed_macros for key in dietary_constraints.keys())
+    assert all(key in allowed_macros for key in dietary_constraints)
 
     assert len(meals_limits) == len(meals)
 
