@@ -109,6 +109,63 @@ The logic is simple; first streprogen checks on the lower level (DynamicExercise
 and if there is nothing set or not enough information, it moves up to the higher
 level (Program) to get information.
 
+### Static exercises
+
+In the simplest case, a static exercise is a name and a string.
+streprogen prints the string every week.
+Use static exercises for anything you want to control by hand:
+accessories, conditioning, or a full program you already have.
+
+In the slightly more advanced case, a static exercise takes a function of 
+week number (1 to `duration`), and within that function you can do whatever
+you want as long as you return a string.
+This means that linear schemes, two-steps-foward-one-step-back schemes,
+linear schemes with deload weeks every fourth week, randomness, etc. can
+all be expressed as static exercises.
+
+```python
+from streprogen import Program
+from streprogen.utils import round_to_nearest
+
+def squat(week):
+    """+2.5 kg per week, with a lighter week 4."""
+    weight = 100 + 2.5 * (week - 1)
+    if week == 4:
+        weight = weight * 0.9
+    weight = round_to_nearest(weight, nearest=2.5)
+    return f"5 x 5 @ {weight}kg"
+
+
+def bench(week):
+    """Alternate volume and heavy weeks."""
+    if week % 2 == 1:
+        return "5 x 5 @ 80kg"  # odd weeks
+    return "5 x 3 @ 87.5kg"    # even weeks
+
+
+def chin_ups(week):
+    """Add one rep per set every week."""
+    return f"4 x {5 + week}"
+
+
+program = Program(name="StaticByWeek", duration=4)
+    
+with program.Day("A"):
+    program.StaticExercise("Squat", "5 x 5 @ 100kg")
+    program.StaticExercise("Cardio", "20 min")
+    
+with program.Day("B"):
+    program.StaticExercise("Squat", squat)
+    program.StaticExercise("Bench press", bench)
+    program.StaticExercise("Chin-ups", chin_ups)
+
+program.render()
+print(program)
+```
+
+The function is called each time the program is exported.
+Keep it deterministic or seed any randomness.
+
 ### Volume, intensity and weight
 
 The function `reps_to_intensity_func` maps a number of repetitions to an intensity (percentage of 1RM).
