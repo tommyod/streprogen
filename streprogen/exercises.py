@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 import functools
 import inspect
@@ -125,10 +124,9 @@ class DynamicExercise:
                 msg = "'start_weight' larger than 'final_weight' for exercise '{}'."
                 warnings.warn(msg.format(self.name))
 
-        if self.min_reps and self.max_reps:
-            if self.min_reps > self.max_reps:
-                msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
-                raise ValueError(msg.format(self.name))
+        if self.min_reps and self.max_reps and self.min_reps > self.max_reps:
+            msg = "'min_reps' larger than 'max_reps' for exercise '{}'."
+            raise ValueError(msg.format(self.name))
 
     def _simple_attributes(self):
         """Yield all simple parameters (ints, strings, etc)."""

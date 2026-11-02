@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 from streprogen.day import Day
 from streprogen.diet import Food, Meal

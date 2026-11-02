@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 import collections.abc
 import functools
@@ -36,7 +35,7 @@ def reps_to_intensity(reps, slope=-3.5, constant=97.5, quadratic=True):
     65
     """
     if isinstance(reps, collections.abc.Iterable):
-        return list(reps_to_intensity(rep, slope, constant, quadratic) for rep in reps)
+        return [reps_to_intensity(rep, slope, constant, quadratic) for rep in reps]
 
     intensity = constant + slope * (reps - 1)
     if quadratic:
@@ -100,12 +99,12 @@ def progression_sinusoidal(
     123.0
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(
+        return [
             progression_sinusoidal(
                 w, start_weight, final_weight, start_week, final_week, period, scale, offset, k, correct_boundaries
             )
             for w in week
-        )
+        ]
 
     # Get the base model
     base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
@@ -209,12 +208,12 @@ def progression_sawtooth(
     110
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(
+        return [
             progression_sawtooth(
                 w, start_weight, final_weight, start_week, final_week, period, scale, offset, k, correct_boundaries
             )
             for w in week
-        )
+        ]
 
     # Get the base model
     base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
@@ -308,7 +307,7 @@ def progression_diffeq(week, start_weight, final_weight, start_week, final_week,
     120.0
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(progression_diffeq(w, start_weight, final_weight, start_week, final_week, k) for w in week)
+        return [progression_diffeq(w, start_weight, final_weight, start_week, final_week, k) for w in week]
 
     # assert week <= final_week
     # assert week >= start_week
@@ -359,7 +358,7 @@ def progression_sinh(week, start_weight, final_weight, start_week, final_week, k
     3.0
     """
     if isinstance(week, collections.abc.Iterable):
-        return list(progression_sinh(w, start_weight, final_weight, start_week, final_week, k) for w in week)
+        return [progression_sinh(w, start_weight, final_weight, start_week, final_week, k) for w in week]
 
     assert week <= final_week
     assert week >= start_week

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Created on Sat Aug 31 18:28:06 2019
 
@@ -88,7 +87,7 @@ class Mealplan:
         self.weight_meal_sizes = weight_meal_sizes
 
         if meal_limits is None:
-            self.meal_limits = dict()
+            self.meal_limits = {}
         else:
             self.meal_limits = meal_limits
 
@@ -99,8 +98,8 @@ class Mealplan:
 
         assert len(self.meals) == len(self.meal_limits)
 
-        meal_names = set([meal.name for meal in self.meals])
-        for key in self.meal_limits.keys():
+        meal_names = {meal.name for meal in self.meals}
+        for key in self.meal_limits:
             if key not in meal_names:
                 msg = "`meal_limits` has a key `{}` which is not a meal name."
                 warnings.warn(msg.format(key))
@@ -174,7 +173,7 @@ class Mealplan:
             result = [(meal, qnty) for (meal, qnty) in zip(self.meals, x_day) if qnty > 0]
             result = sorted(result, key=lambda r: r[0].carbs * r[1], reverse=True)
 
-            self.results[day_num] = dict()
+            self.results[day_num] = {}
             for attr in ["price", "protein", "fat", "carbs", "kcal"]:
                 self.results[day_num][attr] = [getattr(m, attr) * q for (m, q) in result]
                 self.results[attr].append(sum(self.results[day_num][attr]))

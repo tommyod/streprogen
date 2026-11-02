@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+
+from __future__ import annotations
 
 import functools
 import inspect
@@ -64,14 +65,14 @@ class Program:
         reps_per_exercise: int = 25,
         min_reps: int = 3,
         max_reps: int = 8,
-        rep_scaler_func: typing.Callable[[int], float] = None,
+        rep_scaler_func: typing.Callable[[int], float] | None = None,
         intensity: float = 83,
-        intensity_scaler_func: typing.Callable[[int], float] = None,
+        intensity_scaler_func: typing.Callable[[int], float] | None = None,
         units: str = "kg",
-        round_to: typing.Union[float, typing.Callable] = 2.5,
+        round_to: float | typing.Callable = 2.5,
         percent_inc_per_week: float = 1.5,
-        progression_func: typing.Callable = None,
-        reps_to_intensity_func: typing.Callable[[int], float] = None,
+        progression_func: typing.Callable | None = None,
+        reps_to_intensity_func: typing.Callable[[int], float] | None = None,
         verbose: bool = False,
     ):
         """Initialize a new program.
@@ -179,9 +180,8 @@ class Program:
         assert isinstance(max_reps, numbers.Integral) and max_reps > 0
         self.min_reps = min_reps
         self.max_reps = max_reps
-        if self.min_reps and self.max_reps:
-            if self.min_reps > self.max_reps:
-                raise ValueError("'min_reps' larger than 'max_reps'")
+        if self.min_reps and self.max_reps and self.min_reps > self.max_reps:
+            raise ValueError("'min_reps' larger than 'max_reps'")
 
         assert isinstance(intensity, numbers.Number) and intensity > 0
         self.intensity = intensity
@@ -324,7 +324,7 @@ class Program:
 
         return new_program
 
-    def Day(self, name: str = None):
+    def Day(self, name: str | None = None):
         day = Day(name=name)
         day.program = self
         return day
@@ -379,7 +379,7 @@ class Program:
         """
 
         # Warn if many days have the same name
-        if len(self.days) > len(set(day.name for day in self.days)):
+        if len(self.days) > len({day.name for day in self.days}):
             warnings.warn("\nWARNING: Some day names are duplicates.")
 
         weeks = list(range(self.duration))
@@ -492,20 +492,20 @@ or (3) ignore this message. The software will do it's best to remedy this.
         False
         """
 
-        self._rendered = dict()
+        self._rendered = {}
 
         # Iterate over all weeks
         for week in range(1, self.duration + 1):
-            self._rendered[week] = dict()
+            self._rendered[week] = {}
 
             # Iterate over all days
             for day in self.days:
-                self._rendered[week][day] = dict()
+                self._rendered[week][day] = {}
 
                 # Iterate over all main exercises
                 for exercise in day.exercises:
                     if isinstance(exercise, DynamicExercise):
-                        self._rendered[week][day][exercise] = dict()
+                        self._rendered[week][day][exercise] = {}
 
     def _yield_week_day_dynamic(self):
         """A helper function to reduce the number of nested loops.
@@ -537,8 +537,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         """
         for day in self.days:
-            for exercise in day.exercises:
-                yield exercise
+            yield from day.exercises
 
     def render(self, validate=True):
         """Render the training program to perform the calculations.
@@ -629,10 +628,10 @@ or (3) ignore this message. The software will do it's best to remedy this.
             out = self._render_dynamic(*render_args)
 
             # Get increase from program if not available on the exercise
-            inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
+            prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
-            start_w, final_w, inc_week = dyn_ex._progress_information()
+            start_w, final_w, _inc_week = dyn_ex._progress_information()
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
 
@@ -655,7 +654,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             # Create pretty strings
             tuples_gen = zip(out["intensities"], out["reps"])
             pretty_gen = ((str(r), str(pretty_weight(weight, i, round_func)) + self.units) for (i, r) in tuples_gen)
-            out["strings"] = list(self.REP_SET_SEP.join(list(k)) for k in pretty_gen)
+            out["strings"] = [self.REP_SET_SEP.join(list(k)) for k in pretty_gen]
             out["1RM_this_week"] = round(weight, 2)
             out["weights"] = [pretty_weight(weight, i, round_func) for i in out["intensities"]]
 
