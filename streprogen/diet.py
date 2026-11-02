@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Data classes for optimizing meals.
 """
+
 import warnings
 
 # =============================================================================
@@ -52,10 +52,10 @@ class Food:
 
     def __repr__(self):
         name = type(self).__name__
-        args = ("{}={}".format(arg, value) for (arg, value) in self.__dict__.items())
+        args = (f"{arg}={value}" for (arg, value) in self.__dict__.items())
         args = ", ".join(args)
 
-        return name + "({})".format(args)
+        return name + f"({args})"
 
     def __hash__(self):
         return hash((self.name, self.protein, self.fat, self.carbs, self.kcal))
@@ -84,7 +84,7 @@ class Meal:
         self.foods = foods
         self.discrete = discrete
         if self.kcal < 10:
-            warnings.warn("Food only has {} calories.".format(self.kcal))
+            warnings.warn(f"Food only has {self.kcal} calories.")
 
     def __getattr__(self, key):
         """Allow accessing attributes of foods, summing over them."""
@@ -105,10 +105,8 @@ class Meal:
 
     def __str__(self):
         name = type(self).__name__
-        foods_names = (
-            "{" + ", ".join("{}g {}".format(quantity, food.name) for food, quantity in self.foods.items()) + "}"
-        )
-        return name + "(name='{}', grams={}, foods={})".format(self.name, self.grams, foods_names)
+        foods_names = "{" + ", ".join(f"{quantity}g {food.name}" for food, quantity in self.foods.items()) + "}"
+        return name + f"(name='{self.name}', grams={self.grams}, foods={foods_names})"
 
 
 if __name__ == "__main__":

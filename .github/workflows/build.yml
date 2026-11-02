@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false # Allow one of the matrix builds to fail without failing others
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
         
     # The job
     name: Python ${{ matrix.python-version }}
@@ -21,10 +21,10 @@ jobs:
     steps:
     
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         
       - name: Setup python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
@@ -50,7 +50,7 @@ jobs:
 
       - name: Publish Python distribution to PyPI
         if: github.ref == 'refs/heads/master'
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@release/v1.14
         with:
           skip_existing: true
           user: __token__

@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import functools
-import statistics
-import warnings
+import inspect
 import numbers
+import statistics
 import time
 import typing
-import inspect
+import warnings
 from os import path
 
 from jinja2 import Environment, FileSystemLoader
@@ -18,7 +17,7 @@ from streprogen.modeling import (
     progression_diffeq,
     reps_to_intensity,
 )
-from streprogen.optimization import RepSchemeOptimizer, RepSchemeGenerator
+from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 from streprogen.utils import (
     chunker,
     escape_string,
@@ -27,7 +26,7 @@ from streprogen.utils import (
 )
 
 
-class Program(object):
+class Program:
     """The program class is a container for days and exercises, along with
     the methods and functions used to create training programs."""
 
@@ -472,19 +471,12 @@ class Program(object):
         int_lowest = self.reps_to_intensity_func(max_reps)
 
         if (not (int_lowest - 0.1 <= desired_intensity <= int_highest + 0.1)) and validate:
-            msg = """WARNING: The exercise '{}' is restricted to repetitions in the range [{}, {}].
-This maps to intensities in the range [{}, {}], but the goal average intensity is {},
+            msg = f"""WARNING: The exercise '{dynamic_exercise.name}' is restricted to repetitions in the range [{min_reps}, {max_reps}].
+This maps to intensities in the range [{round(int_lowest, 1)}, {round(int_highest, 1)}], but the goal average intensity is {round(desired_intensity, 1)},
 which is not achievable with this rep range.
 SOLUTION: Either (1) change the repetition range, (2) change the desired intensity
 or (3) ignore this message. The software will do it's best to remedy this.
-""".format(
-                dynamic_exercise.name,
-                min_reps,
-                max_reps,
-                round(int_lowest, 1),
-                round(int_highest, 1),
-                round(desired_intensity, 1),
-            )
+"""
             warnings.warn(msg)
 
         return {"reps": reps, "intensities": intensities}
@@ -581,7 +573,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
 
         # Set the day names
         for i, day in enumerate(self.days):
-            day.name = prioritized_not_None(day.name, "Day {}".format(i + 1))
+            day.name = prioritized_not_None(day.name, f"Day {i + 1}")
 
         # Validate the program if the user wishes to validate
         if validate:
@@ -640,7 +632,7 @@ or (3) ignore this message. The software will do it's best to remedy this.
             inc_week = prioritized_not_None(dyn_ex.percent_inc_per_week, self.percent_inc_per_week)
 
             # Compute the progress
-            (start_w, final_w, inc_week) = dyn_ex._progress_information()
+            start_w, final_w, inc_week = dyn_ex._progress_information()
 
             weight = self.progression_func(week + dyn_ex.shift, start_w, final_w, 1, self.duration)
 

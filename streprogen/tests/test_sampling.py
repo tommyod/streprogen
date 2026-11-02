@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test the sampling functions.
 """
 
-import pytest
-import itertools
 import collections
+import itertools
+
+import pytest
 
 from streprogen.sampling import sample_markov_ladder, sample_markov_loop
 

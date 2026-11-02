@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from streprogen.exercises import DynamicExercise, StaticExercise
 from streprogen.utils import escape_string
 
 
-class Day(object):
+class Day:
     """
     A day object is a container for exercises associated with the specific day.
     """
@@ -77,7 +76,7 @@ class Day(object):
                 self.exercises.append(exercise)
 
     def __repr__(self):
-        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
+        return f"{type(self).__name__}({str(self.__dict__)[:60]})"
 
     def __str__(self):
         """
@@ -94,11 +93,11 @@ class Day(object):
         """
         exercises = ", ".join([d.name for d in self.exercises])
         if len(exercises) > 0:
-            exercises = "exercises = [{}]".format(exercises)
+            exercises = f"exercises = [{exercises}]"
 
         out_str = "{}({})".format(
             type(self).__name__,
-            ", ".join([s for s in ["name = {}".format(self.name), exercises] if len(s) > 2]),
+            ", ".join([s for s in [f"name = {self.name}", exercises] if len(s) > 2]),
         )
         return out_str
 

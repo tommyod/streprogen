@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import functools
-import warnings
 import inspect
+import warnings
 
-from streprogen.utils import compose, escape_string, round_to_nearest, prioritized_not_None
+from streprogen.utils import (
+    compose,
+    escape_string,
+    prioritized_not_None,
+    round_to_nearest,
+)
 
 
-class DynamicExercise(object):
+class DynamicExercise:
     """Class for dynamic exercises."""
 
     def __init__(
@@ -259,8 +263,8 @@ class DynamicExercise(object):
         """
 
         attr_names = self._simple_attributes()
-        arg_str = ", ".join(["{}={}".format(attr, repr(getattr(self, attr))) for attr in attr_names])
-        return "{}({})".format(type(self).__name__, arg_str)
+        arg_str = ", ".join([f"{attr}={getattr(self, attr)!r}" for attr in attr_names])
+        return f"{type(self).__name__}({arg_str})"
 
     def __eq__(self, other):
         return all(getattr(self, attr) == getattr(other, attr) for attr in self._simple_attributes())
@@ -275,7 +279,7 @@ class DynamicExercise(object):
         return cls(**data)
 
 
-class StaticExercise(object):
+class StaticExercise:
     """
     Class for static exercises.
     """
@@ -333,7 +337,7 @@ class StaticExercise(object):
         """
         Representation.
         """
-        return "{}({})".format(type(self).__name__, str(self.__dict__)[:60])
+        return f"{type(self).__name__}({str(self.__dict__)[:60]})"
 
     def __eq__(self, other):
         return self.name == other.name and self.sets_reps == other.sets_reps
@@ -345,13 +349,13 @@ class StaticExercise(object):
 
         strvar = ["name", "sets_reps"]
 
-        arg_str = ", ".join(["{}={}".format(k, self.__dict__[k]) for k in strvar if self.__dict__[k] is not None])
+        arg_str = ", ".join([f"{k}={self.__dict__[k]}" for k in strvar if self.__dict__[k] is not None])
 
-        return "{}({})".format(type(self).__name__, arg_str)
+        return f"{type(self).__name__}({arg_str})"
 
     def serialize(self):
         if callable(self.sets_reps):
-            raise ValueError(f"Cannot serialize {repr(self)} because `sets_reps` is a function.")
+            raise ValueError(f"Cannot serialize {self!r} because `sets_reps` is a function.")
         return {"name": self.name, "sets_reps": self.sets_reps}
 
     @classmethod

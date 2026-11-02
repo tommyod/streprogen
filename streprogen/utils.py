@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from functools import wraps
 
@@ -24,7 +23,7 @@ def compose(first_func, second_func):
 
     @wraps(first_func)
     def composed_func(*args, **kwargs):
-        return second_func((first_func(*args, **kwargs)))
+        return second_func(first_func(*args, **kwargs))
 
     return composed_func
 
@@ -87,7 +86,7 @@ def chunker(iterable, size=5, fill=""):
     True
     """
 
-    for index in range(0, len(iterable) // size + 1):
+    for index in range(len(iterable) // size + 1):
         to_yield = iterable[index * size : (index + 1) * size]
 
         # Stop yielding if empty

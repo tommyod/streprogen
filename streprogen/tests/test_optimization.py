@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 
-from streprogen.optimization import RepSchemeOptimizer, RepSchemeGenerator
+import itertools
+
+import pytest
+
 from streprogen.modeling import (
     reps_to_intensity,
     reps_to_intensity_relaxed,
     reps_to_intensity_tight,
 )
-import itertools
-import pytest
+from streprogen.optimization import RepSchemeGenerator, RepSchemeOptimizer
 
 
 @pytest.mark.parametrize(

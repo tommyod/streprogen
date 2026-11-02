@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import collections.abc
 import functools
@@ -110,8 +109,7 @@ def progression_sinusoidal(
 
     # Get the base model
     base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
-    if period <= 1:
-        period = 1
+    period = max(1, period)
 
     sine_argument = (week - offset - start_week) * (math.pi * 2) / period
 
@@ -220,8 +218,7 @@ def progression_sawtooth(
 
     # Get the base model
     base = progression_diffeq(week, start_weight, final_weight, start_week, final_week, k)
-    if period <= 1:
-        period = 1
+    period = max(1, period)
 
     if period > 1:
         x = (week - offset - start_week) / period

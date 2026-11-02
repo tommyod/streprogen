@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-import numbers
-import itertools
-import random
 import bisect
+import itertools
+import numbers
+import random
 
 
 def roll(container, k):
