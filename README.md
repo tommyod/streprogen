@@ -161,6 +161,11 @@ with program.Day("B"):
 
 program.render()
 print(program)
+
+# Here's how to render as a .tex file :)
+with open(f"{program.name}.tex", "w", encoding="utf-8") as file:
+    file.write(program.to_tex(text_size="large", table_width=8, clear_pages=False))
+
 ```
 
 The function is called each time the program is exported.
@@ -211,97 +216,130 @@ is linear, but sinusoidal, two-steps-forward-one-step-back, the more general saw
 and other variants are possible. Randomization can be injected here too.
 Several progressions functions are available, or you can make your own.
 
+### Creating a classic 5x5 program
 
+Below is a variation on a classic; the 5x5 program.
+What we change is:
+
+- We set the rep range to `[4, 6]` instead of `[5, 5]`
+- `intensity_scaler_func` increases the intensity
+- `rep_scaler_func` lowers the number of repetitions
+
+
+
+```python
+import functools
+from streprogen import (Program, RepSchemeGenerator, RepSchemeOptimizer, 
+                        reps_to_intensity, progression_diffeq)
+
+duration = 12
+
+def rep_scaler_func(week):
+    # Linear function over duration
+    start, end = 1.1, 0.7
+    delta = (week - 1) / (duration - 1)
+    return start + delta * (end - start)
+    
+def intensity_scaler_func(week):
+    start, end = 0.97, 1.03
+    delta = (week - 1) / (duration - 1)
+    return start + delta * (end - start)
+
+program = Program(
+    name="Beginner5x5",
+    duration=duration,
+    reps_per_exercise=25,
+    min_reps=4,
+    max_reps=6,
+    percent_inc_per_week=1,
+    intensity=reps_to_intensity(5),
+    rep_scaler_func=rep_scaler_func,
+    intensity_scaler_func=intensity_scaler_func,
+    units="kg",
+    round_to=2.5,
+    # Slight non-linearity in progress (k=0 => linear)
+    progression_func=functools.partial(progression_diffeq, k=1),
+)
+
+# Override the optimizer defaults 
+program.set_optimization_params(
+    reps_slack=8,  # (Pruning) Slack on total reps, e.g. search between 17 and 33
+    max_diff=1,    # Do not allow jumps, e.g. disallow [6, 4], but allow [6, 5]
+    max_unique=2,  # Max number of unique sets, e.g. disallow [5, 4, 3]
+    min_sets=3,    # (Pruning) Min number of sets
+    max_sets=6,    # (Pruning) Min number of sets
+)
+
+with program.Day("A"):
+    program.DynamicExercise("Squat", start_weight=80)
+    program.DynamicExercise("Bench press", start_weight=60)
+    program.DynamicExercise("Barbell row", start_weight=50)
+
+with program.Day("B"):
+    program.DynamicExercise("Squat", start_weight=80)
+    program.DynamicExercise("Overhead press", start_weight=40)
+    # reps=5 overrides reps_per_exercise: a single set of ~5
+    program.DynamicExercise("Deadlift", start_weight=80, reps=5)
+
+program.render()
+print(program)
+```
+
+### Tips and tricks
+
+#### Working weights intead of 1RM
+
+If you know a working weight rather than a 1RM, convert it with the same
+function the program uses to map reps to intensity:
+
+```python
+from streprogen import reps_to_intensity
+
+# You currently squat 5 reps at 100 kg.
+working_weight = 100
+reps = 5
+estimated_1rm = working_weight / (reps_to_intensity(reps) / 100)
+print(round(estimated_1rm, 1))  # 100 / 0.843 = 118.6
+```
+
+#### Use progression functions
+
+```python
+import functools
+from streprogen import progression_sawtooth
+
+rep_scaler_func = functools.partial(progression_sawtooth,
+        start_weight=15,
+        final_weight=25,
+        start_week=1,
+        final_week=12,
+        period=4,
+        scale=0.1,
+        offset=0,
+        k=0,
+        correct_boundaries=True,
+)
+
+print([round(rep_scaler_func(w), 1) for w in range(1, 13)])
+# [15.0, 16.5, 18.2, 19.9, 16.8, 18.6, 20.5, 22.5, 18.6, 20.6, 22.8, 25.0]
 ```
 
 
-
-
-
-
-                            start_weight=100,
-                            final_weight=120,
-                            percent_inc_per_week=2,
+----------------
 
 
 
 
 
 
-
-
-
-        progression_func
-            The function used to model overall 1RM progression in the
-            training program. The function must have a signature like:
-                func(week, start_weight, final_weight, start_week, end_week)
-
-Suppose we 
-
-
-
-
-
-
-
-
-
-
-
-        name: str = "Untitled",
-        duration: int = 8,
-        reps_per_exercise: int = 25,
-        min_reps: int = 3,
-        max_reps: int = 8,
-        rep_scaler_func: typing.Callable[[int], float] | None = None,
-        intensity: float = 83,
-        intensity_scaler_func: typing.Callable[[int], float] | None = None,
-        units: str = "kg",
-        round_to: float | typing.Callable = 2.5,
-        percent_inc_per_week: float = 1.5,
-        progression_func: typing.Callable | None = None,
-        reps_to_intensity_func: typing.Callable[[int], float] | None = None,
-        verbose: bool = False,
-
-
-
-        name,
-        start_weight=None,
-        final_weight=None,
-        min_reps=None,
-        max_reps=None,
-        percent_inc_per_week=None,
-        reps=None,
-        intensity=None,
-        round_to=None,
-        shift=0,
-
-
-## Concepts
-
-| Object | Role |
-|---|---|
-| `Program` | Container for days. Holds global settings: duration, volume, intensity, progression, rounding, optimizer. |
-| `Day` | Container for exercises. Created with `with program.Day("name"):`. |
-| `StaticExercise` | A name and a string (or a function `week -> string`). Printed as-is. |
-| `DynamicExercise` | A name, a 1RM and a progression. Sets, reps and weights are computed. |
-| `program.render()` | Computes all dynamic exercises for all weeks. Call before exporting. |
-| `to_txt`, `to_html`, `to_tex`, `to_dict` | Export the rendered program. |
-
-Terms used below:
-
-- **1RM**: one-repetition maximum. `start_weight` is your 1RM at the start of the program, not a working weight.
-- **Intensity**: weight as a percentage of the current week's 1RM. The program `intensity` is the rep-weighted average over all sets of one exercise in one week.
-- **Reps goal**: total reps for one exercise in one week. Set by `reps_per_exercise` (program) or `reps` (exercise).
-- **Scalers**: per-week multipliers applied to the reps goal and the intensity. They create periodization.
-- **Weeks** are numbered from 1 to `duration`.
 
 ## Quick start
+
+Here is a minimal working example.
 
 ```python
 from streprogen import Program
 
-# An 8-week program. Weights are rounded to the nearest 5 kg.
 program = Program("My first program!", duration=8, units="kg", round_to=5)
 
 with program.Day("Day A"):
@@ -320,80 +358,19 @@ print(program)    # same as print(program.to_txt())
 Output (abbreviated; exact numbers may differ between versions):
 
 ```text
-----------------------------------------------------------------
-Program: My first program!
-
-Program parameters
-  duration: 8
-  reps_per_exercise: 25
-  intensity: 83
-  units: kg
-----------------------------------------------------------------
-Exercise information
-  Day A
-   Bench press    80kg -> 89.6kg
-    reps: [3, 8]   weekly inc.: 1.5%
-   Squats        100kg -> 112kg
-    reps: [3, 8]   weekly inc.: 1.5%
-  Day B
-   Deadlifts     100kg -> 112kg
-    reps: [2, 7]   weekly inc.: 1.5%
-   Curls         3 x 10 @ 18kg
-----------------------------------------------------------------
-Program
- Week 1
-  Day A
-   Bench press   8 x 60kg   7 x 65kg   7 x 65kg   7 x 65kg
-   Squats        8 x 75kg   7 x 80kg   7 x 80kg   7 x 80kg
-
-  Day B
-   Deadlifts     7 x 80kg   7 x 80kg   6 x 80kg   6 x 80kg   5 x 85kg
-   Curls         3 x 10 @ 18kg
-
- Week 2
-  ...
 ```
 
-Each set is printed as `reps x weight`.
-
----
 
 # Beginner
 
-## 1. A program with static exercises
+## A program with static exercises
 
-A static exercise is a name and a string. streprogen prints the string every week. Use static exercises for anything you want to control by hand: accessories, conditioning, or a full program you already have.
+A static exercise consits of a name and either a string or a function.
+streprogen prints the string every week. 
+Use static exercises for anything you want to control by hand: accessories, conditioning, or a full program you already have.
 
-```python
-from streprogen import Program
-
-# duration: number of weeks (int > 1)
-program = Program(name="StaticOnly", duration=4)
-
-with program.Day("Monday"):
-    program.StaticExercise("Squat", "5 x 5 @ 100kg")
-    program.StaticExercise("Bench press", "5 x 5 @ 80kg")
-    program.StaticExercise("Barbell row", "5 x 5 @ 70kg")
-
-with program.Day("Thursday"):
-    program.StaticExercise("Deadlift", "1 x 5 @ 140kg")
-    program.StaticExercise("Overhead press", "5 x 5 @ 50kg")
-    program.StaticExercise("Plank", "3 x 60 seconds")
-
-program.render()
-print(program)
-```
-
-Notes:
-
-- The string can be anything: `"3 x 12"`, `"AMRAP"`, `"20 min easy bike"`.
-- The default for `sets_reps` is `"4 x 10"`.
-- These characters are removed from names and strings: `& % $ # _ { } ~ ^ \`. Write `"80 pct"`, not `"80%"`.
-- Exercise names must be unique within a day.
-
-## 2. Static exercises that change by week
-
-Pass a function instead of a string. It receives the week number (1 to `duration`) and must return a string.
+Static exercisess can change by week, if you pass a function instead of a string.
+The function receives the week number (`1` to `duration`) and must return a string.
 
 ```python
 from streprogen import Program
@@ -405,7 +382,7 @@ def squat(week):
     weight = 100 + 2.5 * (week - 1)
     if week == 4:
         weight = weight * 0.9
-    weight = round_to_nearest(weight, nearest=2.5)  # 109.25 -> 110
+    weight = round_to_nearest(weight, nearest=2.5)
     return f"5 x 5 @ {weight}kg"
 
 
@@ -424,6 +401,7 @@ def chin_ups(week):
 program = Program(name="StaticByWeek", duration=4)
 
 with program.Day("A"):
+    program.StaticExercise("Squat", "5 x 5 @ 100kg")
     program.StaticExercise("Squat", squat)
     program.StaticExercise("Bench press", bench)
     program.StaticExercise("Chin-ups", chin_ups)
@@ -434,11 +412,22 @@ program.render()
 print(program)
 ```
 
-The function is called each time the program is exported. Keep it deterministic (seed any randomness, see [section 22](#22-random-variation-with-markov-chains)).
+Notes:
 
-## 3. Your first dynamic exercise
+- The string can be anything: `"3 x 12"`, `"AMRAP"`, `"20 min easy bike"`.
+- These characters are removed from names and strings: `& % $ # _ { } ~ ^ \`. Write `"80 pct"`, not `"80%"`.
+- Exercise names must be unique within a day.
 
-A dynamic exercise needs a name and enough information to define a 1RM progression. The program computes everything else.
+The function is called each time the program is exported.
+Keep it deterministic (seed any randomness).
+
+## Dynamic exercises
+
+Dynamic exercises can be used to model more complex relationships between sets and reps.
+However, for many programs using static exercises thoughout is a good choice.
+A static exercise can model anything.
+
+A dynamic exercise needs a name and enough information to define a 1RM progression.
 
 ```python
 from streprogen import Program
@@ -456,24 +445,16 @@ program = Program(
 with program.Day("A"):
     # 1RM is 140 kg in week 1. It grows 1.5 % per week: 140 -> 156.8 in week 8.
     program.DynamicExercise("Squat", start_weight=140)
-    # Static and dynamic exercises can be mixed freely
     program.StaticExercise("Back extensions", "3 x 12")
 
 program.render()
 print(program)
 ```
 
-The values above are the defaults, except `name`. With the defaults:
+## Rendering and exporting
 
-- The reps goal falls linearly from 1.2 × 25 = 30 in week 1 to 0.8 × 25 = 20 in the last week.
-- Intensity rises linearly from 0.95 × 83 ≈ 79 % to 1.05 × 83 ≈ 87 %.
-- Sets have 3 to 8 reps.
-
-[Section 16](#16-periodization-with-scalers) explains how to change this.
-
-## 4. Rendering and exporting
-
-`render()` does the computation. Exports read the rendered result.
+`render()` does the computation.
+Exports read the rendered result.
 
 ```python
 import json
@@ -504,34 +485,14 @@ with open(f"{program.name}.html", "w", encoding="utf-8") as file:
 # clear_pages: start each week on a new page
 with open(f"{program.name}.tex", "w", encoding="utf-8") as file:
     file.write(program.to_tex(text_size="large", table_width=8, clear_pages=False))
-
-# --- Python dict / JSON -----------------------------------------------------
-data = program.to_dict()
-with open(f"{program.name}.json", "w", encoding="utf-8") as file:
-    json.dump(data, file, indent=2)
 ```
 
-To build a PDF from the `.tex` file:
+## Setting progression
 
-```bash
-pdflatex OutputDemo.tex
-```
-
-Without LaTeX installed, paste the `.tex` content into an online editor such as [latexbase.com](https://latexbase.com/), or print the `.html` file to PDF from a browser.
-
-Rendering again recomputes everything. Change a parameter, call `render()`, export again.
-
-## 5. Setting progression
-
-A dynamic exercise's 1RM goes from `start_weight` in week 1 to `final_weight` in the last week. You specify two of these three:
-
-| Given | Computed |
-|---|---|
-| `start_weight` + `percent_inc_per_week` | `final_weight = start_weight * (1 + percent_inc_per_week/100 * duration)` |
-| `start_weight` + `final_weight` | `percent_inc_per_week` |
-| `final_weight` + `percent_inc_per_week` | `start_weight = final_weight / (1 + percent_inc_per_week/100 * duration)` |
-
-The increase is additive, not compounded: 2 % per week for 2 weeks is 4 %, not 4.04 %. If the exercise does not set `percent_inc_per_week`, the program value (default 1.5) is used. Setting all three on one exercise raises `ValueError`.
+A dynamic exercise's 1RM goes from `start_weight` in week 1 to `final_weight` in the last week.
+You can specify one of them, plus `percent_inc_per_week` and the remaining weight will be computed for you.
+The increase is additive, not compounded: 2 % per week for 2 weeks is 4 %, not 4.04 %.
+If the exercise does not set `percent_inc_per_week`, the program value (default 1.5) is used.
 
 ```python
 from streprogen import Program
@@ -555,7 +516,8 @@ program.render()
 print(program)
 ```
 
-The shape of the curve between start and final is set by `progression_func` ([section 18](#18-custom-1rm-progression)). The default bends slightly: faster gains early, slower near the end.
+The shape of the curve between start and final is set by `progression_func`.
+The default bends slightly: faster gains early, slower near the end.
 
 If you know a working weight rather than a 1RM, convert it with the same function the program uses to map reps to intensity:
 
@@ -566,10 +528,10 @@ from streprogen import reps_to_intensity
 working_weight = 100
 reps = 5
 estimated_1rm = working_weight / (reps_to_intensity(reps) / 100)
-print(round(estimated_1rm, 1))  # 100 / 0.843 = 118.6
+print(round(estimated_1rm, 1))
 ```
 
-## 6. Rep ranges and per-exercise overrides
+## Rep ranges and per-exercise overrides
 
 Most program settings can be overridden per exercise.
 
@@ -594,8 +556,8 @@ with program.Day("A"):
     program.DynamicExercise("Bench press", start_weight=100, min_reps=2, max_reps=6)
 
     # Less volume: 15 reps instead of 25 (still scaled per week)
-    program.DynamicExercise("Deadlift", start_weight=180, reps=15, min_reps=2, max_reps=5,
-                            intensity=88)
+    program.DynamicExercise("Deadlift", start_weight=180, reps=15, min_reps=2,
+                            max_reps=5, intensity=88)
 
     # Small increments
     program.DynamicExercise("Overhead press", start_weight=60, round_to=1.25)
@@ -604,11 +566,13 @@ program.render()
 print(program)
 ```
 
-Keep `intensity` reachable with the rep range. With the default reps-to-intensity mapping, sets of 3–8 reps cover about 75–91 %. If the target intensity falls outside the range, you get a warning and the optimizer does its best ([section 12](#12-validation-warnings-and-errors)).
+Keep `intensity` reachable with the rep range.
+With the default reps-to-intensity mapping, sets of 3–8 reps cover about 75–91 %.
 
-## 7. Example: 5x5
+## Example: 5x5
 
-Straight 5x5 with constant volume and intensity. Day A and B alternate, three sessions per week.
+Straight 5x5 with constant volume and intensity.
+Day A and B alternate, three sessions per week.
 
 ```python
 from streprogen import Program, reps_to_intensity, progression_diffeq
@@ -646,29 +610,16 @@ print(program)
 
 To loosen this into a 3–7 rep variant, set `min_reps=3, max_reps=7, reps_per_exercise=22` and remove the two scaler arguments to get the default periodization.
 
----
-
 # Intermediate
 
-## 8. How a dynamic exercise is computed
+## Reps and intensity
 
-For each week `w` (1 to `duration`) and each dynamic exercise:
+`reps_to_intensity_func` maps a rep count to a percentage of 1RM.
+The exact function used does not matter that much if you more slowly throughtout the space as the week go by,
+or you are comfortable with e.g. the higher rep sets being a bit lighter.
+If every set is heavy, then something is likely wrong for an advanced athlete - so a function that makes some rep ranges light might be a good thing.
 
-1. **Reps goal**: `round(reps * rep_scalers[w])`, where `reps` is the exercise `reps` or the program `reps_per_exercise`.
-2. **Intensity goal**: `intensity * intensity_scalers[w]`, where `intensity` is the exercise value or the program value.
-3. **1RM this week**: `progression_func(w, start_weight, final_weight, 1, duration)`.
-4. **Rep scheme**: the optimizer picks a list of set sizes from `range(min_reps, max_reps + 1)`, such as `[8, 7, 7, 6]`. It minimizes `(total_reps - reps_goal)² + (avg_intensity - intensity_goal)²`, where `avg_intensity` is the rep-weighted mean of `reps_to_intensity_func(r)` over the sets.
-5. **Weights**: each set's weight is `round_to(1RM_this_week * reps_to_intensity_func(r) / 100)`.
-
-Consequences:
-
-- A set's weight depends only on its rep count and the week. Within one week, all 6-rep sets of an exercise use the same weight.
-- Sets are listed from most to fewest reps, so weight rises through the session.
-- Volume and intensity are targets, not guarantees. The actual values depend on what the rep range allows.
-
-## 9. Reps and intensity
-
-`reps_to_intensity_func` maps a rep count to a percentage of 1RM. Three built-ins:
+Three built-ins:
 
 | Function | Formula |
 |---|---|
@@ -689,22 +640,11 @@ Consequences:
 | 9 | 72.7 | 74.7 | 70.7 |
 | 10 | 70.05 | 72.3 | 67.8 |
 
-All three accept an int or an iterable of ints:
+All three accept an int or an iterable of ints.
 
-```python
-from streprogen import reps_to_intensity, reps_to_intensity_tight, reps_to_intensity_relaxed
-
-print(reps_to_intensity(5))           # 84.3
-print(reps_to_intensity([1, 5, 10]))  # list of three values
-
-for reps in range(1, 11):
-    print(reps,
-          round(reps_to_intensity(reps), 2),
-          round(reps_to_intensity_tight(reps), 2),
-          round(reps_to_intensity_relaxed(reps), 2))
-```
-
-A custom function must take an int and return a percentage. It should decrease with reps and stay within 0–100 for reps 1–20, or validation warns. Example based on the Epley formula (`1RM = w * (1 + r/30)`):
+A custom function must take an int and return a percentage.
+It should decrease with reps and stay within 0–100 for reps 1–20, or validation warns.
+Here is an example based on the Epley formula (`1RM = w * (1 + r/30)`):
 
 ```python
 from streprogen import Program
@@ -729,11 +669,12 @@ program.render()
 print(program)
 ```
 
-Use the same function when converting working weights to 1RMs ([section 5](#5-setting-progression)), so the numbers stay consistent.
+Use the same function when converting working weights to 1RMs, so the numbers stay consistent.
 
-## 10. Rounding
+## Rounding
 
-`round_to` is either a number (round to the nearest multiple) or a callable `weight -> weight`. It can be set on the program and overridden per exercise.
+`round_to` is either a number (round to the nearest multiple) or a callable.
+It can be set on the program and overridden per exercise.
 
 ```python
 import math
@@ -1496,46 +1437,6 @@ program.render()
 print(program)
 ```
 
-## 23. Saving and loading programs
-
-`serialize()` returns the program definition (not the rendered sets) as a dict. `Program.deserialize(data)` rebuilds it.
-
-```python
-import copy
-import json
-from streprogen import Program
-
-program = Program(name="Saved", duration=6, round_to=2.5)
-
-with program.Day("A"):
-    program.DynamicExercise("Squat", start_weight=140, min_reps=3, max_reps=8)
-    program.StaticExercise("Curls", "3 x 12")
-
-# Save
-data = program.serialize()
-with open("saved_program.json", "w", encoding="utf-8") as file:
-    json.dump(data, file, indent=2)
-
-# Load. deserialize() removes "days" from the dict it receives, so pass a copy.
-with open("saved_program.json", "r", encoding="utf-8") as file:
-    loaded_data = json.load(file)
-
-loaded = Program.deserialize(copy.deepcopy(loaded_data))
-loaded.render()
-print(loaded)
-```
-
-What is saved:
-
-- Program: `name`, `duration`, `min_reps`, `max_reps`, `reps_per_exercise`, `intensity`, `units`, `round_to`, `percent_inc_per_week`, `verbose`, and the scalers as lists of numbers.
-- Days and exercises, with exercise parameters that are not `None` or zero.
-
-What is lost or fails:
-
-- `progression_func`, `reps_to_intensity_func`, the optimizer and `shift` are not saved. The loaded program uses defaults.
-- A static exercise with a function raises `ValueError` on `serialize()` and `to_dict()`.
-- A callable `round_to` cannot be written to JSON.
-
 ## 24. Example: 12-week upper/lower
 
 Combines list-based waves with deloads, a custom optimizer, static exercises that change by week, weighted chin-ups and all exports.
@@ -1633,82 +1534,6 @@ with open(f"{program.name}.tex", "w", encoding="utf-8") as file:
 
 ---
 
-# Meal planning
-
-streprogen also includes a meal plan optimizer. It chooses meal quantities that meet nutrient targets while balancing price and equal meal sizes.
-
-- `Food`: nutrients per 100 g, plus price and package size.
-- `Meal`: foods with grams per base portion. `discrete=True` means whole portions only (1, 2, 3, ...). `discrete=False` allows fractional portions.
-- `Mealplan`: picks `num_meals` distinct meals per day for `num_days` days.
-
-```python
-from streprogen import Food, Meal, Mealplan
-
-# protein, fat, carbs, kcal: per 100 g
-oats = Food(name="oats", protein=13.0, fat=7.0, carbs=60.0, kcal=370,
-            price_per_product=25.0, grams_per_product=1000)
-milk = Food(name="milk", protein=3.5, fat=0.5, carbs=4.5, kcal=37,
-            price_per_product=16.4, grams_per_product=1000)
-chicken = Food(name="chicken filet", protein=19.0, fat=1.8, carbs=0.3, kcal=94,
-               price_per_product=260.0, grams_per_product=2500)
-rice = Food(name="jasmin rice", protein=2.7, fat=0.1, carbs=31.1, kcal=136,
-            price_per_product=45.8, grams_per_product=1000)
-egg = Food(name="egg", protein=13.0, fat=10.6, carbs=0.3, kcal=149,
-           price_per_product=32.9, grams_per_product=690)
-yogurt = Food(name="yogurt", protein=3.7, fat=3.1, carbs=10.5, kcal=84,
-              price_per_product=17.0, grams_per_product=600)
-nuts = Food(name="mixed nuts", protein=13, fat=26, carbs=47, kcal=464,
-            price_per_product=39.7, grams_per_product=350)
-
-# foods: {Food: grams per base portion}
-meals = [
-    Meal(name="oats with milk", foods={oats: 60, milk: 200}, discrete=False),
-    Meal(name="chicken and rice", foods={chicken: 40, rice: 60}, discrete=False),
-    Meal(name="eggs", foods={egg: 70}, discrete=True),          # 1 egg per portion
-    Meal(name="yogurt", foods={yogurt: 150}, discrete=True),    # 1 cup per portion
-    Meal(name="mixed nuts", foods={nuts: 10}, discrete=False),  # 10 g base portion
-]
-
-# (lower, upper) per day. None means no limit. Keys: kcal, protein, carbs, fat.
-dietary_constraints = {"kcal": (2400, 2400), "protein": (150, None)}
-
-# (min, max) number of days a meal appears. Matters for multi-day plans.
-meal_limits = {"mixed nuts": (None, 2)}
-
-plan = Mealplan(
-    meals,
-    dietary_constraints,
-    meal_limits=meal_limits,
-    num_meals=4,             # distinct meals per day
-    num_days=3,
-    weight_price=0.1,        # higher = cheaper plan
-    weight_nutrients=2.0,    # higher = closer to nutrient targets
-    weight_meal_sizes=0.75,  # higher = more equal calories per meal
-)
-
-plan.render(time_limit_secs=10)  # returns the best solution found within the limit
-print(plan.to_txt(verbose=True))
-```
-
-Notes:
-
-- Solve time grows mainly with the number of discrete meals.
-- Without `meal_limits`, every day of a multi-day plan is the same optimal day.
-- Optimize 3–4 days and cycle them.
-- If results are poor, adjust the weights or raise `time_limit_secs`.
-
-# Utilities
-
-```python
-from streprogen.utils import round_to_nearest
-from streprogen.modeling import wilks
-
-print(round_to_nearest(83.7, nearest=2.5))  # 82.5
-print(round_to_nearest(83.7, nearest=1))    # 84
-
-# Wilks score: lifted_kg, bodyweight_kg, gender="male" or "female"
-print(wilks(500, 100, gender="male"))       # 304.29
-```
 
 # API reference
 
