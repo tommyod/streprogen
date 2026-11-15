@@ -386,19 +386,19 @@ class Program:
         # Validate the intensity
         intensities = [self.intensity_scalers[w] * self.intensity for w in weeks]
 
-        if max(intensities) > 90:
-            warnings.warn("\nWARNING: At least one week has intensity > 90.")
+        if max(intensities) > 95:
+            warnings.warn("\nWARNING: At least one week has intensity > 95.")
 
-        if min(intensities) < 65:
-            warnings.warn("\nWARNING: At least one week has intensity < 65.")
+        if min(intensities) < 50:
+            warnings.warn("\nWARNING: At least one week has intensity < 50.")
 
         # Validate the repetitions
         repetitions = [self.rep_scalers[w] * self.reps_per_exercise for w in weeks]
-        if max(repetitions) > 45:
-            warnings.warn("\nWARNING: At least one week has repetitions > 45.")
+        if max(repetitions) > 50:
+            warnings.warn("\nWARNING: At least one week has repetitions > 50.")
 
-        if min(repetitions) < 15:
-            warnings.warn("\nWARNING: At least one week has repetitions < 15.")
+        if min(repetitions) < 3:
+            warnings.warn("\nWARNING: At least one week has repetitions < 3.")
 
         # Validate the 'reps_to_intensity_func'
         for x1, x2 in zip(range(1, 20), range(2, 21)):
@@ -419,7 +419,7 @@ class Program:
                 continue
 
             _, _, percent_inc_per_week = exercise._progress_information()
-            if percent_inc_per_week > 4:
+            if percent_inc_per_week > 10:
                 msg = f'\n"{exercise.name}" grows with {percent_inc_per_week}% each week.'
                 warnings.warn(msg)
 
